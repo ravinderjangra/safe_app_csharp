@@ -1,3 +1,14 @@
+environment:
+  github_access_token:
+    secure: zxK6jEUbrpVEs2a5jCphsn4iBJ5b/KaGkuGB0uJS7nHoV8UdZLxaSNR8DGSq0MqJ
+
+init:
+  - ps: if(-not $env:APPVEYOR_PULL_REQUEST_NUMBER) { $env:is_not_pr = "true"; }
+
+branches:
+  only:
+    - generate-release-docs
+
 cache:
   - '%temp%\nativelibs'
   - '%USERPROFILE%\.nuget\packages'
@@ -5,5 +16,16 @@ cache:
 
 image: Visual Studio 2017
 
+install:
+  - cinst docfx
+
 build_script:
   - ps: ./build.ps1
+
+deploy_script:
+  - ps: if(-not $env:is_not_pr) { return }
+  - git config --global credential.helper store
+  - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:github_access_token):x-oauth-basic@github.com`n"
+  - git config --global user.email "ravinderjangra@live.com"
+  - git config --global user.name "Ravinder Jangra"
+  - bash ReleaseDocs.sh
