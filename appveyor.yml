@@ -13,10 +13,13 @@ cache:
   - '%temp%\nativelibs'
   - '%USERPROFILE%\.nuget\packages'
   - tools -> build.cake, build.ps1, build.sh
+  - C:\ProgramData\chocolatey\bin -> appveyor.yml
+  - C:\ProgramData\chocolatey\lib -> appveyor.yml
 
 image: Visual Studio 2017
 
 install:
+  - IF NOT EXIST C:\ProgramData\chocolatey\bin\docfx.exe choco install docfx
   - cinst docfx
 
 build_script:
