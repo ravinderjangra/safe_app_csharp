@@ -137,12 +137,14 @@ Task("UnZip-Libs")
           else if(target.Equals(ANDROID_ARMEABI_V7A))
             platformOutputDirectory.Append("/armeabi-v7a");
 
-          if(target.Contains("osx"))
+          Unzip(zip, platformOutputDirectory.ToString());
+
+          if(target.Contains("osx") || target.Contains("android") || target.Contains("linux"))
           {
             var aFile = GetFiles(string.Format("{0}/*.a", platformOutputDirectory.ToString()));
             DeleteFile(aFile.ToArray()[0].FullPath);
           }
-          Unzip(zip, platformOutputDirectory.ToString());
+
         }
       }
     }
