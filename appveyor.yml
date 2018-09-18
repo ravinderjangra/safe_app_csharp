@@ -31,4 +31,4 @@ deploy_script:
   - ps: if(-not $env:is_not_pr) { return }
   - docfx ./docs/docfx.json
   - ps: gh-pages-clean
-  - Ps: gh-pages deploy --message "doc update from CI" --dist "./docs/_site" --repo "https://$env:github_access_token@github.com/ravinderjangra/safe_app_csharp.git" --user "Ravinder Jangra <ravinderjangra@live.com>"
+  - ps: gh-pages deploy --silent --message "doc update from CI" --dist "./docs/_site" --repo "https://$env:github_access_token@github.com/ravinderjangra/safe_app_csharp.git" --user "Ravinder Jangra <ravinderjangra@live.com>"
