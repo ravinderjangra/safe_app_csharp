@@ -1039,12 +1039,12 @@ namespace SafeApp.AppBindings
         public Task<ulong> MDataEntriesLenAsync(IntPtr app, ulong entriesH)
         {
             var (ret, userData) = BindingUtils.PrepareTask<ulong>();
-            MDataEntriesLenNative(app, entriesH, userData, DelegateOnFfiResultULongCb);
+            MDataEntriesLenNative(app, entriesH, userData, DelegateOnFfiResultULongFromUIntPtrCb);
             return ret;
         }
 
         [DllImport(DllName, EntryPoint = "mdata_entries_len")]
-        private static extern void MDataEntriesLenNative(IntPtr app, ulong entriesH, IntPtr userData, FfiResultULongCb oCb);
+        private static extern void MDataEntriesLenNative(IntPtr app, ulong entriesH, IntPtr userData, FfiResultULongFromUIntPtrCb oCb);
 
         public Task<(List<byte>, ulong)> MDataEntriesGetAsync(IntPtr app, ulong entriesH, List<byte> key)
         {
@@ -1209,12 +1209,12 @@ namespace SafeApp.AppBindings
         public Task<ulong> MDataPermissionsLenAsync(IntPtr app, ulong permissionsH)
         {
             var (ret, userData) = BindingUtils.PrepareTask<ulong>();
-            MDataPermissionsLenNative(app, permissionsH, userData, DelegateOnFfiResultULongCb);
+            MDataPermissionsLenNative(app, permissionsH, userData, DelegateOnFfiResultULongFromUIntPtrCb);
             return ret;
         }
 
         [DllImport(DllName, EntryPoint = "mdata_permissions_len")]
-        private static extern void MDataPermissionsLenNative(IntPtr app, ulong permissionsH, IntPtr userData, FfiResultULongCb oCb);
+        private static extern void MDataPermissionsLenNative(IntPtr app, ulong permissionsH, IntPtr userData, FfiResultULongFromUIntPtrCb oCb);
 
         public Task<PermissionSet> MDataPermissionsGetAsync(IntPtr app, ulong permissionsH, ulong userH)
         {
@@ -1742,6 +1742,18 @@ namespace SafeApp.AppBindings
         }
 
         private static readonly FfiResultULongCb DelegateOnFfiResultULongCb = OnFfiResultULongCb;
+
+        private delegate void FfiResultULongFromUIntPtrCb(IntPtr userData, IntPtr result, UIntPtr len);
+
+#if __IOS__
+    [MonoPInvokeCallback(typeof(FfiResultULongFromUIntPtrCb))]
+#endif
+        private static void OnFfiResultULongFromUIntPtrCb(IntPtr userData, IntPtr result, UIntPtr len)
+        {
+            BindingUtils.CompleteTask(userData, Marshal.PtrToStructure<FfiResult>(result), () => (ulong)len);
+        }
+
+        private static readonly FfiResultULongFromUIntPtrCb DelegateOnFfiResultULongFromUIntPtrCb = OnFfiResultULongFromUIntPtrCb;
 
         private delegate void FfiResultULongULongCb(IntPtr userData, IntPtr result, ulong pkH, ulong skH);
 
