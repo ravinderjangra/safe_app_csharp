@@ -55,16 +55,6 @@ namespace SafeApp.MockAuthBindings
         [DllImport(DllName, EntryPoint = "auth_reconnect")]
         private static extern void AuthReconnectNative(IntPtr auth, IntPtr userData, FfiResultCb oCb);
 
-        public Task<AccountInfo> AuthAccountInfoAsync(IntPtr auth)
-        {
-            var (ret, userData) = BindingUtils.PrepareTask<AccountInfo>();
-            AuthAccountInfoNative(auth, userData, DelegateOnFfiResultAccountInfoCb);
-            return ret;
-        }
-
-        [DllImport(DllName, EntryPoint = "auth_account_info")]
-        private static extern void AuthAccountInfoNative(IntPtr auth, IntPtr userData, FfiResultAccountInfoCb oCb);
-
         public Task<string> AuthExeFileStemAsync()
         {
             var (ret, userData) = BindingUtils.PrepareTask<string>();

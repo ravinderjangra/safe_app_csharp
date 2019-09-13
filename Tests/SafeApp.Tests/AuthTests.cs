@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,8 @@ namespace SafeApp.Tests
         [Test]
         public async Task ConnectAsRegisteredAppTest()
         {
+            var exeName = await MockAuthBindings.Authenticator.AuthExeFileStemAsync();
+
             var authReq = new AuthReq
             {
                 App = new AppExchangeInfo { Id = "net.maidsafe.test", Name = "TestApp", Scope = null, Vendor = "MaidSafe.net Ltd." },
@@ -20,11 +23,18 @@ namespace SafeApp.Tests
                 Containers = new List<ContainerPermissions>()
             };
 
-            using (var session = await Utils.CreateTestApp(authReq))
+            try
             {
-                using (await session.Crypto.AppPubSignKeyAsync())
+                using (var session = await Utils.CreateTestApp(authReq))
                 {
+                    using (await session.Crypto.AppPubSignKeyAsync())
+                    {
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
             }
 
             authReq.AppContainer = false;
@@ -211,7 +221,10 @@ namespace SafeApp.Tests
             session.Dispose();
             authReq.App = new AppExchangeInfo
             {
-                Id = "net.maidsafe.test.app", Name = "Test App", Scope = null, Vendor = "MaidSafe.net Ltd."
+                Id = "net.maidsafe.test.app",
+                Name = "Test App",
+                Scope = null,
+                Vendor = "MaidSafe.net Ltd."
             };
             var msg = await Session.EncodeAuthReqAsync(authReq);
             var authResponse = await Utils.AuthenticateAuthRequest(locator, secret, msg.Item2, true);
