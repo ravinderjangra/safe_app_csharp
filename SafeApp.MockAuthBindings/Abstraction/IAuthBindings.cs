@@ -9,29 +9,29 @@ namespace SafeApp.MockAuthBindings
 {
     internal partial interface IAuthBindings
     {
-        Task<List<AppAccess>> AuthAppsAccessingMutableDataAsync(IntPtr auth, byte[] mdName, ulong mdTypeTag);
+        Task AuthReconnectAsync(IntPtr auth);
 
         Task<string> AuthExeFileStemAsync();
 
-        Task AuthFlushAppRevocationQueueAsync(IntPtr auth);
+        Task AuthSetAdditionalSearchPathAsync(string newPath);
 
         void AuthFree(IntPtr auth);
 
-        Task AuthInitLoggingAsync(string outputFileNameOverride);
-
-        Task<string> AuthOutputLogPathAsync(string outputFileName);
-
-        Task AuthReconnectAsync(IntPtr auth);
-
-        Task<List<RegisteredApp>> AuthRegisteredAppsAsync(IntPtr auth);
-
-        Task<string> AuthRevokeAppAsync(IntPtr auth, string appId);
-
-        Task<List<AppExchangeInfo>> AuthRevokedAppsAsync(IntPtr auth);
+        bool AuthIsMock();
 
         Task AuthRmRevokedAppAsync(IntPtr auth, string appId);
 
-        Task AuthSetAdditionalSearchPathAsync(string newPath);
+        Task<List<AppExchangeInfo>> AuthRevokedAppsAsync(IntPtr auth);
+
+        Task<List<RegisteredApp>> AuthRegisteredAppsAsync(IntPtr auth);
+
+        Task<List<AppAccess>> AuthAppsAccessingMutableDataAsync(IntPtr auth, byte[] mdName, ulong mdTypeTag);
+
+        Task<string> AuthRevokeAppAsync(IntPtr auth, string appId);
+
+        Task AuthFlushAppRevocationQueueAsync(IntPtr auth);
+
+        Task<string> EncodeUnregisteredRespAsync(uint reqId, bool isGranted);
 
         Task<string> EncodeAuthRespAsync(IntPtr auth, ref AuthReq req, uint reqId, bool isGranted);
 
@@ -39,10 +39,8 @@ namespace SafeApp.MockAuthBindings
 
         Task<string> EncodeShareMDataRespAsync(IntPtr auth, ref ShareMDataReq req, uint reqId, bool isGranted);
 
-        Task<string> EncodeUnregisteredRespAsync(uint reqId, bool isGranted);
+        Task AuthInitLoggingAsync(string outputFileNameOverride);
 
-        Task TestSimulateNetworkDisconnectAsync(IntPtr authPtr);
-
-        bool IsMockBuild();
+        Task<string> AuthOutputLogPathAsync(string outputFileName);
     }
 }

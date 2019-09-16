@@ -59,7 +59,7 @@ namespace SafeApp.Misc
         /// <returns>The version successor for the deleted file.</returns>
         public Task<ulong> DirDeleteFileAsync(MDataInfo mDataInfo, string fileName, ulong version)
         {
-            return AppBindings.DirDeleteFileAsync(_appPtr, ref mDataInfo, fileName, version);
+            return AppBindings.DirDeleteFileAsync(_appPtr, ref mDataInfo, fileName, false, version);
         }
 
         /// <summary>

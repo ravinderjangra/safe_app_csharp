@@ -295,15 +295,6 @@ namespace SafeApp
             _appPtr.Clear();
         }
 
-        /// <summary>
-        /// Returns the AccountInfo of the current session.
-        /// </summary>
-        /// <returns>AccountInfo object.</returns>
-        public Task<AccountInfo> GetAccountInfoAsync()
-        {
-            return AppBindings.AppAccountInfoAsync(_appPtr);
-        }
-
         private void Init(IntPtr appPtr, GCHandle disconnectedHandle)
         {
             IsDisconnected = false;
@@ -339,7 +330,7 @@ namespace SafeApp
         /// <returns>True if native library was compiled with mock-routing feature otherwise false.</returns>
         public static bool IsMockBuild()
         {
-            return AppBindings.IsMockBuild();
+            return AppBindings.AppIsMock();
         }
 
         private static void OnDisconnected(Session session)

@@ -39,7 +39,7 @@ namespace SafeApp.MockAuthBindings
         /// <returns>True if compiled with mock-routing feature otherwise false.</returns>
         public static bool IsMockBuild()
         {
-            return NativeBindings.IsMockBuild();
+            return NativeBindings.AuthIsMock();
         }
 
         /// <summary>
@@ -138,15 +138,6 @@ namespace SafeApp.MockAuthBindings
         public static Task AuthSetAdditionalSearchPathAsync(string newPath)
         {
             return NativeBindings.AuthSetAdditionalSearchPathAsync(newPath);
-        }
-
-        /// <summary>
-        /// Simulate a network Disconnect.
-        /// </summary>
-        /// <returns></returns>
-        public async Task SimulateNetworkDisconnectAsync()
-        {
-            await NativeBindings.TestSimulateNetworkDisconnectAsync(_authPtr);
         }
 
         private Authenticator()

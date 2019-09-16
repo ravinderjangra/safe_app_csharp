@@ -34,7 +34,7 @@ namespace SafeApp.MData
         /// <returns></returns>
         private Task FreeAsync(ulong entriesH)
         {
-            return AppBindings.MDataEntriesFreeAsync(_appPtr, entriesH);
+            return AppBindings.SeqMDataEntriesFreeAsync(_appPtr, entriesH);
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace SafeApp.MData
         /// <returns>Value corresponding to the specified key and it's version.</returns>
         public Task<(List<byte>, ulong)> GetAsync(NativeHandle entriesHandle, List<byte> key)
         {
-            return AppBindings.MDataEntriesGetAsync(_appPtr, entriesHandle, key);
+            return AppBindings.SeqMDataEntriesGetAsync(_appPtr, entriesHandle, key);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace SafeApp.MData
         /// <returns></returns>
         public Task InsertAsync(NativeHandle entriesH, List<byte> entKey, List<byte> entVal)
         {
-            return AppBindings.MDataEntriesInsertAsync(_appPtr, entriesH, entKey, entVal);
+            return AppBindings.SeqMDataEntriesInsertAsync(_appPtr, entriesH, entKey, entVal);
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace SafeApp.MData
         /// <returns>Number of Mutable Data entries.</returns>
         public Task<ulong> LenAsync(NativeHandle entriesHandle)
         {
-            return AppBindings.MDataEntriesLenAsync(_appPtr, entriesHandle);
+            return AppBindings.SeqMDataEntriesLenAsync(_appPtr, entriesHandle);
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace SafeApp.MData
         /// <returns>Newly created Mutable Data entry handle.</returns>
         public async Task<NativeHandle> NewAsync()
         {
-            var entriesH = await AppBindings.MDataEntriesNewAsync(_appPtr);
+            var entriesH = await AppBindings.SeqMDataEntriesNewAsync(_appPtr);
             return new NativeHandle(_appPtr, entriesH, FreeAsync);
         }
     }

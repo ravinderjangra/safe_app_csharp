@@ -79,7 +79,7 @@ namespace SafeApp.MData
         /// <returns>Newly created mdataInfo instance.</returns>
         public Task<MDataInfo> NewPrivateAsync(byte[] xorName, ulong typeTag, byte[] secEncKey, byte[] nonce)
         {
-            return AppBindings.MDataInfoNewPrivateAsync(xorName, typeTag, secEncKey, nonce);
+            return AppBindings.MDataInfoNewPrivateAsync(false, xorName, typeTag, secEncKey, nonce);
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace SafeApp.MData
         /// <returns>Newly create mdataInfo.</returns>
         public Task<MDataInfo> RandomPrivateAsync(ulong typeTag)
         {
-            return AppBindings.MDataInfoRandomPrivateAsync(typeTag);
+            return AppBindings.MDataInfoRandomPrivateAsync(false, typeTag);
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace SafeApp.MData
         /// <returns>Newly create mdataInfo.</returns>
         public Task<MDataInfo> RandomPublicAsync(ulong typeTag)
         {
-            return AppBindings.MDataInfoRandomPublicAsync(typeTag);
+            return AppBindings.MDataInfoRandomPublicAsync(false, typeTag);
         }
 
         /// <summary>

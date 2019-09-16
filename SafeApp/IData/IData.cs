@@ -38,7 +38,7 @@ namespace SafeApp.IData
         /// <returns>Address as XOR Name in byte array format.</returns>
         public Task<byte[]> CloseSelfEncryptorAsync(ulong seH, NativeHandle cipherOptH)
         {
-            return AppBindings.IDataCloseSelfEncryptorAsync(_appPtr, seH, cipherOptH);
+            return AppBindings.IDataCloseSelfEncryptorAsync(_appPtr, seH, cipherOptH, false);
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace SafeApp.IData
         /// <returns>SE handle</returns>
         public async Task<NativeHandle> FetchSelfEncryptorAsync(byte[] xorName)
         {
-            var sEReaderHandle = await AppBindings.IDataFetchSelfEncryptorAsync(_appPtr, xorName);
+            var sEReaderHandle = await AppBindings.IDataFetchSelfEncryptorAsync(_appPtr, xorName, false);
             return new NativeHandle(_appPtr, sEReaderHandle, SelfEncryptorReaderFreeAsync);
         }
 
@@ -59,7 +59,7 @@ namespace SafeApp.IData
         /// <returns>New writer NativeHandle.</returns>
         public async Task<NativeHandle> NewSelfEncryptorAsync()
         {
-            var sEWriterHandle = await AppBindings.IDataNewSelfEncryptorAsync(_appPtr);
+            var sEWriterHandle = await AppBindings.IDataNewSelfEncryptorAsync(_appPtr, false);
             return new NativeHandle(_appPtr, sEWriterHandle, null);
         }
 
@@ -103,7 +103,7 @@ namespace SafeApp.IData
         /// <returns>Length in bytes.</returns>
         public Task<ulong> SerialisedSizeAsync(byte[] xorName)
         {
-            return AppBindings.IDataSerialisedSizeAsync(_appPtr, xorName);
+            return AppBindings.IDataSerialisedSizeAsync(_appPtr, xorName, false);
         }
 
         /// <summary>

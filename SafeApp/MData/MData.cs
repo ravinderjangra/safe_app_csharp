@@ -79,7 +79,7 @@ namespace SafeApp.MData
         /// <returns>List of Mutable Data Entries.</returns>
         public Task<List<MDataEntry>> ListEntriesAsync(NativeHandle entriesHandle)
         {
-            return AppBindings.MDataListEntriesAsync(_appPtr, entriesHandle);
+            return AppBindings.SeqMDataListEntriesAsync(_appPtr, entriesHandle);
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace SafeApp.MData
         /// <returns>List of Mutable Data values.</returns>
         public Task<List<MDataValue>> ListValuesAsync(MDataInfo mDataInfo)
         {
-            return AppBindings.MDataListValuesAsync(_appPtr, ref mDataInfo);
+            return AppBindings.SeqMDataListValuesAsync(_appPtr, ref mDataInfo);
         }
 
         /// <summary>
