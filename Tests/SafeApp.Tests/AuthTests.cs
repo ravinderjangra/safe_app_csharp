@@ -15,7 +15,8 @@ namespace SafeApp.Tests
         public async Task ConnectAsRegisteredAppTest()
         {
             var exeName = await MockAuthBindings.Authenticator.AuthExeFileStemAsync();
-
+            await Session.SetAdditionalSearchPathAsync(@"/Users/maidsafe/Desktop/GitHub/safe_app_csharp/Tests/SafeApp.Tests.Core/bin/Debug/netcoreapp2.0");
+            await Session.InitLoggingAsync();
             var authReq = new AuthReq
             {
                 App = new AppExchangeInfo { Id = "net.maidsafe.test", Name = "TestApp", Scope = null, Vendor = "MaidSafe.net Ltd." },

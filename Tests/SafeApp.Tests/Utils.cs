@@ -29,7 +29,7 @@ namespace SafeApp.Tests
 
         public static async Task<string> AuthenticateAuthRequest(string ipcMsg, bool allow)
         {
-            var authenticator = await Authenticator.CreateAccountAsync(GetRandomString(10), GetRandomString(10), GetRandomString(5));
+            var authenticator = await Authenticator.CreateAccountAsync(GetRandomString(10), GetRandomString(10));
             return await AuthenticateAuthRequest(authenticator, ipcMsg, allow);
         }
 
@@ -96,7 +96,7 @@ namespace SafeApp.Tests
 
         public static async Task<Session> CreateTestApp(string locator, string secret, AuthReq authReq)
         {
-            var authenticator = await Authenticator.CreateAccountAsync(locator, secret, GetRandomString(5));
+            var authenticator = await Authenticator.CreateAccountAsync(locator, secret);
             var (_, reqMsg) = await Session.EncodeAuthReqAsync(authReq);
             var ipcReq = await authenticator.DecodeIpcMessageAsync(reqMsg);
             Assert.That(ipcReq, Is.TypeOf<AuthIpcReq>());
