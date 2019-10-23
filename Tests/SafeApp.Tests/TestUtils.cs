@@ -57,6 +57,8 @@ namespace SafeApp.Tests
                 },
                 AppContainer = true,
                 AppPermissionTransferCoins = true,
+                AppPermissionGetBalance = true,
+                AppPermissionPerformMutations = true,
                 Containers = new List<ContainerPermissions>()
             };
             return CreateTestApp(locator, secret, authReq);
