@@ -178,7 +178,7 @@ namespace SafeApp.AppBindings
         public Task<ISafeData> InspectAsync(IntPtr app, string url)
         {
             var (task, userData) = BindingUtils.PrepareTask<ISafeData>();
-            FetchNative(
+            InspectNative(
                 app,
                 url,
                 userData,
