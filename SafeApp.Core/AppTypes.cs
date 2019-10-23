@@ -285,9 +285,19 @@ namespace SafeApp.Core
         public bool AppContainer;
 
         /// <summary>
-        /// True if the app wants to transfer coins.
+        /// Set true to allow the app to transfer coins.
         /// </summary>
         public bool AppPermissionTransferCoins;
+
+        /// <summary>
+        /// Set true to allow mutations.
+        /// </summary>
+        public bool AppPermissionPerformMutations;
+
+        /// <summary>
+        /// Set true to allow the app to get balance.
+        /// </summary>
+        public bool AppPermissionGetBalance;
 
         /// <summary>
         /// The list of containers requesting access for.
@@ -303,6 +313,8 @@ namespace SafeApp.Core
             App = native.App;
             AppContainer = native.AppContainer;
             AppPermissionTransferCoins = native.AppPermissionTransferCoins;
+            AppPermissionPerformMutations = native.AppPermissionPerformMutations;
+            AppPermissionGetBalance = native.AppPermissionGetBalance;
             Containers = BindingUtils.CopyToObjectList<ContainerPermissions>(native.ContainersPtr, (int)native.ContainersLen);
         }
 
@@ -317,6 +329,8 @@ namespace SafeApp.Core
                 App = App,
                 AppContainer = AppContainer,
                 AppPermissionTransferCoins = AppPermissionTransferCoins,
+                AppPermissionPerformMutations = AppPermissionPerformMutations,
+                AppPermissionGetBalance = AppPermissionGetBalance,
                 ContainersPtr = BindingUtils.CopyFromObjectList(Containers),
                 ContainersLen = (UIntPtr)(Containers?.Count ?? 0),
                 ContainersCap = UIntPtr.Zero
@@ -342,10 +356,22 @@ namespace SafeApp.Core
         public bool AppContainer;
 
         /// <summary>
-        /// true if the app wants to transfer coins.
+        /// Set true to allow the app to transfer coins.
         /// </summary>
         [MarshalAs(UnmanagedType.U1)]
         public bool AppPermissionTransferCoins;
+
+        /// <summary>
+        /// Set true to allow mutations.
+        /// </summary>
+        [MarshalAs(UnmanagedType.U1)]
+        public bool AppPermissionPerformMutations;
+
+        /// <summary>
+        /// Set true to allow the app to get balance.
+        /// </summary>
+        [MarshalAs(UnmanagedType.U1)]
+        public bool AppPermissionGetBalance;
 
         /// <summary>
         /// Pointer to containers.
