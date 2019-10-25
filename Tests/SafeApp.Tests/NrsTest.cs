@@ -1,24 +1,30 @@
-﻿using System.Threading.Tasks;
-using NUnit.Framework;
+﻿using System;
+using System.Threading.Tasks;
+using SafeApp;
 using SafeApp.API;
 using SafeApp.Core;
+using Xunit;
 
-namespace SafeApp.Tests
+namespace SafeAppTests
 {
-    [TestFixture]
-    internal class NrsTest
+    [Collection("Nrs Tests")]
+    public class NrsTest : IDisposable
     {
         private const bool SetDefault = true;
         private const bool DirectLink = true;
         private const bool DryRun = false;
 
-        [OneTimeSetUp]
-        public void Setup() => TestUtils.PrepareTestData();
+        public NrsTest()
+        {
+            TestUtils.PrepareTestData();
+        }
 
-        [OneTimeTearDown]
-        public void TearDown() => TestUtils.RemoveTestData();
+        public void Dispose()
+        {
+            TestUtils.RemoveTestData();
+        }
 
-        [Test]
+        [Fact]
         public async Task ParseUrlTest()
         {
             var session = await TestUtils.CreateTestApp();
@@ -27,18 +33,17 @@ namespace SafeApp.Tests
             var xorUrlEncoder = await Nrs.ParseUrlAsync(xorUrl);
 
             // todo: verify that these are actually the expected values
-            Assert.AreEqual(ContentType.Raw, xorUrlEncoder.ContentType);
-            Assert.AreEqual(0, xorUrlEncoder.ContentVersion);
-            Assert.AreEqual(DataType.SafeKey, xorUrlEncoder.DataType);
-            Assert.AreEqual(1, xorUrlEncoder.EncodingVersion);
-            Assert.AreEqual(string.Empty, xorUrlEncoder.Path);
-            Assert.AreEqual("[]", xorUrlEncoder.SubNames);
-            Assert.AreEqual(0, xorUrlEncoder.TypeTag);
+            Assert.Equal(ContentType.Raw, xorUrlEncoder.ContentType);
+            Assert.Equal<ulong>(0, xorUrlEncoder.ContentVersion);
+            Assert.Equal(DataType.SafeKey, xorUrlEncoder.DataType);
+            Assert.Equal<ulong>(1, xorUrlEncoder.EncodingVersion);
+            Assert.Equal(string.Empty, xorUrlEncoder.Path);
+            Assert.Equal("[]", xorUrlEncoder.SubNames);
+            Assert.Equal<ulong>(0, xorUrlEncoder.TypeTag);
             Validate.XorName(xorUrlEncoder.XorName);
         }
 
-        [Test]
-        [Ignore("Needs to be fixed. Ignoring to test the Android and iOS libs on CI.")]
+        [Fact(Skip = "Needs to be fixed. Ignoring to test the Android and iOS libs on CI.")]
         public async Task ParseAndResolveUrlTest()
         {
             var session = await TestUtils.CreateTestApp();
@@ -58,7 +63,7 @@ namespace SafeApp.Tests
             Validate.Encoder(resolvedFrom, DataType.PublishedSeqAppendOnlyData, ContentType.NrsMapContainer, 1500);
         }
 
-        [Test]
+        [Fact]
         public async Task CreateNrsMapContainerTest()
         {
             var session = await TestUtils.CreateTestApp();
@@ -74,12 +79,12 @@ namespace SafeApp.Tests
                 DryRun,
                 SetDefault);
 
-            Assert.IsNotNull(processedEntries);
+            Assert.NotEqual(default, processedEntries);
             await Validate.RawNrsMapAsync(nrsMapRaw);
             await Validate.XorUrlAsync(xorUrl, DataType.PublishedSeqAppendOnlyData, ContentType.NrsMapContainer, 1500);
         }
 
-        [Test]
+        [Fact]
         public async Task AddToNrsMapContainerTest()
         {
             var session = await TestUtils.CreateTestApp();
@@ -95,12 +100,12 @@ namespace SafeApp.Tests
                 DirectLink,
                 DryRun);
 
-            Assert.AreEqual(1, version);
+            Assert.Equal<ulong>(1, version);
             await Validate.RawNrsMapAsync(nrsMapRaw);
             await Validate.XorUrlAsync(xorUrl, DataType.PublishedSeqAppendOnlyData, ContentType.NrsMapContainer, 1500);
         }
 
-        [Test]
+        [Fact]
         public async Task RemoveFromNrsMapContainerTest()
         {
             var session = await TestUtils.CreateTestApp();
@@ -109,12 +114,12 @@ namespace SafeApp.Tests
 
             var (nrsMapRaw, xorUrl, version) = await session.Nrs.RemoveFromNrsMapContainerAsync(name, DryRun);
 
-            Assert.AreEqual(1, version);
-            Assert.AreEqual("{\"sub_names_map\":{},\"default\":\"NotSet\"}", nrsMapRaw);
+            Assert.Equal<ulong>(1, version);
+            Assert.Equal("{\"sub_names_map\":{},\"default\":\"NotSet\"}", nrsMapRaw);
             await Validate.XorUrlAsync(xorUrl, DataType.PublishedSeqAppendOnlyData, ContentType.NrsMapContainer, 1500);
         }
 
-        [Test]
+        [Fact]
         public async Task GetNrsMapContainerTest()
         {
             var session = await TestUtils.CreateTestApp();
@@ -124,7 +129,7 @@ namespace SafeApp.Tests
             var api = session.Nrs;
             var (nrsMapRaw, version) = await api.GetNrsMapContainerAsync(xorUrl);
 
-            Assert.AreEqual(0, version);
+            Assert.Equal<ulong>(0, version);
             await Validate.RawNrsMapAsync(nrsMapRaw);
             await Validate.XorUrlAsync(xorUrl, DataType.PublishedSeqAppendOnlyData, ContentType.NrsMapContainer, 1500);
         }

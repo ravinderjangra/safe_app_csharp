@@ -1,12 +1,12 @@
-﻿using Android.App;
+﻿using System.Reflection;
+using System.Threading.Tasks;
+using Android.App;
 using Android.Content.PM;
 using Android.OS;
-using NUnit.Runner;
-using NUnit.Runner.Services;
-using Xamarin.Forms;
-using Xamarin.Forms.Platform.Android;
+using UnitTests.HeadlessRunner;
+using Xunit.Runners.UI;
 
-namespace SafeApp.Tests.Android
+namespace SafeAppTests.Android
 {
     [Activity(
       Name = "SafeApp.Tests.Android.MainActivity",
@@ -17,44 +17,35 @@ namespace SafeApp.Tests.Android
       ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
 
     // ReSharper disable once UnusedMember.Global
-    public class MainActivity : FormsApplicationActivity
+    public class MainActivity : RunnerActivity
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {
-            base.OnCreate(savedInstanceState);
+            var hostIp = Intent.Extras?.GetString("HOST_IP", null);
+            var hostPort = Intent.Extras?.GetInt("HOST_PORT", 10500) ?? 10500;
 
-            Forms.Init(this, savedInstanceState);
-
-            // This will load all tests within the current project
-            var nunit = new App
+            if (!string.IsNullOrEmpty(hostIp))
             {
-                Options = new TestOptions
+                // Run the headless test runner for CI
+                Task.Run(() =>
                 {
-                    // If True, the tests will run automatically when the app starts
-                    // otherwise you must run them manually.
-                    AutoRun = true,
+                    return Tests.RunAsync(new TestOptions
+                    {
+                        NetworkLogHost = hostIp,
+                        NetworkLogPort = hostPort,
+                        Format = TestResultsFormat.XunitV2
+                    });
+                });
+            }
 
-                    // If True, the application will terminate automatically after running the tests.
-                    // TerminateAfterExecution = true,
+            // tests can be inside the main assembly
+            AddTestAssembly(Assembly.GetExecutingAssembly());
 
-                    // Information about the tcp listener host and port.
-                    // For now, send result as XML to the listening server.
-                    TcpWriterParameters = new TcpWriterInfo("10.0.2.2", 10500)
+            // run the test automatically on app launch
+            AutoStart = true;
 
-                    // Creates a NUnit Xml result file on the host file system using PCLStorage library.
-                    // CreateXmlResultFile = true,
-
-                    // Choose a different path for the xml result file
-                    // ResultFilePath = Path.Combine(Environment.ExternalStorageDirectory.Path, Environment.DirectoryDownloads, "Nunit", "Results.xml")
-                }
-            };
-
-            // If you want to add tests in another assembly
-            // nunit.AddTestAssembly(typeof(MyTests).Assembly);
-
-            // Available options for testing
-
-            LoadApplication(nunit);
+            // you cannot add more assemblies once calling base
+            base.OnCreate(savedInstanceState);
         }
     }
 }

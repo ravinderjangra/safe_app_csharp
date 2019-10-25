@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
-using NUnit.Framework;
 using SafeApp.API;
 using SafeApp.Core;
+using Xunit;
 
-namespace SafeApp.Tests
+namespace SafeAppTests
 {
-    [TestFixture]
+    [Collection("XorUrl Encoder Tests")]
     public class XorUrlEncoderTest
     {
-        [Test]
+        [Fact]
         public async Task EncodeStringTestAsync()
         {
             var rnd = new Random();
@@ -27,8 +27,8 @@ namespace SafeApp.Tests
                 null,
                 0,
                 "base32z");
-            Assert.IsNotNull(encodedString);
-            Assert.IsTrue(encodedString.StartsWith("safe://", StringComparison.Ordinal));
+            Assert.NotEqual(string.Empty, encodedString);
+            Assert.StartsWith("safe://", encodedString, StringComparison.Ordinal);
 
             var xorUrlEncoder = await XorEncoder.EncodeAsync(
                 xorName,
@@ -39,16 +39,16 @@ namespace SafeApp.Tests
                 null,
                 0);
 
-            Assert.AreEqual(xorName, xorUrlEncoder.XorName);
+            Assert.Equal(xorName, xorUrlEncoder.XorName);
             Validate.Encoder(xorUrlEncoder, dataType, (ContentType)contentType, typeTag);
 
             var parsedEncoder = await XorEncoder.XorUrlEncoderFromUrl(encodedString);
 
-            Assert.AreEqual(xorName, parsedEncoder.XorName);
+            Assert.Equal(xorName, parsedEncoder.XorName);
             Validate.Encoder(parsedEncoder, dataType, contentType, typeTag);
-            Assert.AreEqual(typeTag, parsedEncoder.TypeTag);
-            Assert.AreEqual(contentType, parsedEncoder.ContentType);
-            Assert.AreEqual(0, parsedEncoder.ContentVersion);
+            Assert.Equal(typeTag, parsedEncoder.TypeTag);
+            Assert.Equal(contentType, parsedEncoder.ContentType);
+            Assert.Equal<ulong>(0, parsedEncoder.ContentVersion);
         }
     }
 }

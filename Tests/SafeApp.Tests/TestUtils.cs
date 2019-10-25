@@ -3,20 +3,24 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using NUnit.Framework;
+using SafeApp;
 using SafeApp.Core;
 using SafeApp.MockAuthBindings;
+using Xunit;
 
-namespace SafeApp.Tests
+namespace SafeAppTests
 {
     public static class TestUtils
     {
         public static readonly Random Random = new Random();
 
-        private static async Task<string> AuthenticateAuthRequest(Authenticator authenticator, string ipcMsg, bool allow)
+        private static async Task<string> AuthenticateAuthRequest(
+            Authenticator authenticator,
+            string ipcMsg,
+            bool allow)
         {
             var ipcReq = await authenticator.DecodeIpcMessageAsync(ipcMsg);
-            Assert.That(ipcReq, Is.TypeOf<AuthIpcReq>());
+            Assert.IsType<AuthReq>(ipcReq);
             var response = await authenticator.EncodeAuthRespAsync(ipcReq as AuthIpcReq, allow);
             authenticator.Dispose();
             return response;
@@ -24,11 +28,17 @@ namespace SafeApp.Tests
 
         public static async Task<string> AuthenticateAuthRequest(string ipcMsg, bool allow)
         {
-            var authenticator = await Authenticator.CreateAccountAsync(GetRandomString(10), GetRandomString(10));
+            var authenticator = await Authenticator.CreateAccountAsync(
+                GetRandomString(10),
+                GetRandomString(10));
             return await AuthenticateAuthRequest(authenticator, ipcMsg, allow);
         }
 
-        public static async Task<string> AuthenticateAuthRequest(string locator, string secret, string ipcMsg, bool allow)
+        public static async Task<string> AuthenticateAuthRequest(
+            string locator,
+            string secret,
+            string ipcMsg,
+            bool allow)
         {
             var authenticator = await Authenticator.LoginAsync(locator, secret);
             return await AuthenticateAuthRequest(authenticator, ipcMsg, allow);
@@ -37,7 +47,7 @@ namespace SafeApp.Tests
         public static async Task<string> AuthenticateUnregisteredRequest(string ipcMsg)
         {
             var ipcReq = await Authenticator.UnRegisteredDecodeIpcMsgAsync(ipcMsg);
-            Assert.That(ipcReq, Is.TypeOf<UnregisteredIpcReq>());
+            Assert.IsType<UnregisteredIpcReq>(ipcReq);
             var response = await Authenticator.EncodeUnregisteredRespAsync(((UnregisteredIpcReq)ipcReq).ReqId, true);
             return response;
         }
@@ -76,7 +86,7 @@ namespace SafeApp.Tests
             var authenticator = await Authenticator.CreateAccountAsync(locator, secret);
             var (_, reqMsg) = await Session.EncodeAuthReqAsync(authReq);
             var ipcReq = await authenticator.DecodeIpcMessageAsync(reqMsg);
-            Assert.That(ipcReq, Is.TypeOf<AuthIpcReq>());
+            Assert.IsType<AuthIpcReq>(ipcReq);
             var authIpcReq = ipcReq as AuthIpcReq;
             var resMsg = await authenticator.EncodeAuthRespAsync(authIpcReq, true);
             return await Session.AppConnectAsync(authReq.App.Id, resMsg);
@@ -106,5 +116,8 @@ namespace SafeApp.Tests
 #endif
 
         static readonly string _testDataDir = TestUtils.GetRandomString(5);
+
+        public static void Fail(string message)
+        => throw new Xunit.Sdk.XunitException(message);
     }
 }

@@ -1,109 +1,115 @@
 ﻿using System.Threading.Tasks;
-using NUnit.Framework;
+using Xunit;
 
-namespace SafeApp.Tests
+namespace SafeAppTests
 {
-    [TestFixture]
-    internal class KeyTest
+    [Collection("Keys Tests")]
+    public class KeyTest
     {
         private const string _preloadInitialAmount = "2";
         private const string _transferAmount = "1";
         private const string _preloadAmount = "1";
-        private API.Keys _api;
 
-        [SetUp]
-        public async Task Setup()
-        {
-            var session = await TestUtils.CreateTestApp();
-            _api = session.Keys;
-        }
-
-        [Test]
+        [Fact]
         public async Task GenerateKeyPairTest()
         {
-            var keyPair = await _api.GenerateKeyPairAsync();
+            var session = await TestUtils.CreateTestApp();
+            var api = session.Keys;
+            var keyPair = await api.GenerateKeyPairAsync();
             Validate.TransientKeyPair(keyPair);
         }
 
-        [Test]
+        [Fact]
         public async Task KeysCreatePreloadTestCoinsTest()
         {
-            var (xorUrl, keyPair) = await _api.KeysCreatePreloadTestCoinsAsync(_preloadAmount);
-            await Validate.PersistedKeyPair(xorUrl, keyPair, _api);
+            var session = await TestUtils.CreateTestApp();
+            var api = session.Keys;
+            var (xorUrl, keyPair) = await api.KeysCreatePreloadTestCoinsAsync(_preloadAmount);
+            await Validate.PersistedKeyPair(xorUrl, keyPair, api);
         }
 
-        [Test]
+        [Fact]
         public async Task CreateKeysFromTransientTest()
         {
-            var (_, keyPairSender) = await _api.KeysCreatePreloadTestCoinsAsync(_preloadInitialAmount);
+            var session = await TestUtils.CreateTestApp();
+            var api = session.Keys;
+            var (_, keyPairSender) = await api.KeysCreatePreloadTestCoinsAsync(_preloadInitialAmount);
 
             // transient keys, not persisted on the network
-            var keyPairRecipient = await _api.GenerateKeyPairAsync();
+            var keyPairRecipient = await api.GenerateKeyPairAsync();
 
             // we expect keyPairRecipient to persisted with
             // this call, and newKeyPair to be empty.
-            var (xorUrl, newKeyPair) = await _api.CreateKeysAsync(
+            var (xorUrl, newKeyPair) = await api.CreateKeysAsync(
                 keyPairSender.SK,
                 _transferAmount,
                 keyPairRecipient.PK);
 
-            Assert.IsEmpty(newKeyPair.SK);
-            Assert.IsNotNull(newKeyPair.PK);
-            Assert.AreEqual(keyPairRecipient.PK, newKeyPair.PK);
+            Assert.Equal(string.Empty, newKeyPair.SK);
+            Assert.NotNull(newKeyPair.PK);
+            Assert.Equal(keyPairRecipient.PK, newKeyPair.PK);
 
-            await Validate.PersistedKeyPair(xorUrl, keyPairRecipient, _api);
+            await Validate.PersistedKeyPair(xorUrl, keyPairRecipient, api);
 
-            var senderBalance = await _api.KeysBalanceFromSkAsync(keyPairSender.SK);
+            var senderBalance = await api.KeysBalanceFromSkAsync(keyPairSender.SK);
             Validate.IsEqualAmount("0.999999999", senderBalance);
 
-            var recipientBalance = await _api.KeysBalanceFromSkAsync(keyPairRecipient.SK);
+            var recipientBalance = await api.KeysBalanceFromSkAsync(keyPairRecipient.SK);
             Validate.IsEqualAmount(_transferAmount, recipientBalance);
         }
 
-        [Test]
+        [Fact]
         public async Task CreateKeysTest()
         {
-            var (_, keyPairSender) = await _api.KeysCreatePreloadTestCoinsAsync(_preloadInitialAmount);
+            var session = await TestUtils.CreateTestApp();
+            var api = session.Keys;
+            var (_, keyPairSender) = await api.KeysCreatePreloadTestCoinsAsync(_preloadInitialAmount);
 
-            var (xorUrl, newKeyPair) = await _api.CreateKeysAsync(
+            var (xorUrl, newKeyPair) = await api.CreateKeysAsync(
                 keyPairSender.SK,
                 _transferAmount,
                 null);
 
-            await Validate.PersistedKeyPair(xorUrl, newKeyPair, _api);
+            await Validate.PersistedKeyPair(xorUrl, newKeyPair, api);
 
-            var senderBalance = await _api.KeysBalanceFromSkAsync(newKeyPair.SK);
+            var senderBalance = await api.KeysBalanceFromSkAsync(newKeyPair.SK);
             Validate.IsEqualAmount(_transferAmount, senderBalance);
 
-            var recipientBalance = await _api.KeysBalanceFromSkAsync(newKeyPair.SK);
+            var recipientBalance = await api.KeysBalanceFromSkAsync(newKeyPair.SK);
             Validate.IsEqualAmount(_transferAmount, recipientBalance);
         }
 
-        [Test]
+        [Fact]
         public async Task KeysBalanceFromSkTest()
         {
-            var (xorurl, keyPair) = await _api.KeysCreatePreloadTestCoinsAsync(_preloadAmount);
-            var balance = await _api.KeysBalanceFromSkAsync(keyPair.SK);
+            var session = await TestUtils.CreateTestApp();
+            var api = session.Keys;
+            var (xorurl, keyPair) = await api.KeysCreatePreloadTestCoinsAsync(_preloadAmount);
+            var balance = await api.KeysBalanceFromSkAsync(keyPair.SK);
             Validate.IsEqualAmount(_preloadAmount, balance);
         }
 
-        [Test]
+        [Fact]
         public async Task KeysBalanceFromUrlTest()
         {
-            var (xorurl, keyPair) = await _api.KeysCreatePreloadTestCoinsAsync(_preloadAmount);
-            var balance = await _api.KeysBalanceFromUrlAsync(xorurl, keyPair.SK);
+            var session = await TestUtils.CreateTestApp();
+            var api = session.Keys;
+            var (xorurl, keyPair) = await api.KeysCreatePreloadTestCoinsAsync(_preloadAmount);
+            var balance = await api.KeysBalanceFromUrlAsync(xorurl, keyPair.SK);
             Validate.IsEqualAmount(_preloadAmount, balance);
         }
 
-        [Test]
+        [Fact]
         public async Task ValidateSkForUrlTest()
         {
-            var (xorurl, keyPair) = await _api.KeysCreatePreloadTestCoinsAsync(_preloadAmount);
-            var publicKey = await _api.ValidateSkForUrlAsync(keyPair.SK, xorurl);
-            Assert.AreEqual(keyPair.PK, publicKey);
+            var session = await TestUtils.CreateTestApp();
+            var api = session.Keys;
+            var (xorurl, keyPair) = await api.KeysCreatePreloadTestCoinsAsync(_preloadAmount);
+            var publicKey = await api.ValidateSkForUrlAsync(keyPair.SK, xorurl);
+            Assert.Equal(keyPair.PK, publicKey);
         }
 
-        [Test]
+        [Fact]
         public async Task KeysTransferTest()
         {
             var initialRecipientBalance = "0.1";
@@ -112,16 +118,18 @@ namespace SafeApp.Tests
 
             var txId = 1234UL;
 
-            var (senderUrl, keyPairSender) = await _api.KeysCreatePreloadTestCoinsAsync(_transferAmount);
-            var (recipientUrl, keyPairRecipient) = await _api.KeysCreatePreloadTestCoinsAsync(initialRecipientBalance);
-            var resultTxId = await _api.KeysTransferAsync(_transferAmount, keyPairSender.SK, recipientUrl, txId);
+            var session = await TestUtils.CreateTestApp();
+            var api = session.Keys;
+            var (senderUrl, keyPairSender) = await api.KeysCreatePreloadTestCoinsAsync(_transferAmount);
+            var (recipientUrl, keyPairRecipient) = await api.KeysCreatePreloadTestCoinsAsync(initialRecipientBalance);
+            var resultTxId = await api.KeysTransferAsync(_transferAmount, keyPairSender.SK, recipientUrl, txId);
 
-            Assert.AreEqual(txId, resultTxId);
+            Assert.Equal(txId, resultTxId);
 
-            var senderBalance = await _api.KeysBalanceFromUrlAsync(senderUrl, keyPairSender.SK);
+            var senderBalance = await api.KeysBalanceFromUrlAsync(senderUrl, keyPairSender.SK);
             Validate.IsEqualAmount(expectedSenderEndBalance, senderBalance);
 
-            var recipientBalance = await _api.KeysBalanceFromUrlAsync(recipientUrl, keyPairRecipient.SK);
+            var recipientBalance = await api.KeysBalanceFromUrlAsync(recipientUrl, keyPairRecipient.SK);
             Validate.IsEqualAmount(expectedRecipientEndBalance, recipientBalance);
         }
     }

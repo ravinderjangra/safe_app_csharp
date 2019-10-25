@@ -1,22 +1,28 @@
-﻿using System.Threading.Tasks;
-using NUnit.Framework;
+﻿using System;
+using System.Threading.Tasks;
 using SafeApp.Core;
+using Xunit;
 
-namespace SafeApp.Tests
+namespace SafeAppTests
 {
-    [TestFixture]
-#if __ANDROID__ || __IOS__
-    [Ignore("Fetch and Inspect API fails on Android and iOS")]
-#endif
-    public class FetchTest
+    [Collection("Fetch Tests")]
+    public class FetchTest : IDisposable
     {
-        [OneTimeSetUp]
-        public void Setup() => TestUtils.PrepareTestData();
+        public FetchTest()
+        {
+            TestUtils.PrepareTestData();
+        }
 
-        [OneTimeTearDown]
-        public void TearDown() => TestUtils.RemoveTestData();
+        public void Dispose()
+        {
+            TestUtils.RemoveTestData();
+        }
 
-        [Test]
+#if __ANDROID__ || __IOS__
+        [Fact(Skip = "Fetch and Inspect API fails on Android and iOS")]
+#else
+        [Fact]
+#endif
         public async Task FetchDataTypesTest()
         {
             var session = await TestUtils.CreateTestApp();
@@ -45,7 +51,11 @@ namespace SafeApp.Tests
             ValidateFetchOrInspectDataTypes(await session.Fetch.FetchAsync(nrsXorUrl), isFetch: true, expectNrs: true);
         }
 
-        [Test]
+#if __ANDROID__ || __IOS__
+        [Fact(Skip = "Fetch and Inspect API fails on Android and iOS")]
+#else
+        [Fact]
+#endif
         public async Task InspectDataTypesTest()
         {
             var session = await TestUtils.CreateTestApp();
@@ -73,7 +83,7 @@ namespace SafeApp.Tests
             ValidateFetchOrInspectDataTypes(await session.Fetch.InspectAsync(nrsXorUrl), expectNrs: true);
         }
 
-        public void ValidateFetchOrInspectDataTypes(ISafeData data, bool isFetch = false, bool expectNrs = false)
+        internal static void ValidateFetchOrInspectDataTypes(ISafeData data, bool isFetch = false, bool expectNrs = false)
         {
             if (data != null)
             {
@@ -87,9 +97,9 @@ namespace SafeApp.Tests
                         Validate.XorName(wallet.XorName);
                         Validate.EnsureNullNrsContainerInfo(wallet.ResolvedFrom);
                         if (isFetch)
-                            Assert.NotZero(wallet.Balances.WalletBalances.Count);
+                            Assert.NotEmpty(wallet.Balances.WalletBalances);
                         else
-                            Assert.Zero(wallet.Balances.WalletBalances.Count);
+                            Assert.Empty(wallet.Balances.WalletBalances);
                         break;
                     case FilesContainer filesContainer:
                         Validate.XorName(filesContainer.XorName);
@@ -99,30 +109,30 @@ namespace SafeApp.Tests
                             Validate.EnsureNullNrsContainerInfo(filesContainer.ResolvedFrom);
                         break;
                     case PublishedImmutableData immutableData:
-                        Assert.IsNotNull(immutableData.Data);
+                        Assert.NotNull(immutableData.Data);
                         Validate.XorName(immutableData.XorName);
                         if (isFetch)
-                            Assert.NotZero(immutableData.Data.Length);
+                            Assert.NotEmpty(immutableData.Data);
                         else
-                            Assert.Zero(immutableData.Data.Length);
+                            Assert.Empty(immutableData.Data);
                         if (expectNrs)
                             Validate.NrsContainerInfo(immutableData.ResolvedFrom);
                         else
                             Validate.EnsureNullNrsContainerInfo(immutableData.ResolvedFrom);
                         break;
                     case SafeDataFetchFailed dataFetchOrInspectFailed:
-                        Assert.IsNotNull(dataFetchOrInspectFailed.Description);
-                        Assert.AreNotEqual(0, dataFetchOrInspectFailed.Code);
-                        Assert.Fail(dataFetchOrInspectFailed.Description);
+                        Assert.NotNull(dataFetchOrInspectFailed.Description);
+                        Assert.NotEqual(0, dataFetchOrInspectFailed.Code);
+                        TestUtils.Fail(dataFetchOrInspectFailed.Description);
                         break;
                 }
             }
             else
             {
                 if (isFetch)
-                    Assert.Fail("Fetch data type not available");
+                    TestUtils.Fail("Fetch data type not available");
                 else
-                    Assert.Fail("Inspect data type not available");
+                    TestUtils.Fail("Inspect data type not available");
             }
         }
     }

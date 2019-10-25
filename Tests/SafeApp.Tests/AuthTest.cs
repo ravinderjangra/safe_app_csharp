@@ -1,14 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using NUnit.Framework;
+using SafeApp;
 using SafeApp.Core;
+using Xunit;
 
-namespace SafeApp.Tests
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
+
+namespace SafeAppTests
 {
-    [TestFixture]
-    internal class AuthTest
+    [Collection("Connect Tests")]
+    public class AuthTest
     {
-        [Test]
+        [Fact]
         public async Task ConnectAsRegisteredAppTest()
         {
             var authReq = new AuthReq
@@ -19,15 +22,15 @@ namespace SafeApp.Tests
             };
 
             var session = await TestUtils.CreateTestApp(authReq);
-            Assert.IsNotNull(session);
+            Assert.NotNull(session);
         }
 
-        [Test]
+        [Fact]
         public async Task ConnectAsUnregisteredAppTest()
         {
             var appId = "net.maidsafe.test";
             var session = await Session.AppConnectUnregisteredAsync(appId);
-            Assert.IsNotNull(session);
+            Assert.NotNull(session);
         }
     }
 }

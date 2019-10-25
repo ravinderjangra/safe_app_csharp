@@ -1,18 +1,18 @@
-﻿using System.IO;
-using System.Linq;
+﻿using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 using Foundation;
-using NUnit.Runner;
-using NUnit.Runner.Services;
 using UIKit;
+using UnitTests.HeadlessRunner;
 using Xamarin.Forms;
-using Xamarin.Forms.Platform.iOS;
+using Xunit.Runner;
 
 #pragma warning disable SA1300 // Element should begin with upper-case letter
-namespace SafeApp.Tests.iOS
+namespace SafeAppTests.iOS
 {
     // ReSharper disable once UnusedMember.Global
     [Register("AppDelegate")]
-    public class AppDelegate : FormsApplicationDelegate
+    public class AppDelegate : RunnerAppDelegate
     {
         private readonly string _tcpListenHost =
             System.Net.Dns.GetHostEntry(
@@ -23,38 +23,31 @@ namespace SafeApp.Tests.iOS
         {
             Forms.Init();
 
-            // This will load all tests within the current project
-            var nunit = new App
+            // Invoke the headless test runner if a config was specified
+            var testCfg = System.IO.File.ReadAllText("tests.cfg")?.Split(':');
+            if (testCfg != null && testCfg.Length > 1)
             {
-                Options = new TestOptions
+                var ip = testCfg[0];
+                if (int.TryParse(testCfg[1], out var port))
                 {
-                    // If True, the tests will run automatically when the app starts
-                    // otherwise you must run them manually.
-                    AutoRun = true,
-
-                    // If True, the application will terminate automatically after running the tests.
-                    // TerminateAfterExecution = true,
-
-                    // Information about the tcp listener host and port.
-                    // For now, send result as XML to the listening server.
-                    TcpWriterParameters = new TcpWriterInfo(_tcpListenHost, 10500),
-
-                    // Creates a NUnit Xml result file on the host file system using PCLStorage library.
-                    CreateXmlResultFile = true,
-
-                    // Choose a different path for the xml result file (ios file share / library directory)
-                    ResultFilePath = Path.Combine(
-                  NSFileManager.DefaultManager.GetUrls(NSSearchPathDirectory.LibraryDirectory, NSSearchPathDomain.User)[0].Path,
-                  "Results.xml")
+                    // Run the headless test runner for CI
+                    Task.Run(() =>
+                    {
+                        return Tests.RunAsync(new TestOptions
+                        {
+                            NetworkLogHost = ip,
+                            NetworkLogPort = port,
+                            Format = TestResultsFormat.XunitV2
+                        });
+                    });
                 }
-            };
+            }
 
-            // If you want to add tests in another assembly
-            // nunit.AddTestAssembly(typeof(MyTests).Assembly);
+            // tests can be inside the main assembly
+            AddTestAssembly(Assembly.GetExecutingAssembly());
 
-            // Available options for testing
-
-            LoadApplication(nunit);
+            // run the test automatically on app launch
+            AutoStart = true;
 
             return base.FinishedLaunching(app, options);
         }

@@ -1,17 +1,18 @@
-﻿using NUnit.Framework;
+﻿using SafeApp;
 using SafeApp.MockAuthBindings;
+using Xunit;
 
-namespace SafeApp.Tests
+namespace SafeAppTests
 {
-    [TestFixture]
-    internal class MiscTest
+    [Collection("Misc Tests")]
+    public class MiscTest
     {
-        [Test]
+        [Fact]
         public void IsMockAuthenticationBuildTest()
-            => Assert.That(Authenticator.IsMockBuild(), Is.True);
+            => Assert.True(Authenticator.IsMockBuild());
 
-        [Test]
+        [Fact]
         public void IsMockSafeAppBuildTest()
-            => Assert.That(Session.IsMockBuild(), Is.True);
+            => Assert.True(Session.IsMockBuild());
     }
 }

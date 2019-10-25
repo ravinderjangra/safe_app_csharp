@@ -24,7 +24,7 @@
 using UIKit;
 
 #pragma warning disable SA1300 // Element should begin with upper-case letter
-namespace SafeApp.Tests.iOS
+namespace SafeAppTests.iOS
 {
     // ReSharper disable once ClassNeverInstantiated.Global
     // ReSharper disable once MemberCanBeInternal
