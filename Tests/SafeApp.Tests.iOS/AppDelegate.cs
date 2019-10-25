@@ -14,11 +14,6 @@ namespace SafeAppTests.iOS
     [Register("AppDelegate")]
     public class AppDelegate : RunnerAppDelegate
     {
-        private readonly string _tcpListenHost =
-            System.Net.Dns.GetHostEntry(
-                System.Net.Dns.GetHostName()).AddressList.First(
-                f => f.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).ToString();
-
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             Forms.Init();
