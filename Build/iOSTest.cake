@@ -19,7 +19,7 @@ Task("Build-iOS-Test-Project")
     .Does(() => {
     
     // Setup the test listener config to be built into the app
-    FileWriteText((new FilePath(IOS_PROJ)).GetDirectory().CombineWithFilePath("tests.cfg"), $"{IOS_TCP_LISTEN_HOST}:{IOS_TCP_LISTEN_PORT}");
+    FileWriteText((new FilePath(IOS_TEST_PROJ_DIR)).GetDirectory().CombineWithFilePath("tests.cfg"), $"{IOS_TCP_LISTEN_HOST}:{IOS_TCP_LISTEN_PORT}");
     
     // Build the project (with ipa)
     MSBuild(IOS_TEST_PROJ, c =>
