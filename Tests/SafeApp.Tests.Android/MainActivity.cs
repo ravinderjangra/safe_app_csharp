@@ -1,51 +1,47 @@
-﻿using System.Reflection;
-using System.Threading.Tasks;
+﻿using System;
+using System.Reflection;
 using Android.App;
-using Android.Content.PM;
+using Android.Content;
+using Android.Runtime;
+using Android.Views;
+using Android.Widget;
 using Android.OS;
-using UnitTests.HeadlessRunner;
+
+using Xunit.Sdk;
 using Xunit.Runners.UI;
 
-namespace SafeAppTests.Android
+namespace SafeApp.Tests.Android
 {
-    [Activity(
-      Name = "SafeApp.Tests.Android.MainActivity",
-      Label = "SafeApp.Tests.Android",
-      Icon = "@drawable/icon",
-      Theme = "@android:style/Theme.Holo.Light",
-      MainLauncher = true,
-      ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-
-    // ReSharper disable once UnusedMember.Global
+    [Activity(Label = "xUnit Android Runner", MainLauncher = true, Theme = "@android:style/Theme.Material.Light")]
     public class MainActivity : RunnerActivity
     {
-        protected override void OnCreate(Bundle savedInstanceState)
+
+        protected override void OnCreate(Bundle bundle)
         {
-            var hostIp = Intent.Extras?.GetString("HOST_IP", null);
-            var hostPort = Intent.Extras?.GetInt("HOST_PORT", 10500) ?? 10500;
-
-            if (!string.IsNullOrEmpty(hostIp))
-            {
-                // Run the headless test runner for CI
-                Task.Run(() =>
-                {
-                    return Tests.RunAsync(new TestOptions
-                    {
-                        NetworkLogHost = hostIp,
-                        NetworkLogPort = hostPort,
-                        Format = TestResultsFormat.XunitV2
-                    });
-                });
-            }
-
             // tests can be inside the main assembly
             AddTestAssembly(Assembly.GetExecutingAssembly());
 
-            // run the test automatically on app launch
-            AutoStart = true;
+            AddExecutionAssembly(typeof(ExtensibilityPointFactory).Assembly);
+            // or in any reference assemblies			
 
+//AddTestAssembly(typeof(PortableTests).Assembly);
+// or in any assembly that you load (since JIT is available)
+
+#if false
+            // you can use the default or set your own custom writer (e.g. save to web site and tweet it ;-)
+#pragma warning disable CS0618 // Type or member is obsolete
+            Writer = new TcpTextWriter ("10.0.1.2", 10500);
+#pragma warning restore CS0618 // Type or member is obsolete
+
+            // start running the test suites as soon as the application is loaded
+            AutoStart = true;
+            // crash the application (to ensure it's ended) and return to springboard
+            TerminateAfterExecution = true;
+
+#endif
             // you cannot add more assemblies once calling base
-            base.OnCreate(savedInstanceState);
+            base.OnCreate(bundle);
         }
     }
 }
+

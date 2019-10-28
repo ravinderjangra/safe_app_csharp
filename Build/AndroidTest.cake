@@ -7,17 +7,19 @@
 var ANDROID_TEST_PROJ_DIR = "../Tests/SafeApp.Tests.Android/";
 var ANDROID_TEST_PROJ = $"{ANDROID_TEST_PROJ_DIR}SafeApp.Tests.Android.csproj";
 var ANDROID_TESTS_RESULT_PATH = $"{ANDROID_TEST_PROJ_DIR}AndroidTestResult.xml";
-var ANDROID_AVD = "SafeAppEmulator";
+var ANDROID_AVD = "nexus_6p_pie_9_0_api_28";
 var ANDROID_PKG_NAME = "SafeApp.Tests.Android";
 var ANDROID_EMU_TARGET = EnvironmentVariable("ANDROID_EMU_TARGET") ?? "system-images;android-28;google_apis;x86_64";
 var ANDROID_EMU_DEVICE = EnvironmentVariable("ANDROID_EMU_DEVICE") ?? "Nexus 6P";
-var ANDROID_TCP_LISTEN_HOST = System.Net.IPAddress.Any;
+var ANDROID_TCP_LISTEN_HOST = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName())
+        .AddressList.First(f => f.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
 var ANDROID_TCP_LISTEN_PORT = 10500;
 var ANDROID_HOME = EnvironmentVariable("ANDROID_HOME");
 
 Task("Build-Android-Test-Project")
     .IsDependentOn("Restore-NuGet")
     .Does(() => {
+    
     // Build the app in debug mode
     // needs to be debug so unit tests get discovered
     MSBuild(ANDROID_TEST_PROJ, c =>
@@ -110,11 +112,12 @@ Task("Run-Android-Tests")
     });
 
     //start the TCP Test results listener
+    Information(ANDROID_TCP_LISTEN_HOST.ToString());
     Information("Started TCP Test Results Listener on port: {0}", ANDROID_TCP_LISTEN_PORT);
     var tcpListenerTask = DownloadTcpTextAsync(ANDROID_TCP_LISTEN_HOST, ANDROID_TCP_LISTEN_PORT, ANDROID_TESTS_RESULT_PATH);
 
     // Launch the app on the emulator
-    AdbShell($"am start -n {ANDROID_PKG_NAME}/{ANDROID_PKG_NAME}.MainActivity", adbSettings);
+    AdbShell ($"am start -n {ANDROID_PKG_NAME}/{ANDROID_PKG_NAME}.MainActivity --es HOST_IP {ANDROID_TCP_LISTEN_HOST} --ei HOST_PORT {ANDROID_TCP_LISTEN_PORT}", adbSettings);
 
     // // Wait for the test results to come back
     Information("Waiting for tests...");
