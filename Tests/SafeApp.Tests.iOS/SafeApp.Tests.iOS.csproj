@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
-    <ProjectGuid>{31AFC0B1-CA6B-40D4-ADD0-21E9FB9C76F9}</ProjectGuid>
+    <ProjectGuid>{C45ADA2F-29ED-403E-8D4D-F876BEB33CB7}</ProjectGuid>
     <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Exe</OutputType>
     <RootNamespace>SafeApp.Tests.iOS</RootNamespace>
@@ -61,6 +61,17 @@
     <CodesignKey>iPhone Developer</CodesignKey>
   </PropertyGroup>
   <ItemGroup>
+    <NativeReference Include="..\..\SafeApp.AppBindings\NativeLibs\iOS\mock\libsafe_api.a">
+      <Kind>Static</Kind>
+      <ForceLoad>True</ForceLoad>
+      <LinkerFlags>-lresolv</LinkerFlags>
+      <Frameworks>Security</Frameworks>
+    </NativeReference>
+    <Content Include="..\SafeApp.Tests\log.toml">
+      <Link>log.toml</Link>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <None Include="Info.plist" />
@@ -89,23 +100,23 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SafeApp.AppBindings\SafeApp.AppBindings.csproj">
+    <ProjectReference Include="..\..\SafeApp.AppBindings\SafeApp.AppBindings.csproj">
       <Project>{d785b126-3720-4420-8207-3bdbfabcbe05}</Project>
       <Name>SafeApp.AppBindings</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SafeApp.Core\SafeApp.Core.csproj">
+    <ProjectReference Include="..\..\SafeApp.Core\SafeApp.Core.csproj">
       <Project>{a0450f47-b05e-4c53-9845-7b89d708d3e3}</Project>
       <Name>SafeApp.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SafeApp.MockAuthBindings\SafeApp.MockAuthBindings.csproj">
+    <ProjectReference Include="..\..\SafeApp.MockAuthBindings\SafeApp.MockAuthBindings.csproj">
       <Project>{a50ad45f-a945-41af-8b22-b2dcaa266eac}</Project>
       <Name>SafeApp.MockAuthBindings</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SafeApp\SafeApp.csproj">
+    <ProjectReference Include="..\..\SafeApp\SafeApp.csproj">
       <Project>{82fd8e34-048c-4c74-b7a6-7cefc054f87d}</Project>
       <Name>SafeApp</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="..\Tests\SafeApp.Tests\SafeApp.Tests.projitems" Label="Shared" />
+  <Import Project="..\SafeApp.Tests\SafeApp.Tests.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

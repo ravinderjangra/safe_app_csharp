@@ -17,6 +17,8 @@ namespace SafeApp.Tests.iOS
     [Foundation.Register("AppDelegate")]
     public partial class AppDelegate : RunnerAppDelegate
     {
+
+        //
         // This method is invoked when the application has loaded and is ready to run. In this 
         // method you should instantiate the window, load the UI into it and then make the window
         // visible.
@@ -31,8 +33,7 @@ namespace SafeApp.Tests.iOS
 
             // tests can be inside the main assembly
             AddTestAssembly(Assembly.GetExecutingAssembly());
-
-            // otherwise you need to ensure that the test assemblies will
+            // otherwise you need to ensure that the test assemblies will 
             // become part of the app bundle
             //AddTestAssembly(typeof(PortableTests).Assembly);
 
