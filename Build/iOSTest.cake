@@ -6,7 +6,7 @@
 
 var IOS_TEST_PROJ_DIR = "../Tests/SafeApp.Tests.iOS/";
 var IOS_SIM_NAME = EnvironmentVariable("IOS_SIM_NAME") ?? "iPhone X";
-var IOS_SIM_RUNTIME = EnvironmentVariable("IOS_SIM_RUNTIME") ?? "com.apple.CoreSimulator.SimRuntime.iOS-12-4";
+var IOS_SIM_RUNTIME = EnvironmentVariable("IOS_SIM_RUNTIME") ?? "com.apple.CoreSimulator.SimRuntime.iOS-12-2";
 var IOS_TEST_PROJ = $"{IOS_TEST_PROJ_DIR}SafeApp.Tests.iOS.csproj";
 var IOS_BUNDLE_ID = "net.maidsafe.SafeApp.Tests.iOS";
 var IOS_IPA_PATH = $"{IOS_TEST_PROJ_DIR}bin/iPhoneSimulator/Release/SafeApp.Tests.iOS.app";
@@ -16,20 +16,34 @@ var IOS_TCP_LISTEN_HOST = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName
 var IOS_TCP_LISTEN_PORT = 10500;
 
 Task("Build-iOS-Test-Project")
+    .IsDependentOn("Restore-NuGet")
     .Does(() => {
     
     // Setup the test listener config to be built into the app
-    FileWriteText((new FilePath(IOS_TEST_PROJ_DIR)).GetDirectory().CombineWithFilePath("tests.cfg"), $"{IOS_TCP_LISTEN_HOST}:{IOS_TCP_LISTEN_PORT}");
+    // Information("")
+    var configFilePath = System.IO.Path.Combine(IOS_TEST_PROJ_DIR, "tests.cfg");// (new FilePath(IOS_TEST_PROJ_DIR)).GetDirectory().CombineWithFilePath("tests.cfg");
+    var configFileContent = $"{IOS_TCP_LISTEN_HOST}:{IOS_TCP_LISTEN_PORT}";
+    Information("Location:" + configFilePath);
+    Information("Config data:" + configFileContent);
+    FileWriteText(configFilePath, configFileContent);
     
+    // Nuget restore
+    MSBuild (IOS_TEST_PROJ, c => {
+        c.Configuration = "Release";
+        c.Targets.Clear();
+        c.Targets.Add("Restore");
+    });
+
     // Build the project (with ipa)
     MSBuild(IOS_TEST_PROJ, c =>
     {
         c.Configuration = "Release";
         c.Properties["Platform"] = new List<string> { "iPhoneSimulator" };
         c.Properties["BuildIpa"] = new List<string> { "true" };
+        c.Properties["ContinuousIntegrationBuild"] = new List<string> { "false" };
         c.Targets.Clear();
         c.Targets.Add("Rebuild");
-        c.SetVerbosity(Verbosity.Minimal);
+        c.SetVerbosity(Verbosity.Diagnostic);
     });
 });
 
