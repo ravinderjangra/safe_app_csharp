@@ -6,7 +6,6 @@ using Foundation;
 using UIKit;
 using UnitTests.HeadlessRunner;
 using Xunit.Runner;
-using Xunit.Sdk;
 
 namespace SafeApp.Tests.iOS
 {
@@ -39,7 +38,7 @@ namespace SafeApp.Tests.iOS
                     {
                         return UnitTests.HeadlessRunner.Tests.RunAsync(new TestOptions
                         {
-                            Assemblies = new List<Assembly> { Assembly.GetExecutingAssembly() },
+                            Assemblies = new List<Assembly> { typeof(SafeAppTests.AuthTest).Assembly },
                             NetworkLogHost = ip,
                             NetworkLogPort = port,
                             Format = TestResultsFormat.XunitV2,
