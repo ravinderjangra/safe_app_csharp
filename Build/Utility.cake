@@ -1,8 +1,45 @@
 #addin nuget:?package=Cake.FileHelpers
 using System.Net;
 using System.Net.Sockets;
+using System.Linq;
 
 var TCP_LISTEN_TIMEOUT = 300;
+
+void DeleteExistingTestResultFile(string fileSearchPattern)
+{
+    Information("Trying to find the result files from older builds");
+    var files = GetFiles(fileSearchPattern);
+    if (files != null && files.Count > 0) {
+        Information($"Found {files.Count} matching result files");
+        var fileArray = files.GetEnumerator().ToIEnumerable().ToArray();
+        foreach (var item in fileArray)
+        {
+            DeleteFile(item);
+        }
+        Information($"Deleted {files.Count} files");
+    }
+}
+
+bool TryGettingResultFile(string fileSearchPattern, string resultFilePath)
+{
+    Information("Checking for the new result file");
+    var files = GetFiles(fileSearchPattern);
+    if (files != null && files.Count > 0) {
+        Information($"Found {files.Count} matching result files");
+        var fileArray = files.GetEnumerator().ToIEnumerable().ToArray();
+        var result = FileReadText(fileArray[0]);
+        System.IO.File.AppendAllText(resultFilePath, result);
+        return true;
+    }
+    return false;
+}
+
+public static IEnumerable<T> ToIEnumerable<T>(this IEnumerator<T> enumerator) {
+    while (enumerator.MoveNext()) {
+        yield return enumerator.Current;
+    }
+    yield break;
+}
 
 Func<IPAddress, int, string, Task> DownloadTcpTextAsync = (IPAddress TCP_LISTEN_HOST, int TCP_LISTEN_PORT, string RESULTS_PATH) => System.Threading.Tasks.Task.Run(() =>
 {

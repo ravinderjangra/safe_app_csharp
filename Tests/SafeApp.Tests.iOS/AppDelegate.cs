@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using Foundation;
 using NUnit.Runner;
@@ -14,11 +15,6 @@ namespace SafeApp.Tests.iOS
     [Register("AppDelegate")]
     public class AppDelegate : FormsApplicationDelegate
     {
-        private readonly string _tcpListenHost =
-            System.Net.Dns.GetHostEntry(
-                System.Net.Dns.GetHostName()).AddressList.First(
-                f => f.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).ToString();
-
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             Forms.Init();
@@ -37,15 +33,16 @@ namespace SafeApp.Tests.iOS
 
                     // Information about the tcp listener host and port.
                     // For now, send result as XML to the listening server.
-                    TcpWriterParameters = new TcpWriterInfo(_tcpListenHost, 10500),
+                    // TcpWriterParameters = new TcpWriterInfo(_tcpListenHost, 10500),
 
                     // Creates a NUnit Xml result file on the host file system using PCLStorage library.
                     CreateXmlResultFile = true,
 
+                    // Close the app once the tests are executed.
+                    TerminateAfterExecution = true,
+
                     // Choose a different path for the xml result file (ios file share / library directory)
-                    ResultFilePath = Path.Combine(
-                  NSFileManager.DefaultManager.GetUrls(NSSearchPathDirectory.LibraryDirectory, NSSearchPathDomain.User)[0].Path,
-                  "Results.xml")
+                    ResultFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "NUnitTestResults.xml")
                 }
             };
 
@@ -53,7 +50,6 @@ namespace SafeApp.Tests.iOS
             // nunit.AddTestAssembly(typeof(MyTests).Assembly);
 
             // Available options for testing
-
             LoadApplication(nunit);
 
             return base.FinishedLaunching(app, options);
