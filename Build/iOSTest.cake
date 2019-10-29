@@ -64,16 +64,36 @@ Task("Run-iOS-Tests")
     InstalliOSApplication(sim.UDID, MakeAbsolute(ipaPath).FullPath);
 
     // Start our Test Results TCP listener
-    Information("Started TCP Test Results Listener on port: {0}", IOS_TCP_LISTEN_PORT);
-    var tcpListenerTask = DownloadTcpTextAsync(IOS_TCP_LISTEN_HOST, IOS_TCP_LISTEN_PORT, IOS_TESTS_RESULT_PATH);
+    // Information("Started TCP Test Results Listener on port: {0}", IOS_TCP_LISTEN_PORT);
+    // var tcpListenerTask = DownloadTcpTextAsync(IOS_TCP_LISTEN_HOST, IOS_TCP_LISTEN_PORT, IOS_TESTS_RESULT_PATH);
+
+    var libPath = System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "Library");
+    var simulatorFilesPath = System.IO.Path.Combine(libPath, $"Developer/CoreSimulator/Devices/{sim.UDID}/data/Containers/Data/Application/");
+    var simulatorApplicationDirectory = Directory(simulatorFilesPath);
+    Information(simulatorApplicationDirectory);
+    var resultFilePattern = $"{simulatorApplicationDirectory}/**/NUnitTestResults.xml";
+
+    // Delete any existing result file from the simulator files on host machine
+    DeleteExistingTestResultFile(resultFilePattern);
 
     // Launch the IPA
     Information("Launching: {0}", IOS_BUNDLE_ID);
     LaunchiOSApplication(sim.UDID, IOS_BUNDLE_ID);
 
+    var fileAvailable = false;
+    var elapsed = 0;
+
+    // Try to get the result file from the host machine based on simulator id
+    while (elapsed <= TCP_LISTEN_TIMEOUT && !fileAvailable) {
+            System.Threading.Thread.Sleep(2000);
+            fileAvailable = TryGettingResultFile(resultFilePattern, IOS_TESTS_RESULT_PATH);
+            elapsed++;
+    }
+
     // Wait for the TCP listener to get results
-    Information("Waiting for tests...");
-    tcpListenerTask.Wait();
+    // This is not working because of mono runtime tcp is having some issue
+    // Information("Waiting for tests...");
+    // tcpListenerTask.Wait();
 
     // Close up simulators
     Information("Closing Simulator");
