@@ -2,9 +2,6 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net472;netcoreapp2.2;MonoAndroid50;Xamarin.iOS10</TargetFrameworks>
-    <DefineConstants Condition=" '$(UseNonMockAuthLib)' == 'true' ">
-      NON_MOCK_AUTH
-    </DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

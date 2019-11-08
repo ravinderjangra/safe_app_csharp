@@ -14,22 +14,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="NativeLibs\Desktop\libsafe_authenticator.dylib" Link="libsafe_authenticator.dylib" Condition=" $([MSBuild]::IsOsPlatform('OSX')) ">
+    <None Include="NativeLibs\libsafe_authenticator.dylib" Link="libsafe_authenticator.dylib" Condition=" $([MSBuild]::IsOsPlatform('OSX')) ">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="NativeLibs\Desktop\libsafe_authenticator.so" Link="libsafe_authenticator.so" Condition=" $([MSBuild]::IsOsPlatform('Linux')) ">
+    <None Include="NativeLibs\libsafe_authenticator.so" Link="libsafe_authenticator.so" Condition=" $([MSBuild]::IsOsPlatform('Linux')) ">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="NativeLibs\Desktop\safe_authenticator.dll" Link="safe_authenticator.dll" Condition=" $([MSBuild]::IsOsPlatform('Windows')) ">
+    <None Include="NativeLibs\safe_authenticator.dll" Link="safe_authenticator.dll" Condition=" $([MSBuild]::IsOsPlatform('Windows')) ">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  <None Include="..\..\SafeApp.AppBindings\NativeLibs\Desktop\mock\libsafe_api.dylib" Link="libsafe_api.dylib" Condition=" $([MSBuild]::IsOsPlatform('OSX')) ">
+  <None Include="..\..\SafeApp.AppBindings\NativeLibs\Desktop\non-mock\libsafe_api.dylib" Link="libsafe_api.dylib" Condition=" $([MSBuild]::IsOsPlatform('OSX')) ">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\SafeApp.AppBindings\NativeLibs\Desktop\mock\libsafe_api.so" Link="libsafe_api.so" Condition=" $([MSBuild]::IsOsPlatform('Linux')) ">
+    <None Include="..\..\SafeApp.AppBindings\NativeLibs\Desktop\non-mock\libsafe_api.so" Link="libsafe_api.so" Condition=" $([MSBuild]::IsOsPlatform('Linux')) ">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\SafeApp.AppBindings\NativeLibs\Desktop\mock\safe_api.dll" Link="safe_api.dll" Condition=" $([MSBuild]::IsOsPlatform('Windows')) ">
+    <None Include="..\..\SafeApp.AppBindings\NativeLibs\Desktop\non-mock\safe_api.dll" Link="safe_api.dll" Condition=" $([MSBuild]::IsOsPlatform('Windows')) ">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -23,8 +23,8 @@ namespace SafeApp.Tests.AuthConsole
                 if (_authenticator == null)
                     throw new ApplicationException("Authenticator object null. Can't proceed further");
 
-                var authReqestMsg = await GenerateRandomAuthReq();
-                var authResponseMsg = await AuthenticateTestApp(authReqestMsg);
+                var authRequestMsg = await GenerateRandomAuthReq();
+                var authResponseMsg = await AuthenticateTestApp(authRequestMsg);
 
                 var currentDirectory = Environment.CurrentDirectory;
                 var fileSavePath = Path.Combine(currentDirectory, @"..\..\..\..", "TestAuthResponse.txt");
@@ -38,6 +38,7 @@ namespace SafeApp.Tests.AuthConsole
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 Console.WriteLine("Failed to perform authentication using non-mock lib.");
             }
         }
@@ -51,13 +52,13 @@ namespace SafeApp.Tests.AuthConsole
                     Id = GenerateRandomString(10),
                     Name = GenerateRandomString(5),
                     Scope = null,
-                    Vendor = GenerateRandomString(5)
+                    Vendor = GenerateRandomString(5),
                 },
                 AppContainer = true,
                 AppPermissionTransferCoins = true,
                 AppPermissionGetBalance = true,
                 AppPermissionPerformMutations = true,
-                Containers = new List<ContainerPermissions>()
+                Containers = new List<ContainerPermissions>(),
             };
             var (_, reqMsg) = await Session.EncodeAuthReqAsync(authReq);
             return reqMsg;
@@ -66,12 +67,16 @@ namespace SafeApp.Tests.AuthConsole
         private static async Task CreateTestAccount(string locator, string secret)
         {
             _authenticator = await Authenticator.CreateAccountAsync(locator, secret);
+            Console.WriteLine("test account created");
         }
 
         private static async Task<string> AuthenticateTestApp(string authRequestMsg)
         {
+            Console.WriteLine("authenticating test app");
             var ipcReq = await _authenticator.DecodeIpcMessageAsync(authRequestMsg);
             var authIpcReq = ipcReq as AuthIpcReq;
+            Console.WriteLine(authIpcReq?.ReqId);
+            Console.WriteLine(authIpcReq?.AuthReq.App.Id);
             return await _authenticator.EncodeAuthRespAsync(authIpcReq, true);
         }
 
@@ -79,11 +84,6 @@ namespace SafeApp.Tests.AuthConsole
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, length).Select(s => s[_random.Next(s.Length)]).ToArray());
-        }
-
-        ~Program()
-        {
-            _authenticator.Dispose();
         }
     }
 }
