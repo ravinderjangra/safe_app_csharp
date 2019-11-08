@@ -1,6 +1,10 @@
-var TAG = "11046de";
+#addin nuget:?package=SharpZipLib
+#addin nuget:?package=Cake.Compression
 
-var S3_DOWNLOAD_BASE_URL = "https://safe-cli.s3.amazonaws.com/";
+var TAG = "11046de";
+var PR_TAG = "310-2";
+
+var S3_DOWNLOAD_BASE_URL = "https://safe-jenkins-build-artifacts.s3.eu-west-2.amazonaws.com/";
 var LIB_DIR_NAME = "../SafeApp.AppBindings/NativeLibs/";
 var ANDROID_DIR_NAME = $"{LIB_DIR_NAME}Android";
 var IOS_DIR_NAME = $"{LIB_DIR_NAME}iOS";
@@ -61,7 +65,7 @@ Task("Download-Libs")
         foreach (var varient in varients)
         {
           var targetDirectory = $"{Native_DIR.Path}/{item}/{target}";
-          var zipFileName = varient == "" ? $"safe-ffi-{TAG}-{target}.zip" : $"safe-ffi-{TAG}-{target}-{varient}.zip";
+          var zipFileName = varient == "" ? $"{PR_TAG}-safe-ffi-{target}.tar.gz" : $"{PR_TAG}-safe-ffi-{target}-{varient}.tar.gz";
           var zipFileDownloadUrl = $"{S3_DOWNLOAD_BASE_URL}{zipFileName}";
           var zipSavePath = $"{Native_DIR.Path}/{item}/{target}/{zipFileName}";
 
@@ -73,7 +77,7 @@ Task("Download-Libs")
             if(existingNativeLibs.Count > 0)
             foreach(var lib in existingNativeLibs) 
             {
-              if(!lib.GetFilename().ToString().Contains(TAG))
+              if(!lib.GetFilename().ToString().Contains(PR_TAG))
                 DeleteFile(lib.FullPath);
             }
           }
@@ -144,12 +148,25 @@ Task("UnZip-Libs")
           else if(target.Equals(ANDROID_x86_64))
             platformOutputDirectory.Append("/x86_64");
 
-          Unzip(zip, platformOutputDirectory.ToString());
+          GZipUncompress(zip, platformOutputDirectory.ToString());
 
           var unZippedFiles = GetFiles($"{platformOutputDirectory.ToString()}/*.*");
           foreach (var file in unZippedFiles)
           {
             MoveFile(file.FullPath, file.FullPath.Replace("safe_ffi", "safe_api"));
+          }
+
+          if(target.Contains("darwin") || target.Contains("android") || target.Contains("linux"))
+          {
+            var aFile = GetFiles(string.Format("{0}/*.a", platformOutputDirectory.ToString()));
+            if(aFile.Count > 0)
+              DeleteFile(aFile.ToArray()[0].FullPath);
+            var rFile = GetFiles(string.Format("{0}/*.rlib", platformOutputDirectory.ToString()));
+            if(rFile.Count > 0)
+              DeleteFile(rFile.ToArray()[0].FullPath);
+            var dFile = GetFiles(string.Format("{0}/*.d", platformOutputDirectory.ToString()));
+            if(dFile.Count > 0)
+              DeleteFile(dFile.ToArray()[0].FullPath);
           }
         }
       }

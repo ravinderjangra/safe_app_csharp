@@ -78,11 +78,13 @@ namespace SafeApp.Tests
                 {
                     case SafeKey key:
                         Validate.XorName(key.XorName);
-                        Validate.EnsureNullNrsContainerInfo(key.ResolvedFrom);
+                        if (key.ResolvedFrom.HasValue)
+                            Validate.EnsureNullNrsContainerInfo(key.ResolvedFrom.Value);
                         break;
                     case Wallet wallet:
                         Validate.XorName(wallet.XorName);
-                        Validate.EnsureNullNrsContainerInfo(wallet.ResolvedFrom);
+                        if (wallet.ResolvedFrom.HasValue)
+                            Validate.EnsureNullNrsContainerInfo(wallet.ResolvedFrom.Value);
                         if (isFetch)
                             Assert.NotZero(wallet.Balances.WalletBalances.Count);
                         else
@@ -91,9 +93,9 @@ namespace SafeApp.Tests
                     case FilesContainer filesContainer:
                         Validate.XorName(filesContainer.XorName);
                         if (expectNrs)
-                            Validate.NrsContainerInfo(filesContainer.ResolvedFrom);
+                            Validate.NrsContainerInfo(filesContainer.ResolvedFrom.Value);
                         else
-                            Validate.EnsureNullNrsContainerInfo(filesContainer.ResolvedFrom);
+                            Assert.IsFalse(filesContainer.ResolvedFrom.HasValue);
                         break;
                     case PublishedImmutableData immutableData:
                         Assert.IsNotNull(immutableData.Data);
@@ -103,9 +105,9 @@ namespace SafeApp.Tests
                         else
                             Assert.Zero(immutableData.Data.Length);
                         if (expectNrs)
-                            Validate.NrsContainerInfo(immutableData.ResolvedFrom);
+                            Validate.NrsContainerInfo(immutableData.ResolvedFrom.Value);
                         else
-                            Validate.EnsureNullNrsContainerInfo(immutableData.ResolvedFrom);
+                            Assert.IsFalse(immutableData.ResolvedFrom.HasValue);
                         break;
                     case SafeDataFetchFailed dataFetchOrInspectFailed:
                         Assert.IsNotNull(dataFetchOrInspectFailed.Description);

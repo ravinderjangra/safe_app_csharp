@@ -138,23 +138,22 @@ namespace SafeApp.Core
         /// <summary>
         /// NrsMapContainerInfo for the SafeKey stored on the network.
         /// </summary>
-        public NrsMapContainerInfo ResolvedFrom;
+        public NrsMapContainerInfo? ResolvedFrom;
 
         internal SafeKey(SafeKeyNative native)
         {
             XorUrl = native.XorUrl;
             XorName = native.XorName;
-            ResolvedFrom = new NrsMapContainerInfo(native.ResolvedFrom);
-        }
-
-        internal SafeKeyNative ToNative()
-        {
-            return new SafeKeyNative
+            if (native.ResolvedFrom == IntPtr.Zero)
             {
-                XorUrl = XorUrl,
-                XorName = XorName,
-                ResolvedFrom = ResolvedFrom.ToNative(),
-            };
+                ResolvedFrom = null;
+            }
+            else
+            {
+                ResolvedFrom = new NrsMapContainerInfo(
+                    Marshal.PtrToStructure<NrsMapContainerInfoNative>(
+                        native.ResolvedFrom));
+            }
         }
     }
 
@@ -164,7 +163,7 @@ namespace SafeApp.Core
         public string XorUrl;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = (int)AppConstants.XorNameLen)]
         public byte[] XorName;
-        public NrsMapContainerInfoNative ResolvedFrom;
+        public IntPtr ResolvedFrom;
     }
 
     /// <summary>
@@ -201,7 +200,7 @@ namespace SafeApp.Core
         /// <summary>
         /// NrsMapContainerInfo for the wallet stored on the network.
         /// </summary>
-        public NrsMapContainerInfo ResolvedFrom;
+        public NrsMapContainerInfo? ResolvedFrom;
 
         internal Wallet(WalletNative native)
         {
@@ -210,20 +209,16 @@ namespace SafeApp.Core
             TypeTag = native.TypeTag;
             Balances = new WalletSpendableBalances(native.Balances);
             DataType = (DataType)native.DataType;
-            ResolvedFrom = new NrsMapContainerInfo(native.ResolvedFrom);
-        }
-
-        internal WalletNative ToNative()
-        {
-            return new WalletNative
+            if (native.ResolvedFrom == IntPtr.Zero)
             {
-                XorUrl = XorUrl,
-                XorName = XorName,
-                TypeTag = TypeTag,
-                Balances = Balances.ToNative(),
-                DataType = (ulong)DataType,
-                ResolvedFrom = ResolvedFrom.ToNative(),
-            };
+                ResolvedFrom = null;
+            }
+            else
+            {
+                ResolvedFrom = new NrsMapContainerInfo(
+                    Marshal.PtrToStructure<NrsMapContainerInfoNative>(
+                        native.ResolvedFrom));
+            }
         }
     }
 
@@ -236,7 +231,7 @@ namespace SafeApp.Core
         public ulong TypeTag;
         public WalletSpendableBalancesNative Balances;
         public ulong DataType;
-        public NrsMapContainerInfoNative ResolvedFrom;
+        public IntPtr ResolvedFrom;
 
         internal void Free()
         {
@@ -283,7 +278,7 @@ namespace SafeApp.Core
         /// <summary>
         /// NrsMapContainerInfo for the FilesContainer.
         /// </summary>
-        public NrsMapContainerInfo ResolvedFrom;
+        public NrsMapContainerInfo? ResolvedFrom;
 
         internal FilesContainer(FilesContainerNative native)
         {
@@ -293,21 +288,16 @@ namespace SafeApp.Core
             Version = native.Version;
             FilesMap = native.FilesMap;
             DataType = (DataType)native.DataType;
-            ResolvedFrom = new NrsMapContainerInfo(native.ResolvedFrom);
-        }
-
-        internal FilesContainerNative ToNative()
-        {
-            return new FilesContainerNative
+            if (native.ResolvedFrom == IntPtr.Zero)
             {
-                XorUrl = XorUrl,
-                XorName = XorName,
-                TypeTag = TypeTag,
-                Version = Version,
-                FilesMap = FilesMap,
-                DataType = (ulong)DataType,
-                ResolvedFrom = ResolvedFrom.ToNative(),
-            };
+                ResolvedFrom = null;
+            }
+            else
+            {
+                ResolvedFrom = new NrsMapContainerInfo(
+                    Marshal.PtrToStructure<NrsMapContainerInfoNative>(
+                        native.ResolvedFrom));
+            }
         }
     }
 
@@ -322,7 +312,7 @@ namespace SafeApp.Core
         [MarshalAs(UnmanagedType.LPStr)]
         public string FilesMap;
         public ulong DataType;
-        public NrsMapContainerInfoNative ResolvedFrom;
+        public IntPtr ResolvedFrom;
     }
 
     /// <summary>
@@ -349,7 +339,7 @@ namespace SafeApp.Core
         /// <summary>
         /// NrsMapContainerInfo for the PublishedImmutableData.
         /// </summary>
-        public NrsMapContainerInfo ResolvedFrom;
+        public NrsMapContainerInfo? ResolvedFrom;
 
         /// <summary>
         /// MIME type for the stored data/file.
@@ -361,21 +351,17 @@ namespace SafeApp.Core
             XorUrl = native.XorUrl;
             XorName = native.XorName;
             Data = BindingUtils.CopyToByteArray(native.DataPtr, (int)native.DataLen);
-            ResolvedFrom = new NrsMapContainerInfo(native.ResolvedFrom);
-            MediaType = native.MediaType;
-        }
-
-        internal PublishedImmutableDataNative ToNative()
-        {
-            return new PublishedImmutableDataNative
+            if (native.ResolvedFrom == IntPtr.Zero)
             {
-                XorUrl = XorUrl,
-                XorName = XorName,
-                DataPtr = BindingUtils.CopyFromByteArray(Data),
-                DataLen = (UIntPtr)(Data?.Length ?? 0),
-                ResolvedFrom = ResolvedFrom.ToNative(),
-                MediaType = MediaType
-            };
+                ResolvedFrom = null;
+            }
+            else
+            {
+                ResolvedFrom = new NrsMapContainerInfo(
+                    Marshal.PtrToStructure<NrsMapContainerInfoNative>(
+                        native.ResolvedFrom));
+            }
+            MediaType = native.MediaType;
         }
     }
 
@@ -387,7 +373,7 @@ namespace SafeApp.Core
         public byte[] XorName;
         public IntPtr DataPtr;
         public UIntPtr DataLen;
-        public NrsMapContainerInfoNative ResolvedFrom;
+        public IntPtr ResolvedFrom;
         [MarshalAs(UnmanagedType.LPStr)]
         public string MediaType;
 
