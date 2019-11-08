@@ -4,6 +4,7 @@
 #load "AndroidTest.cake"
 #load "iOSTest.cake"
 #load "Utility.cake"
+#load "SetupLocalVault.cake"
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
