@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\SafeApp.AppBindings\SafeApp.AppBindings.csproj" />
+    <ProjectReference Include="..\..\SafeApp.Core\SafeApp.Core.csproj" />
+    <ProjectReference Include="..\..\SafeApp.MockAuthBindings\SafeApp.MockAuthBindings.csproj" />
+    <ProjectReference Include="..\..\SafeApp\SafeApp.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\SafeApp.MockAuthBindings\NativeLibs\Desktop\libsafe_authenticator.dylib" Link="libsafe_authenticator.dylib" Condition=" $([MSBuild]::IsOsPlatform('OSX')) ">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\SafeApp.MockAuthBindings\NativeLibs\Desktop\libsafe_authenticator.so" Link="libsafe_authenticator.so" Condition=" $([MSBuild]::IsOsPlatform('Linux')) ">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\SafeApp.MockAuthBindings\NativeLibs\Desktop\safe_authenticator.dll" Link="safe_authenticator.dll" Condition=" $([MSBuild]::IsOsPlatform('Windows')) ">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  <None Include="..\..\SafeApp.AppBindings\NativeLibs\Desktop\mock\libsafe_api.dylib" Link="libsafe_api.dylib" Condition=" $([MSBuild]::IsOsPlatform('OSX')) ">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\SafeApp.AppBindings\NativeLibs\Desktop\mock\libsafe_api.so" Link="libsafe_api.so" Condition=" $([MSBuild]::IsOsPlatform('Linux')) ">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\SafeApp.AppBindings\NativeLibs\Desktop\mock\safe_api.dll" Link="safe_api.dll" Condition=" $([MSBuild]::IsOsPlatform('Windows')) ">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

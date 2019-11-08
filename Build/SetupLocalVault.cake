@@ -99,6 +99,8 @@ Task ("Run-Local-Vault")
                 Arguments = $"--ip {SYSTEM_LOCAL_IP} --port {VAULT_PORT} -vvvv"
             });
         }
+
+        System.Threading.Thread.Sleep(200000);
     })
     .ReportError (exception => {
         Information (exception.Message);
