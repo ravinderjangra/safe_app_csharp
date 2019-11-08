@@ -9,8 +9,7 @@ var ANDROID_DIR_NAME = $"{LIB_DIR_NAME}Android";
 var IOS_DIR_NAME = $"{LIB_DIR_NAME}iOS";
 var DESKTOP_DIR_NAME = $"{LIB_DIR_NAME}Desktop";
 
-var AUTH_LIB_DIR_NAME = "../SafeApp.MockAuthBindings/NativeLibs/";
-var DESKTOP_AUTH_DIR_NAME = $"{AUTH_LIB_DIR_NAME}Desktop";
+var AUTH_LIB_DIR_NAME = "../Tests/SafeApp.Tests.AuthConsole/NativeLibs/";
 var Native_DIR = Directory($"{System.IO.Path.GetTempPath()}SafeFfiNativeLibs");
 var Native_AUTH_DIR = Directory($"{System.IO.Path.GetTempPath()}SafeAuthNativeLibs");
 
@@ -166,8 +165,6 @@ Task("UnZip-Libs")
     Information(exception.Message);
   });
 
-https://safe-client-libs.s3.amazonaws.com/safe_authenticator-mock-0.10.0-linux-x64.tar.gz
-
 Task("Download-Authenticator-Libs")
   .Does(() => {
     var targetDirectory = $"{Native_AUTH_DIR.Path}";
@@ -208,7 +205,7 @@ Task("Download-Authenticator-Libs")
 
   Task("UnZip-Authenticator-Libs")
   .Does(() => {
-    CleanDirectories(DESKTOP_AUTH_DIR_NAME);
+    CleanDirectories(AUTH_LIB_DIR_NAME);
     var targetDirectory = $"{Native_AUTH_DIR.Path}";
 
     var zipFiles = GetFiles($"{targetDirectory}/*.*");
@@ -216,7 +213,7 @@ Task("Download-Authenticator-Libs")
     {
       var filename = zip.GetFilename();
       Information(" Unzipping : " + filename);
-      Unzip(zip, DESKTOP_AUTH_DIR_NAME);
+      Unzip(zip, AUTH_LIB_DIR_NAME);
     }
   })
   .ReportError(exception => {

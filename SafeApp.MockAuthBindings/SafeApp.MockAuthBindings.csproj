@@ -31,10 +31,6 @@
     <AndroidUseIntermediateDesignerFile>False</AndroidUseIntermediateDesignerFile>
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(UseNonMockAuthLib)' == 'true' ">
-    <DesktopNativeLibs Include="NativeLibs\Desktop\*.*" />
-  </ItemGroup>
-
   <Import Project="$(MSBuildThisFileDirectory)..\CodeStyles.targets" />
 
 </Project>

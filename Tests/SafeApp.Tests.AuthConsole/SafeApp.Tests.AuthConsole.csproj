@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <DefineConstants>NON_MOCK_AUTH</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,13 +14,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\SafeApp.MockAuthBindings\NativeLibs\Desktop\libsafe_authenticator.dylib" Link="libsafe_authenticator.dylib" Condition=" $([MSBuild]::IsOsPlatform('OSX')) ">
+    <None Include="NativeLibs\Desktop\libsafe_authenticator.dylib" Link="libsafe_authenticator.dylib" Condition=" $([MSBuild]::IsOsPlatform('OSX')) ">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\SafeApp.MockAuthBindings\NativeLibs\Desktop\libsafe_authenticator.so" Link="libsafe_authenticator.so" Condition=" $([MSBuild]::IsOsPlatform('Linux')) ">
+    <None Include="NativeLibs\Desktop\libsafe_authenticator.so" Link="libsafe_authenticator.so" Condition=" $([MSBuild]::IsOsPlatform('Linux')) ">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\SafeApp.MockAuthBindings\NativeLibs\Desktop\safe_authenticator.dll" Link="safe_authenticator.dll" Condition=" $([MSBuild]::IsOsPlatform('Windows')) ">
+    <None Include="NativeLibs\Desktop\safe_authenticator.dll" Link="safe_authenticator.dll" Condition=" $([MSBuild]::IsOsPlatform('Windows')) ">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   <None Include="..\..\SafeApp.AppBindings\NativeLibs\Desktop\mock\libsafe_api.dylib" Link="libsafe_api.dylib" Condition=" $([MSBuild]::IsOsPlatform('OSX')) ">
@@ -32,5 +33,4 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
 </Project>
