@@ -15,6 +15,8 @@ namespace SafeApp.MockAuthBindings
     {
 #if __IOS__
         private const string DllName = "__Internal";
+#elif NON_MOCK_AUTH
+        private const string DllName = "safe_authenticator";
 #else
         private const string DllName = "safe_api";
 #endif

@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net472;netcoreapp2.2;MonoAndroid50;Xamarin.iOS10</TargetFrameworks>
+    <DefineConstants Condition=" '$(UseNonMockAuthLib)' == 'true' ">
+      NON_MOCK_AUTH
+    </DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="11.1.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\SafeApp.Core\SafeApp.Core.csproj" />
   </ItemGroup>
 
@@ -30,6 +30,10 @@
   <PropertyGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">
     <AndroidUseIntermediateDesignerFile>False</AndroidUseIntermediateDesignerFile>
   </PropertyGroup>
+
+  <ItemGroup Condition=" '$(UseNonMockAuthLib)' == 'true' ">
+    <DesktopNativeLibs Include="NativeLibs\Desktop\*.*" />
+  </ItemGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)..\CodeStyles.targets" />
 
