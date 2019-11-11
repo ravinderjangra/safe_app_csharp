@@ -17,20 +17,23 @@ var coveralls_token = EnvironmentVariable ("coveralls_access_token");
 
 Task ("Run-Desktop-Tests")
   .IsDependentOn ("Restore-NuGet")
-  .Does (() => {
-    DotNetCoreMSBuild (coreTestProject);
+  .Does (() => {    
+    DotNetCoreClean(coreTestProject);
+    DotNetCoreMSBuild(coreTestProject);
+
     DotNetCoreTest (
       coreTestProject.Path.FullPath,
       new DotNetCoreTestSettings () {
         NoBuild = true,
-          NoRestore = true,
-          Configuration = configuration,
-          ArgumentCustomization = args => args.Append ("--logger \"trx;LogFileName=DesktopTestResult.xml\"")
+        NoRestore = true,
+        Configuration = configuration,
+        ArgumentCustomization = args => args.Append ("--logger \"trx;LogFileName=DesktopTestResult.xml\"")
       });
   });
 
 Task ("Run-NonMock-Desktop-Tests")
   .Does (() => {
+    DotNetCoreClean(coreTestProject);
     var dotnetBuildArgument = @"/p:DefineConstants=""NON_MOCK_AUTH""";
     var buildSettings = new DotNetCoreMSBuildSettings () {
       ArgumentCustomization = args => args.Append (dotnetBuildArgument)

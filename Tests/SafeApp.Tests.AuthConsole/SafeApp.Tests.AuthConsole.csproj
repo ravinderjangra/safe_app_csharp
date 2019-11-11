@@ -3,7 +3,6 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <DefineConstants>NON_MOCK_AUTH</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
