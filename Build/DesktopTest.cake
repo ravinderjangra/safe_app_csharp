@@ -19,7 +19,9 @@ Task ("Run-Desktop-Tests")
   .IsDependentOn ("Restore-NuGet")
   .Does (() => {    
     DotNetCoreClean(coreTestProject);
-    DotNetCoreMSBuild(coreTestProject);
+    var buildSettings = new DotNetCoreMSBuildSettings ();
+    buildSettings.SetConfiguration (configuration);
+    DotNetCoreMSBuild (coreTestProject, buildSettings);
 
     DotNetCoreTest (
       coreTestProject.Path.FullPath,
