@@ -80,7 +80,7 @@ Task ("UnZip-Vault-Exe")
     });
 
 Task ("Run-Local-Vault")
-     .IsDependentOn ("UnZip-Vault-Exe")
+    // .IsDependentOn ("UnZip-Vault-Exe")
     .Does (() => {
         var exeFileName = String.Empty;
         var exeFilePath = String.Empty;
@@ -100,11 +100,13 @@ Task ("Run-Local-Vault")
 
         if (!String.IsNullOrWhiteSpace (exeFilePath)) {
             vaultProcess = StartAndReturnProcess (exeFilePath, new ProcessSettings {
-                Arguments = $"--ip {SYSTEM_LOCAL_IP} --port {VAULT_PORT} -vvvv"
+                Arguments = $"--ip {SYSTEM_LOCAL_IP} --port {VAULT_PORT} -vvvv",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true
             });
         }
 
-        System.Threading.Thread.Sleep (5000);
+        System.Threading.Thread.Sleep (20000);
     })
     .ReportError (exception => {
         Information (exception.Message);
