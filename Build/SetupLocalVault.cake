@@ -2,8 +2,8 @@ using System.Runtime.InteropServices;
 
 var SYSTEM_LOCAL_IP = System.Net.Dns.GetHostEntry (System.Net.Dns.GetHostName ())
     .AddressList
-    .First(f => f.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-    .ToString();
+    .First (f => f.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+    .ToString ();
 var VAULT_PORT = 15000;
 
 var VAULT_GITHUB_RELEASE_BASE_URL = "https://github.com/maidsafe/safe_vault/releases/download";
@@ -11,7 +11,11 @@ var VAULT_EXE_NAME = "safe_vault";
 var VAULT_RELEASE_TAG = "0.19.2";
 var VAULT_EXE_DIRECTORY = Directory ($"VaultExecutables");
 var VAULT_EXE_Zip_DIRECTORY = Directory ($"{VAULT_EXE_DIRECTORY}/Zips");
-IDictionary<string, string> VAULT_DESKTOP_ARCHITECTURES = new Dictionary<string, string> () 
+var AUTH_CONSOLE_TEST_PROJ_DIR = "../Tests/SafeApp.Tests.AuthConsole/";
+var TEST_AUTH_CRED_FILE_DIR = "../Tests";
+var TEST_AUTH_CRED_FILE = "../Tests/TestAuthResponse.txt";
+
+IDictionary<string, string> VAULT_DESKTOP_ARCHITECTURES = new Dictionary<string, string> ()
 {
     { "linux", "x86_64-unknown-linux-musl" },
     { "macos", "x86_64-apple-darwin" },
@@ -76,7 +80,7 @@ Task ("UnZip-Vault-Exe")
     });
 
 Task ("Run-Local-Vault")
-    .IsDependentOn ("UnZip-Vault-Exe")
+    // .IsDependentOn ("UnZip-Vault-Exe")
     .Does (() => {
         var exeFileName = String.Empty;
         var exeFilePath = String.Empty;
@@ -100,7 +104,7 @@ Task ("Run-Local-Vault")
             });
         }
 
-        System.Threading.Thread.Sleep(200000);
+        System.Threading.Thread.Sleep (200000);
     })
     .ReportError (exception => {
         Information (exception.Message);
@@ -113,6 +117,31 @@ Task ("Kill-Local-Vault")
             vaultProcess.Kill ();
             Information ("vault killed");
         }
+    })
+    .ReportError (exception => {
+        Information (exception.Message);
+    });
+
+Task ("Run-AuthConsole")
+    .IsDependentOn ("Restore-NuGet")
+    .Does (() => {
+
+        if (FileExists (TEST_AUTH_CRED_FILE))
+            DeleteFile (TEST_AUTH_CRED_FILE);
+
+        var dotnetBuildArgument = @"/p:DefineConstants=""NON_MOCK_AUTH""";
+        var buildSettings = new DotNetCoreMSBuildSettings () {
+            ArgumentCustomization = args => args.Append (dotnetBuildArgument)
+        };
+        buildSettings.SetConfiguration (configuration);
+        DotNetCoreMSBuild (AUTH_CONSOLE_TEST_PROJ_DIR, buildSettings);
+
+        var settings = new DotNetCoreRunSettings
+        {
+            NoBuild = true
+        };
+
+        DotNetCoreRun (AUTH_CONSOLE_TEST_PROJ_DIR, $"{TEST_AUTH_CRED_FILE_DIR}", settings);
     })
     .ReportError (exception => {
         Information (exception.Message);

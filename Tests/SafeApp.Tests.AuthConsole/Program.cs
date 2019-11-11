@@ -1,17 +1,17 @@
-﻿using SafeApp.Core;
-using SafeApp.MockAuthBindings;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using SafeApp.Core;
+using SafeApp.MockAuthBindings;
 
 namespace SafeApp.Tests.AuthConsole
 {
     class Program
     {
-        private static Authenticator _authenticator;
         private static readonly Random _random = new Random();
+        private static Authenticator _authenticator;
 
         static async Task Main(string[] args)
         {
@@ -27,7 +27,10 @@ namespace SafeApp.Tests.AuthConsole
                 var authResponseMsg = await AuthenticateTestApp(authRequestMsg);
 
                 var currentDirectory = Environment.CurrentDirectory;
-                var fileSavePath = Path.Combine(currentDirectory, @"..\..\..\..", "TestAuthResponse.txt");
+                Console.WriteLine(args[0]);
+                var fileSaveDirectory = args.Length == 1 ? args[0] : @"..\..\..\..";
+
+                var fileSavePath = Path.Combine(fileSaveDirectory, "TestAuthResponse.txt");
 
                 if (File.Exists(fileSavePath))
                     File.Delete(fileSavePath);
@@ -75,8 +78,6 @@ namespace SafeApp.Tests.AuthConsole
             Console.WriteLine("authenticating test app");
             var ipcReq = await _authenticator.DecodeIpcMessageAsync(authRequestMsg);
             var authIpcReq = ipcReq as AuthIpcReq;
-            Console.WriteLine(authIpcReq?.ReqId);
-            Console.WriteLine(authIpcReq?.AuthReq.App.Id);
             return await _authenticator.EncodeAuthRespAsync(authIpcReq, true);
         }
 
