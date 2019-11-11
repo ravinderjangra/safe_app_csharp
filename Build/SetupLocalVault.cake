@@ -137,7 +137,8 @@ Task ("Run-AuthConsole")
 
         var settings = new DotNetCoreRunSettings
         {
-            NoBuild = true
+            NoBuild = true,
+            Configuration = configuration
         };
 
         DotNetCoreRun (AUTH_CONSOLE_TEST_PROJ_DIR, $"{TEST_AUTH_CRED_FILE_DIR}", settings);
