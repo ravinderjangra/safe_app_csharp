@@ -52,7 +52,7 @@ namespace SafeApp.Tests.AuthConsole
             {
                 App = new AppExchangeInfo
                 {
-                    Id = GenerateRandomString(10),
+                    Id = "net.maidsafe.testApp",
                     Name = GenerateRandomString(5),
                     Scope = null,
                     Vendor = GenerateRandomString(5),

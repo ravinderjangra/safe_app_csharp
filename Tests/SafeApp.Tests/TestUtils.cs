@@ -17,6 +17,22 @@ namespace SafeApp.Tests
     {
         public static readonly Random Random = new Random();
 
+#if NON_MOCK_AUTH
+        public static async Task<Session> CreateTestApp()
+        {
+            var appId = "net.maidsafe.testApp";
+            var testAuthCredFileName = "TestAuthResponse.txt";
+            if (!File.Exists(testAuthCredFileName))
+                throw new FileNotFoundException("Can't file auth credential file");
+            
+            var testFileData = File.ReadAllText(testAuthCredFileName);
+
+            if (string.IsNullOrEmpty(testFileData))
+                throw new Exception("Cred file has no content");
+
+            return await Session.AppConnectAsync(appId, testFileData);
+        }
+#else
         private static async Task<string> AuthenticateAuthRequest(Authenticator authenticator, string ipcMsg, bool allow)
         {
             var ipcReq = await authenticator.DecodeIpcMessageAsync(ipcMsg);
@@ -85,6 +101,7 @@ namespace SafeApp.Tests
             var resMsg = await authenticator.EncodeAuthRespAsync(authIpcReq, true);
             return await Session.AppConnectAsync(authReq.App.Id, resMsg);
         }
+#endif
 
         public static string GetRandomString(int length)
         {
