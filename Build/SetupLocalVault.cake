@@ -100,9 +100,7 @@ Task ("Run-Local-Vault")
 
         if (!String.IsNullOrWhiteSpace (exeFilePath)) {
             vaultProcess = StartAndReturnProcess (exeFilePath, new ProcessSettings {
-                Arguments = $"--ip {SYSTEM_LOCAL_IP} --port {VAULT_PORT} -vvvv",
-                RedirectStandardOutput = true,
-                RedirectStandardError = true
+                Arguments = $"--ip {SYSTEM_LOCAL_IP} --port {VAULT_PORT} -vvvv"
             });
         }
 
