@@ -23,8 +23,8 @@ namespace SafeApp.Tests
             var appId = "net.maidsafe.testApp";
             var testAuthCredFileName = "TestAuthResponse.txt";
             if (!File.Exists(testAuthCredFileName))
-                throw new FileNotFoundException("Can't file auth credential file");
-            
+                throw new FileNotFoundException("Can't file auth credential file" + Environment.CurrentDirectory);
+
             var testFileData = File.ReadAllText(testAuthCredFileName);
 
             if (string.IsNullOrEmpty(testFileData))

@@ -108,10 +108,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\TestAuthResponse.txt">
+    <None Include="..\TestAuthResponse.txt">
       <Link>TestAuthResponse.txt</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </None>
   </ItemGroup>
   <Import Project="..\SafeApp.Tests\SafeApp.Tests.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

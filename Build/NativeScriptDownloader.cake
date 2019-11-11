@@ -1,5 +1,5 @@
 var TAG = "11046de";
-var AUTH_LIB_TAG = "0.10.0";
+var AUTH_LIB_TAG = "87c8645";
 
 var S3_DOWNLOAD_BASE_URL = "https://safe-cli.s3.amazonaws.com/";
 var S3_AUTH_DOWNLOAD_BASE_URL = "https://safe-client-libs.s3.amazonaws.com/";

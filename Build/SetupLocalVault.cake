@@ -80,7 +80,7 @@ Task ("UnZip-Vault-Exe")
     });
 
 Task ("Run-Local-Vault")
-    // .IsDependentOn ("UnZip-Vault-Exe")
+     .IsDependentOn ("UnZip-Vault-Exe")
     .Does (() => {
         var exeFileName = String.Empty;
         var exeFilePath = String.Empty;
@@ -111,7 +111,6 @@ Task ("Run-Local-Vault")
     });
 
 Task ("Kill-Local-Vault")
-    .IsDependentOn ("Run-Local-Vault")
     .Does (() => {
         if (vaultProcess != null) {
             vaultProcess.Kill ();
