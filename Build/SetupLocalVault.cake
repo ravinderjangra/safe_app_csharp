@@ -9,8 +9,8 @@ var VAULT_PORT = 15000;
 var VAULT_GITHUB_RELEASE_BASE_URL = "https://github.com/maidsafe/safe_vault/releases/download";
 var VAULT_EXE_NAME = "safe_vault";
 var VAULT_RELEASE_TAG = "0.19.2";
-var VAULT_EXE_DIRECTORY = Directory ($"VaultExecutables");
-var VAULT_EXE_Zip_DIRECTORY = Directory ($"{VAULT_EXE_DIRECTORY}/Zips");
+var VAULT_EXE_DIRECTORY = Directory ($"./VaultExecutables");
+var VAULT_EXE_Zip_DIRECTORY = Directory ($"{VAULT_EXE_DIRECTORY.Path.FullPath}/Zips");
 var AUTH_CONSOLE_TEST_PROJ_DIR = "../Tests/SafeApp.Tests.AuthConsole/";
 var TEST_AUTH_CRED_FILE_DIR = "../Tests";
 var TEST_AUTH_CRED_FILE = "../Tests/TestAuthResponse.txt";
@@ -96,7 +96,8 @@ Task ("Run-Local-Vault")
             exeFilePath = $"{VAULT_EXE_DIRECTORY}/windows/{exeFileName}";
         }
 
-        Information (SYSTEM_LOCAL_IP);
+        Information(exeFileName);
+        Information(exeFilePath);
 
         if (!String.IsNullOrWhiteSpace (exeFilePath)) {
             vaultProcess = StartAndReturnProcess (exeFilePath, new ProcessSettings {
