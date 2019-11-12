@@ -10,7 +10,7 @@ var VAULT_GITHUB_RELEASE_BASE_URL = "https://github.com/maidsafe/safe_vault/rele
 var VAULT_EXE_NAME = "safe_vault";
 var VAULT_RELEASE_TAG = "0.19.2";
 var VAULT_EXE_DIRECTORY = Directory ($"./VaultExecutables");
-var VAULT_EXE_Zip_DIRECTORY = Directory ($"{VAULT_EXE_DIRECTORY.Path.FullPath}/Zips");
+var VAULT_EXE_Zip_DIRECTORY = Directory ($"./{VAULT_EXE_DIRECTORY.Path.FullPath}/Zips");
 var AUTH_CONSOLE_TEST_PROJ_DIR = "../Tests/SafeApp.Tests.AuthConsole/";
 var TEST_AUTH_CRED_FILE_DIR = "../Tests";
 var TEST_AUTH_CRED_FILE = "../Tests/TestAuthResponse.txt";
@@ -82,25 +82,21 @@ Task ("UnZip-Vault-Exe")
 Task ("Run-Local-Vault")
     // .IsDependentOn ("UnZip-Vault-Exe")
     .Does (() => {
-        var exeFileName = String.Empty;
         var exeFilePath = String.Empty;
 
         if (RuntimeInformation.IsOSPlatform (OSPlatform.OSX)) {
-            exeFileName = VAULT_EXE_NAME;
-            exeFilePath = $"{VAULT_EXE_DIRECTORY.Path.FullPath}/macos/{exeFileName}";
+            exeFilePath = $"./{VAULT_EXE_DIRECTORY.Path.FullPath}/macos/{VAULT_EXE_NAME}";
         } else if (RuntimeInformation.IsOSPlatform (OSPlatform.Linux)) {
-            exeFileName = VAULT_EXE_NAME;
-            exeFilePath = $"{VAULT_EXE_DIRECTORY.Path.FullPath}/linux/{exeFileName}";
+            exeFilePath = $"./{VAULT_EXE_DIRECTORY.Path.FullPath}/linux/{VAULT_EXE_NAME}";
         } else if (RuntimeInformation.IsOSPlatform (OSPlatform.Windows)) {
-            exeFileName = $"{VAULT_EXE_NAME}.exe";
-            exeFilePath = $"{VAULT_EXE_DIRECTORY}/windows/{exeFileName}";
+            exeFilePath = $"{VAULT_EXE_DIRECTORY}/windows/{VAULT_EXE_NAME}.exe";
         }
 
-        Information(exeFileName);
-        Information(exeFilePath);
+        var fullFilePath = MakeAbsolute(File(exeFilePath));
+        Information(fullFilePath);
 
         if (!String.IsNullOrWhiteSpace (exeFilePath)) {
-            vaultProcess = StartAndReturnProcess (exeFilePath, new ProcessSettings {
+            StartAndReturnProcess (fullFilePath, new ProcessSettings {
                 Arguments = $"--ip {SYSTEM_LOCAL_IP} --port {VAULT_PORT} -vvvv"
             });
         }
