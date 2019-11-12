@@ -87,10 +87,10 @@ Task ("Run-Local-Vault")
 
         if (RuntimeInformation.IsOSPlatform (OSPlatform.OSX)) {
             exeFileName = VAULT_EXE_NAME;
-            exeFilePath = $"{VAULT_EXE_DIRECTORY}/macos/{exeFileName}";
+            exeFilePath = $"{VAULT_EXE_DIRECTORY.Path.FullPath}/macos/{exeFileName}";
         } else if (RuntimeInformation.IsOSPlatform (OSPlatform.Linux)) {
             exeFileName = VAULT_EXE_NAME;
-            exeFilePath = $"{VAULT_EXE_DIRECTORY}/linux/{exeFileName}";
+            exeFilePath = $"{VAULT_EXE_DIRECTORY.Path.FullPath}/linux/{exeFileName}";
         } else if (RuntimeInformation.IsOSPlatform (OSPlatform.Windows)) {
             exeFileName = $"{VAULT_EXE_NAME}.exe";
             exeFilePath = $"{VAULT_EXE_DIRECTORY}/windows/{exeFileName}";
