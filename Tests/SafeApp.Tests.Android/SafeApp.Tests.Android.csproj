@@ -14,7 +14,7 @@
     <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
-    <AndroidSupportedAbis>armeabi-v7a,x86_64</AndroidSupportedAbis>
+    <AndroidSupportedAbis>armeabi-v7a;x86_64</AndroidSupportedAbis>
     <AndroidStoreUncompressedFileExtensions />
     <MandroidI18n />
     <JavaMaximumHeapSize>
@@ -24,6 +24,7 @@
     </NuGetPackageImportStamp>
     <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
     <TargetFrameworkVersion>v9.0</TargetFrameworkVersion>
+    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,13 +36,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AndroidLinkMode>None</AndroidLinkMode>
-    <AotAssemblies>false</AotAssemblies>
-    <EnableLLVM>false</EnableLLVM>
-    <BundleAssemblies>false</BundleAssemblies>
-    <AndroidSupportedAbis>armeabi-v7a;x86_64</AndroidSupportedAbis>
-    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
     <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
-    <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -50,11 +45,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AndroidUseSharedRuntime>False</AndroidUseSharedRuntime>
-    <AotAssemblies>false</AotAssemblies>
-    <EnableLLVM>false</EnableLLVM>
-    <BundleAssemblies>false</BundleAssemblies>
-    <AndroidSupportedAbis>armeabi-v7a;x86_64</AndroidSupportedAbis>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />
@@ -69,13 +59,29 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
   </ItemGroup>
+   <Choose>
+    <When Condition="$(DefineConstants.Contains('NON_MOCK_AUTH'))">
+      <ItemGroup>
+        <AndroidNativeLibrary Include="..\..\SafeApp.AppBindings\NativeLibs\Android\non-mock\armeabi-v7a\libsafe_api.so">
+          <Link>lib\armeabi-v7a\libsafe_api.so</Link>
+        </AndroidNativeLibrary>
+        <AndroidNativeLibrary Include="..\..\SafeApp.AppBindings\NativeLibs\Android\non-mock\x86_64\libsafe_api.so">
+          <Link>lib\x86_64\libsafe_api.so</Link>
+        </AndroidNativeLibrary>
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <AndroidNativeLibrary Include="..\..\SafeApp.AppBindings\NativeLibs\Android\mock\armeabi-v7a\libsafe_api.so">
+          <Link>lib\armeabi-v7a\libsafe_api.so</Link>
+        </AndroidNativeLibrary>
+        <AndroidNativeLibrary Include="..\..\SafeApp.AppBindings\NativeLibs\Android\mock\x86_64\libsafe_api.so">
+          <Link>lib\x86_64\libsafe_api.so</Link>
+        </AndroidNativeLibrary>
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
   <ItemGroup>
-    <AndroidNativeLibrary Include="..\..\SafeApp.AppBindings\NativeLibs\Android\mock\armeabi-v7a\libsafe_api.so">
-      <Link>lib\armeabi-v7a\libsafe_api.so</Link>
-    </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="..\..\SafeApp.AppBindings\NativeLibs\Android\mock\x86_64\libsafe_api.so">
-      <Link>lib\x86_64\libsafe_api.so</Link>
-    </AndroidNativeLibrary>
     <AndroidAsset Include="..\SafeApp.Tests\log.toml">
       <Link>Assets\log.toml</Link>
     </AndroidAsset>

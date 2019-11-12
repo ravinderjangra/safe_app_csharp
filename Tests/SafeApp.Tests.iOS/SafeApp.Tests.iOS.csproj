@@ -126,14 +126,28 @@
     <Reference Include="System.Core" />
     <Reference Include="Xamarin.iOS" />
   </ItemGroup>
-  <ItemGroup>
-    <NativeReference Include="..\..\SafeApp.AppBindings\NativeLibs\iOS\mock\libsafe_api.a">
-      <Kind>Static</Kind>
-      <ForceLoad>True</ForceLoad>
-      <LinkerFlags>-lresolv</LinkerFlags>
-      <Frameworks>Security</Frameworks>
-    </NativeReference>
-  </ItemGroup>
+    <Choose>
+    <When Condition="$(DefineConstants.Contains('NON_MOCK_AUTH'))">
+      <ItemGroup>
+        <NativeReference Include="..\..\SafeApp.AppBindings\NativeLibs\iOS\non-mock\libsafe_api.a">
+          <Kind>Static</Kind>
+          <ForceLoad>True</ForceLoad>
+          <LinkerFlags>-lresolv</LinkerFlags>
+          <Frameworks>Security</Frameworks>
+        </NativeReference>
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <NativeReference Include="..\..\SafeApp.AppBindings\NativeLibs\iOS\mock\libsafe_api.a">
+          <Kind>Static</Kind>
+          <ForceLoad>True</ForceLoad>
+          <LinkerFlags>-lresolv</LinkerFlags>
+          <Frameworks>Security</Frameworks>
+        </NativeReference>
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
   <ItemGroup>
     <ProjectReference Include="..\..\SafeApp.AppBindings\SafeApp.AppBindings.csproj">
       <Project>{d785b126-3720-4420-8207-3bdbfabcbe05}</Project>
