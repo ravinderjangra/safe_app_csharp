@@ -6,7 +6,7 @@ var SYSTEM_LOCAL_IP = System.Net.Dns.GetHostEntry (System.Net.Dns.GetHostName ()
     .ToString ();
 var VAULT_PORT = 15000;
 
-var VAULT_GITHUB_RELEASE_BASE_URL = "https://github.com/maidsafe/safe_vault/releases/download";
+var VAULT_GITHUB_RELEASE_BASE_URL = "https://github.com/ravinderjangra/safe_vault/releases/download";
 var VAULT_EXE_NAME = "safe_vault";
 var VAULT_RELEASE_TAG = "0.19.2";
 var VAULT_EXE_DIRECTORY = Directory ($"./VaultExecutables");
