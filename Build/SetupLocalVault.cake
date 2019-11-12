@@ -97,7 +97,7 @@ Task ("Run-Local-Vault")
 
         if (!String.IsNullOrWhiteSpace (exeFilePath)) {
             StartAndReturnProcess (fullFilePath, new ProcessSettings {
-                Arguments = $"--ip {SYSTEM_LOCAL_IP} --port {VAULT_PORT} -vvvv"
+                Arguments = $"--ip {SYSTEM_LOCAL_IP} --port {VAULT_PORT} -vvvvv"
             });
         }
 
@@ -121,6 +121,12 @@ Task ("Kill-Local-Vault")
 Task ("Run-AuthConsole")
     .IsDependentOn ("Restore-NuGet")
     .Does (() => {
+        var cleanSettings = new DotNetCoreCleanSettings
+        {
+            Configuration = configuration
+        };
+
+        DotNetCoreClean(AUTH_CONSOLE_TEST_PROJ_DIR, cleanSettings);
 
         if (FileExists (TEST_AUTH_CRED_FILE))
             DeleteFile (TEST_AUTH_CRED_FILE);

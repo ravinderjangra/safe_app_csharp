@@ -17,8 +17,13 @@ var coveralls_token = EnvironmentVariable ("coveralls_access_token");
 
 Task ("Run-Desktop-Tests")
   .IsDependentOn ("Restore-NuGet")
-  .Does (() => {    
-    DotNetCoreClean(coreTestProject);
+  .Does (() => {
+    var cleanSettings = new DotNetCoreCleanSettings
+    {
+        Configuration = configuration
+    };
+    DotNetCoreClean(coreTestProject, cleanSettings);
+
     var buildSettings = new DotNetCoreMSBuildSettings ();
     buildSettings.SetConfiguration (configuration);
     DotNetCoreMSBuild (coreTestProject, buildSettings);
@@ -35,7 +40,12 @@ Task ("Run-Desktop-Tests")
 
 Task ("Run-NonMock-Desktop-Tests")
   .Does (() => {
-    DotNetCoreClean(coreTestProject);
+    var cleanSettings = new DotNetCoreCleanSettings
+    {
+        Configuration = configuration
+    };
+    DotNetCoreClean(coreTestProject, cleanSettings);
+
     var dotnetBuildArgument = @"/p:DefineConstants=""NON_MOCK_AUTH""";
     var buildSettings = new DotNetCoreMSBuildSettings () {
       ArgumentCustomization = args => args.Append (dotnetBuildArgument)
