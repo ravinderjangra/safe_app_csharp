@@ -149,3 +149,45 @@ Task ("Run-AuthConsole")
     .ReportError (exception => {
         Information (exception.Message);
     });
+
+Task ("Copy-Vault-Connection-File")
+    .Does (() => {
+        var filePath = String.Empty;
+        var vaultconnectionConfigFileName = @"vault_connection_info.config";
+        var vaultConfigFileSaveLocation = $"../Tests/{vaultconnectionConfigFileName}";
+
+        if (FileExists (vaultConfigFileSaveLocation))
+            DeleteFile (vaultConfigFileSaveLocation);
+
+        if (RuntimeInformation.IsOSPlatform (OSPlatform.OSX)) {
+            filePath = System.IO.Path.Combine(
+                System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
+                "Library",
+                "Preferences",
+                "net.MaidSafe.safe_vault",
+                vaultconnectionConfigFileName);
+        } else if (RuntimeInformation.IsOSPlatform (OSPlatform.Linux)) {
+            filePath = System.IO.Path.Combine(
+                System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData),
+                "safe_vault",
+                vaultconnectionConfigFileName);
+        } else if (RuntimeInformation.IsOSPlatform (OSPlatform.Windows)) {
+            filePath = System.IO.Path.Combine(
+                System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData),
+                "MaidSafe",
+                "safe_vault",
+                "config",
+                vaultconnectionConfigFileName);
+        }
+
+        if (FileExists (filePath)) {
+            Information("Found vault connectiong config file");
+            var result = FileReadText(filePath);
+            System.IO.File.AppendAllText(vaultConfigFileSaveLocation, result);
+            Information($"Copied config file from: {filePath}");
+            Information($"Copied config file to: {vaultConfigFileSaveLocation}");
+        }
+    })
+    .ReportError (exception => {
+        Information (exception.Message);
+    });
