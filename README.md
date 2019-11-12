@@ -1,8 +1,8 @@
 # safe_app_csharp [![NuGet](https://img.shields.io/nuget/v/MaidSafe.SafeApp.svg)](https://www.nuget.org/packages/MaidSafe.SafeApp)
 
-.NET wrapper package for [safe_app](https://github.com/maidsafe/safe_client_libs/tree/master/safe_app).
+.NET wrapper package for [safe-api](https://github.com/maidsafe/safe-api/).
 
-> [safe_app](https://github.com/maidsafe/safe_client_libs/tree/master/safe_app) is a native library which exposes low level API for application development on SAFE Network. It exposes API for authorisation and to manage data on the network.
+> [safe_app](https://github.com/maidsafe/safe-api/) is a native library which exposes high level API for application development on SAFE Network. It exposes API for authorisation and to manage data on the network.
 
 **Maintainer:** Ravinder Jangra (ravinder.jangra@maidsafe.net)
 
@@ -34,21 +34,21 @@
 9. [Further Help](#Further-Help)
 10. [License](#License)
 
-This project contains the C# bindings and API wrappers for the [safe_app](https://github.com/maidsafe/safe_client_libs/tree/master/safe_app) and mock [safe_authenticator](https://github.com/maidsafe/safe_client_libs/tree/master/safe_authenticator). The native libraries, bindings and API wrapper are built and published as a NuGet package. The latest version can be fetched from the [MaidSafe.SafeApp NuGet package](https://www.nuget.org/packages/MaidSafe.SafeApp/).
+This project contains the C# bindings and API wrappers for the [safe_app](https://github.com/maidsafe/safe-api/) and mock [safe_authenticator](https://github.com/maidsafe/safe_client_libs/tree/master/safe_authenticator). The native libraries, bindings and API wrapper are built and published as a NuGet package. The latest version can be fetched from the [MaidSafe.SafeApp NuGet package](https://www.nuget.org/packages/MaidSafe.SafeApp/).
 
 At a very high level, this package includes:
 
 * C# API for devs for easy app development.
-* safe_app and mock safe_authenticator bindings. These bindings are one to one mapping to the FFI functions exposed from safe_app and safe_authenicator native libraries.
-* Native libraries generated from [safe_client_libs](https://github.com/maidsafe/safe_client_libs) containing required logic to connect, read and write data on the SAFE Network.
+* safe-api and mock safe_authenticator bindings. These bindings are one to one mapping to the FFI functions exposed from safe_api and safe_authenicator native libraries.
+* Native libraries generated from [safe-api](https://github.com/maidsafe/safe-api) containing required logic to connect, read and write data on the SAFE Network.
 
 ## Supported Platforms
 
-* Xamarin.Android ( >=4.2. ABI: armeabi-v7a, x86_64)
+* Xamarin.Android ( >=5.0. ABI: armeabi-v7a, x86_64)
 * Xamarin.iOS ( >= 1.0, ABI: ARM64, x64)
-* .NET Standard 1.3 (for usage via portable libs)
-* .NET Core 1.0 (for use via .NET Core targets. Runtime support limited to x64)
-* .NET Framework 4.6 (for use via classic .NET Framework targets. Platform support limited to x64)
+* .NET Standard 2.0 (for usage via portable libs)
+* .NET Core 2.2 (for use via .NET Core targets. Runtime support limited to x64)
+* .NET Framework 4.7.2 (for use via classic .NET Framework targets. Platform support limited to x64)
 
 ## API Usage
 
@@ -91,22 +91,16 @@ The following tutorials and examples will help you get started with development 
 
 ### Project structure
 
-* **SafeApp:** C# API for safe_app
-  * IData, MData, CipherOpt, Crypto, NFS, Session, AccessContainer
+* **SafeApp:** C# API for safe_api
+  * Fetch, Inspect, Files, Keys, Wallet, XorUrl
 * **SafeApp.AppBindings:**
-  * safe_app bindings generated from safe_client_libs
-* **SafeApp.AppBindings.Platform:**
-  * Platform: Desktop, Android, iOS
-  * C# safe_app platform bindings
+  * safe_api and safe_app IPC bindings generated from safe_api and safe_client_libs
   * Contains native libraries for the platform
 * **SafeApp.MockAuthBindings:**
   * Mock Safe authentication C# API
   * mock safe_authenticator bindings generated from safe_client_libs
   * Classes required for mock auth funtionality
-* **SafeApp.MockAuthBindings.Platform:**
-  * Platform: Desktop, Android, iOS
-  * C# safe_authenticator platform bindings
-* **SafeApp.Utilities:** Contains
+* **SafeApp.Core:** Contains
   * Constants used in SafeApp
   * Binding utilities and helper functions
 
