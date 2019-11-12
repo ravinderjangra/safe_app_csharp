@@ -96,6 +96,9 @@
     <Content Include="..\SafeApp.Tests\log.toml">
       <Link>log.toml</Link>
     </Content>
+    <Content Include="..\TestAuthResponse.txt">
+      <Link>testauthresponse.txt</Link>
+    </Content>
     <None Include="Entitlements.plist" />
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />

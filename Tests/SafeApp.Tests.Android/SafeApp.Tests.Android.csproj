@@ -82,6 +82,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <AndroidAsset Include="..\TestAuthResponse.txt">
+      <Link>Assets\testauthresponse.txt</Link>
+    </AndroidAsset>
     <AndroidAsset Include="..\SafeApp.Tests\log.toml">
       <Link>Assets\log.toml</Link>
     </AndroidAsset>

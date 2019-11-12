@@ -109,6 +109,70 @@ namespace SafeApp.Tests
             return new string(Enumerable.Repeat(chars, length).Select(s => s[Random.Next(s.Length)]).ToArray());
         }
 
+        public static async Task<string> SetConfigDirPathAsync()
+        {
+            var testAuthResponseFileName = "testauthresponse.txt";
+#if __IOS__
+            var configPath = Environment.GetFolderPath(Environment.SpecialFolder.Resources);
+            using (var reader = new StreamReader(Path.Combine(".", testAuthResponseFileName)))
+            {
+#elif __ANDROID__
+            var configPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            using (var reader = new StreamReader(Application.Context.Assets.Open(testAuthResponseFileName)))
+            {
+#else
+            var configPath = Path.Combine(Path.GetTempPath(), GetRandomString(8));
+            Directory.CreateDirectory(configPath);
+            var srcPath = Path.Combine(
+                Directory.GetParent(typeof(MiscTest).Assembly.Location).FullName,
+                testAuthResponseFileName);
+            using (var reader = new StreamReader(srcPath))
+            {
+#endif
+                using (var writer = new StreamWriter(Path.Combine(configPath, testAuthResponseFileName)))
+                {
+                    writer.Write(reader.ReadToEnd());
+                    writer.Close();
+                }
+
+                reader.Close();
+            }
+
+            await Session.SetConfigurationFilePathAsync(configPath);
+            return configPath;
+        }
+
+        public static string TransferVaultConnectionConfigFile()
+        {
+            var vaultConnectionConfigFileName = "vault_connection_info.config";
+#if __IOS__
+            var configPath = Environment.GetFolderPath(Environment.SpecialFolder.Resources);
+            using (var reader = new StreamReader(Path.Combine(".", vaultConnectionConfigFileName)))
+            {
+#elif __ANDROID__
+            var configPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            using (var reader = new StreamReader(Application.Context.Assets.Open(vaultConnectionConfigFileName)))
+            {
+#else
+            var configPath = Path.Combine(Path.GetTempPath(), GetRandomString(8));
+            Directory.CreateDirectory(configPath);
+            var srcPath = Path.Combine(
+                Directory.GetParent(typeof(MiscTest).Assembly.Location).FullName,
+                vaultConnectionConfigFileName);
+            using (var reader = new StreamReader(srcPath))
+            {
+#endif
+                using (var writer = new StreamWriter(Path.Combine(configPath, vaultConnectionConfigFileName)))
+                {
+                    writer.Write(reader.ReadToEnd());
+                    writer.Close();
+                }
+
+                reader.Close();
+            }
+            return configPath;
+        }
+
         public static async Task<string> InitRustLogging()
         {
 #if __IOS__
