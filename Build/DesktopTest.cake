@@ -18,37 +18,18 @@ var coveralls_token = EnvironmentVariable ("coveralls_access_token");
 Task ("Run-Desktop-Tests")
   .IsDependentOn ("Restore-NuGet")
   .Does (() => {
+    // Check is nonmock auth build
+    var msBuildArgument = IsNonMockBuild() ? msBuildNonMockArgument : string.Empty;
+    var testResultFileName = IsNonMockBuild() ? "DesktopNonMockTestResult" : "DesktopTestResult";
+
     var cleanSettings = new DotNetCoreCleanSettings
     {
         Configuration = configuration
     };
     DotNetCoreClean(coreTestProject, cleanSettings);
 
-    var buildSettings = new DotNetCoreMSBuildSettings ();
-    buildSettings.SetConfiguration (configuration);
-    DotNetCoreMSBuild (coreTestProject, buildSettings);
-
-    DotNetCoreTest (
-      coreTestProject.Path.FullPath,
-      new DotNetCoreTestSettings () {
-        NoBuild = true,
-        NoRestore = true,
-        Configuration = configuration,
-        ArgumentCustomization = args => args.Append ("--logger \"trx;LogFileName=DesktopTestResult.xml\"")
-      });
-  });
-
-Task ("Run-NonMock-Desktop-Tests")
-  .Does (() => {
-    var cleanSettings = new DotNetCoreCleanSettings
-    {
-        Configuration = configuration
-    };
-    DotNetCoreClean(coreTestProject, cleanSettings);
-
-    var dotnetBuildArgument = @"/p:DefineConstants=""NON_MOCK_AUTH""";
     var buildSettings = new DotNetCoreMSBuildSettings () {
-      ArgumentCustomization = args => args.Append (dotnetBuildArgument)
+      ArgumentCustomization = args => args.Append (msBuildArgument)
     };
     buildSettings.SetConfiguration (configuration);
     DotNetCoreMSBuild (coreTestProject, buildSettings);
@@ -59,7 +40,7 @@ Task ("Run-NonMock-Desktop-Tests")
         NoBuild = true,
         NoRestore = true,
         Configuration = configuration,
-        ArgumentCustomization = args => args.Append ("--logger \"trx;LogFileName=DesktopNonMockTestResult.xml\"")
+        ArgumentCustomization = args => args.Append ($"--logger \"trx;LogFileName={testResultFileName}.xml\"")
       });
   });
 

@@ -5,8 +5,8 @@
 #addin "Cake.Powershell"
 
 var IOS_TEST_PROJ_DIR = "../Tests/SafeApp.Tests.iOS/";
-var IOS_SIM_NAME = EnvironmentVariable("IOS_SIM_NAME") ?? "iPhone X";
-var IOS_SIM_RUNTIME = EnvironmentVariable("IOS_SIM_RUNTIME") ?? "com.apple.CoreSimulator.SimRuntime.iOS-12-4";
+var IOS_SIM_NAME = EnvironmentVariable("IOS_SIM_NAME") ?? "iPhone 11";
+var IOS_SIM_RUNTIME = EnvironmentVariable("IOS_SIM_RUNTIME") ?? "com.apple.CoreSimulator.SimRuntime.iOS-13-2";
 var IOS_TEST_PROJ = $"{IOS_TEST_PROJ_DIR}SafeApp.Tests.iOS.csproj";
 var IOS_BUNDLE_ID = "net.maidsafe.SafeApp.Tests.iOS";
 var IOS_IPA_PATH = $"{IOS_TEST_PROJ_DIR}bin/iPhoneSimulator/Release/SafeApp.Tests.iOS.app";
@@ -17,6 +17,9 @@ var IOS_TCP_LISTEN_PORT = 10500;
 
 Task("Build-iOS-Test-Project")
     .Does(() => {
+    // Check is nonmock auth build
+    var msBuildArgument = IsNonMockBuild() ? msBuildNonMockArgument : string.Empty;
+    
     // Build the project (with ipa)
     MSBuild(IOS_TEST_PROJ, c =>
     {
@@ -26,13 +29,14 @@ Task("Build-iOS-Test-Project")
         c.Targets.Clear();
         c.Targets.Add("Rebuild");
         c.SetVerbosity(Verbosity.Minimal);
+        c.ArgumentCustomization = args => args.Append (msBuildArgument);
     });
 });
 
 Task("Run-iOS-Tests")
     .IsDependentOn("Build-iOS-Test-Project")
     .Does(() => {
-    
+
     var sims = ListAppleSimulators();
 
     foreach (var s in sims)

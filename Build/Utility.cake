@@ -5,6 +5,14 @@ using System.Linq;
 
 var TCP_LISTEN_TIMEOUT = 300;
 
+bool IsNonMockBuild() {
+    var isNonMock = Argument<bool>("non_mock", false);
+    if (isNonMock) {
+        Information ("Project will be build and tested with NON_MOCK_AUTH flag.");
+    }
+    return isNonMock;
+}
+
 void DeleteExistingTestResultFile(string fileSearchPattern)
 {
     Information("Trying to find the result files from older builds");

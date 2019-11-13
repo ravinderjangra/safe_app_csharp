@@ -138,6 +138,9 @@
           <LinkerFlags>-lresolv</LinkerFlags>
           <Frameworks>Security</Frameworks>
         </NativeReference>
+        <Content Include="..\vault_connection_info.config">
+          <Link>vault_connection_info.config</Link>
+        </Content>
       </ItemGroup>
     </When>
     <Otherwise>
