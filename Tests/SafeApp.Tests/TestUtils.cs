@@ -31,7 +31,7 @@ namespace SafeApp.Tests
             var configPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
             configFilePath = Path.Combine(configPath, testAuthCredFileName);
 #else
-            var configFilePath = Path.Combine(
+            configFilePath = Path.Combine(
                 Directory.GetParent(typeof(MiscTest).Assembly.Location).FullName,
                 testAuthCredFileName);
 
