@@ -19,7 +19,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="..\TestAuthResponse.txt" Link="TestAuthResponse.txt">
+    <Content Include="..\TestAuthResponse.txt" Link="testauthresponse.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

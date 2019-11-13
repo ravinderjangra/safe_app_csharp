@@ -109,7 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\TestAuthResponse.txt">
-      <Link>TestAuthResponse.txt</Link>
+      <Link>testauthresponse.txt</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

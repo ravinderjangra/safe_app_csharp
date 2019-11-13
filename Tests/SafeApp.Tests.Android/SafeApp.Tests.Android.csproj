@@ -68,6 +68,9 @@
         <AndroidNativeLibrary Include="..\..\SafeApp.AppBindings\NativeLibs\Android\non-mock\x86_64\libsafe_api.so">
           <Link>lib\x86_64\libsafe_api.so</Link>
         </AndroidNativeLibrary>
+        <AndroidAsset Include="..\vault_connection_info.config">
+          <Link>Assets\vault_connection_info.config</Link>
+        </AndroidAsset>
       </ItemGroup>
     </When>
     <Otherwise>

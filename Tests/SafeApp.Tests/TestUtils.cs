@@ -21,14 +21,28 @@ namespace SafeApp.Tests
         public static async Task<Session> CreateTestApp()
         {
             var appId = "net.maidsafe.testApp";
-            var testAuthCredFileName = "TestAuthResponse.txt";
-            if (!File.Exists(testAuthCredFileName))
-                throw new FileNotFoundException("Can't file auth credential file" + Environment.CurrentDirectory);
+            var testAuthCredFileName = "testauthresponse.txt";
+            var configFilePath = string.Empty;
+#if __IOS__
+            var configPath = Environment.GetFolderPath(Environment.SpecialFolder.Resources);
+            configFilePath = Path.Combine(configPath, testAuthCredFileName);
 
-            var testFileData = File.ReadAllText(testAuthCredFileName);
+#elif __ANDROID__
+            var configPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            configFilePath = Path.Combine(configPath, testAuthCredFileName);
+#else
+            var configFilePath = Path.Combine(
+                Directory.GetParent(typeof(MiscTest).Assembly.Location).FullName,
+                testAuthCredFileName);
+
+            if (!File.Exists(configFilePath))
+                throw new FileNotFoundException("Can't find test auth credential file" + configFilePath);
+#endif
+
+            var testFileData = File.ReadAllText(configFilePath);
 
             if (string.IsNullOrEmpty(testFileData))
-                throw new Exception("Cred file has no content");
+                throw new Exception("Test auth credential file has no content");
 
             return await Session.AppConnectAsync(appId, testFileData);
         }
@@ -109,7 +123,7 @@ namespace SafeApp.Tests
             return new string(Enumerable.Repeat(chars, length).Select(s => s[Random.Next(s.Length)]).ToArray());
         }
 
-        public static async Task<string> SetConfigDirPathAsync()
+        public static string CopyTestAuthResponseFile()
         {
             var testAuthResponseFileName = "testauthresponse.txt";
 #if __IOS__
@@ -138,11 +152,10 @@ namespace SafeApp.Tests
                 reader.Close();
             }
 
-            await Session.SetConfigurationFilePathAsync(configPath);
             return configPath;
         }
 
-        public static string TransferVaultConnectionConfigFile()
+        public static async Task<string> TransferVaultConnectionConfigFileAsync()
         {
             var vaultConnectionConfigFileName = "vault_connection_info.config";
 #if __IOS__
@@ -170,6 +183,7 @@ namespace SafeApp.Tests
 
                 reader.Close();
             }
+            await Session.SetConfigurationFilePathAsync(configPath);
             return configPath;
         }
 

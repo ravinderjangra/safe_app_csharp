@@ -6,6 +6,15 @@ namespace SafeApp.Tests
     [TestFixture]
     internal class AuthTest
     {
+#if (__ANDROID__ || __IOS__) && NON_MOCK_AUTH
+        [OneTimeSetUp]
+        public async Task SetUp()
+        {
+            TestUtils.CopyTestAuthResponseFile();
+            await TestUtils.TransferVaultConnectionConfigFileAsync();
+        }
+#endif
+
         [Test]
         public async Task ConnectAsRegisteredAppTest()
         {
