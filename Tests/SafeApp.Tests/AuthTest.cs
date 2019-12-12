@@ -13,6 +13,13 @@ namespace SafeApp.Tests
             TestUtils.CopyTestAuthResponseFile();
             await TestUtils.TransferVaultConnectionConfigFileAsync();
         }
+#else
+        [OneTimeSetUp]
+        public async Task SetUp()
+        {
+            var configPath = await TestUtils.InitRustLogging();
+            Assert.IsNotNull(configPath);
+        }
 #endif
 
         [Test]
