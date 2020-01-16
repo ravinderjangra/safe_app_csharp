@@ -31,11 +31,6 @@ namespace SafeApp.Tests
 #endif
         }
 
-        [Test]
-        public async Task SetConfigFileDirPathTest()
-            => await Session.SetAppConfigurationDirectoryPathAsync(
-                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
-
 #if WIN64 && NETCOREAPP
         [Ignore("Rust logger not working on .NET Core Windows, needs more testing locally")]
 #endif

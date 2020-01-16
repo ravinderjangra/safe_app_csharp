@@ -21,11 +21,6 @@
   <Choose>
     <When Condition="$(DefineConstants.Contains(NON_MOCK_AUTH))">
       <PropertyGroup>
-        <NativeLibType>mock</NativeLibType>
-      </PropertyGroup>
-    </When>
-    <Otherwise>
-      <PropertyGroup>
         <NativeLibType>non-mock</NativeLibType>
       </PropertyGroup>
       <ItemGroup>
@@ -39,6 +34,11 @@
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
       </ItemGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <NativeLibType>mock</NativeLibType>
+      </PropertyGroup>
     </Otherwise>
   </Choose>
 
