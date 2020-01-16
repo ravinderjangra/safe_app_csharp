@@ -96,3 +96,11 @@ void AnalyseResultFile(string FilePath)
     }
     file.Close();
 }
+
+bool IsNonMockBuild() {
+    var isNonMock = Argument<bool>("non_mock", false);
+    if (isNonMock) {
+        Information ("Project will be build and tested with NON_MOCK_AUTH flag.");
+    }
+    return isNonMock;
+}

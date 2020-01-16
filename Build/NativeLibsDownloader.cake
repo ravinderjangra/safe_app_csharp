@@ -1,11 +1,17 @@
-var TAG = "64a5f70";
+var SAFE_API_LIB_TAG = "9a41307";
+var AUTH_LIB_TAG = "183939d";
 
 var S3_DOWNLOAD_BASE_URL = "https://safe-api.s3.amazonaws.com/";
+var S3_AUTH_DOWNLOAD_BASE_URL = "https://safe-client-libs.s3.amazonaws.com/";
+
 var LIB_DIR_NAME = "../SafeApp.AppBindings/NativeLibs/";
 var ANDROID_DIR_NAME = $"{LIB_DIR_NAME}Android";
 var IOS_DIR_NAME = $"{LIB_DIR_NAME}iOS";
 var DESKTOP_DIR_NAME = $"{LIB_DIR_NAME}Desktop";
-var Native_DIR = Directory($"{System.IO.Path.GetTempPath()}SafeFfiNativeLibs");
+
+var AUTH_LIB_DIR_NAME = "../Tests/SafeApp.Tests.Core/NativeLibs/";
+var NATIVE_DIR = Directory($"{System.IO.Path.GetTempPath()}SafeApiNativeLibs");
+var NATIVE_AUTH_DIR = Directory($"{System.IO.Path.GetTempPath()}SafeAuthNativeLibs");
 
 var ANDROID_ARMEABI_V7A = "armv7-linux-androideabi";
 var ANDROID_x86_64 = "x86_64-linux-android";
@@ -60,10 +66,10 @@ Task("Download-Libs")
       foreach(var target in targets) {
         foreach (var varient in varients)
         {
-          var targetDirectory = $"{Native_DIR.Path}/{item}/{target}";
-          var zipFileName = varient == "" ? $"safe-ffi-{TAG}-{target}.zip" : $"safe-ffi-{TAG}-{target}-{varient}.zip";
+          var targetDirectory = $"{NATIVE_DIR.Path}/{item}/{target}";
+          var zipFileName = varient == "" ? $"safe-ffi-{SAFE_API_LIB_TAG}-{target}.zip" : $"safe-ffi-{SAFE_API_LIB_TAG}-{target}-{varient}.zip";
           var zipFileDownloadUrl = $"{S3_DOWNLOAD_BASE_URL}{zipFileName}";
-          var zipSavePath = $"{Native_DIR.Path}/{item}/{target}/{zipFileName}";
+          var zipSavePath = $"{targetDirectory}/{zipFileName}";
 
           if(!DirectoryExists(targetDirectory))
             CreateDirectory(targetDirectory);
@@ -73,7 +79,7 @@ Task("Download-Libs")
             if(existingNativeLibs.Count > 0)
             foreach(var lib in existingNativeLibs) 
             {
-              if(!lib.GetFilename().ToString().Contains(TAG))
+              if(!lib.GetFilename().ToString().Contains(SAFE_API_LIB_TAG))
                 DeleteFile(lib.FullPath);
             }
           }
@@ -121,7 +127,7 @@ Task("UnZip-Libs")
       CleanDirectories(outputDirectory);
 
       foreach(var target in targets) {
-        var zipSourceDirectory = Directory($"{Native_DIR.Path}/{item}/{target}");
+        var zipSourceDirectory = Directory($"{NATIVE_DIR.Path}/{item}/{target}");
         var zipFiles = GetFiles($"{zipSourceDirectory}/*.*");
         foreach(var zip in zipFiles) 
         {
@@ -153,6 +159,62 @@ Task("UnZip-Libs")
           }
         }
       }
+    }
+  })
+  .ReportError(exception => {
+    Information(exception.Message);
+  });
+
+Task("Download-Auth-Libs")
+  .Does(() => {
+    var targetDirectory = $"{NATIVE_AUTH_DIR.Path}";
+    
+    if(!DirectoryExists(targetDirectory))
+      CreateDirectory(targetDirectory);
+    else
+    {
+      var existingNativeLibs = GetFiles($"{targetDirectory}/*.zip");
+      if(existingNativeLibs.Count > 0)
+      foreach(var lib in existingNativeLibs) 
+      {
+        DeleteFile(lib.FullPath);
+      }
+    }
+    
+    foreach(var item in DESKTOP_ARCHITECTURES)
+    {
+      var zipFileName = $"safe_authenticator-{AUTH_LIB_TAG}-{item}.zip";
+      var zipFileDownloadUrl = $"{S3_AUTH_DOWNLOAD_BASE_URL}{zipFileName}";
+      var zipSavePath = $"{targetDirectory}/{zipFileName}";
+
+      Information("Downloading : {0}", zipFileName);
+      if(!FileExists(zipSavePath))
+      {
+        DownloadFile(zipFileDownloadUrl, File(zipSavePath));
+      }
+      else
+      {
+        Information("File already exists");
+      }
+    }
+  })
+  .ReportError(exception => {
+    Information(exception.Message);
+  });
+
+
+  Task("UnZip-Auth-Libs")
+  .IsDependentOn("Download-Auth-Libs")
+  .Does(() => {
+    CleanDirectories(AUTH_LIB_DIR_NAME);
+    var targetDirectory = $"{NATIVE_AUTH_DIR.Path}";
+
+    var zipFiles = GetFiles($"{targetDirectory}/*.*");
+    foreach(var zip in zipFiles) 
+    {
+      var filename = zip.GetFilename();
+      Information(" Unzipping : " + filename);
+      Unzip(zip, AUTH_LIB_DIR_NAME);
     }
   })
   .ReportError(exception => {

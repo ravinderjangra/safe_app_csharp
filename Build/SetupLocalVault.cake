@@ -75,15 +75,6 @@ Task ("Run-Vault")
 
          if (RuntimeInformation.IsOSPlatform (OSPlatform.OSX)) {
             exeFilePath = $"./{VAULT_EXE_DIRECTORY.Path.FullPath}/macos/{VAULT_EXE_NAME}";
-            var code = StartProcess("bash",
-                new ProcessSettings
-                {
-                    Arguments = new ProcessArgumentBuilder()
-                        .Append("chmod")
-                        .Append("+x")
-                        .Append("${MakeAbsolute(File(exeFilePath))}"),
-                });
-            // StartProcess ($"chmod +x {MakeAbsolute(File(exeFilePath))}");
         } else if (RuntimeInformation.IsOSPlatform (OSPlatform.Linux)) {
             exeFilePath = $"./{VAULT_EXE_DIRECTORY.Path.FullPath}/linux/{VAULT_EXE_NAME}";
         } else if (RuntimeInformation.IsOSPlatform (OSPlatform.Windows)) {
@@ -99,7 +90,6 @@ Task ("Run-Vault")
             else {
                 throw new Exception($"Vault file doesn't exists. Expected location : {fullFilePath}");
             }
-            
         }
 
         System.Threading.Thread.Sleep (20000);

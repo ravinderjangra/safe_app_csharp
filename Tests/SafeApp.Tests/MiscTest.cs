@@ -13,11 +13,23 @@ namespace SafeApp.Tests
     {
         [Test]
         public void IsMockAuthenticationBuildTest()
-            => Assert.That(Authenticator.IsMockBuild(), Is.True);
+        {
+#if NON_MOCK_AUTH
+            Assert.That(Authenticator.IsMockBuild(), Is.False);
+#else
+            Assert.That(Authenticator.IsMockBuild(), Is.True);
+#endif
+        }
 
         [Test]
         public void IsMockSafeAppBuildTest()
-            => Assert.That(Session.AppIsMock(), Is.True);
+        {
+#if NON_MOCK_AUTH
+            Assert.That(Session.IsMockBuild(), Is.False);
+#else
+            Assert.That(Session.IsMockBuild(), Is.True);
+#endif
+        }
 
         [Test]
         public async Task SetConfigFileDirPathTest()
