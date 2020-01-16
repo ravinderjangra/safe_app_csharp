@@ -45,6 +45,7 @@ Task ("Run-Desktop-Tests")
   });
 
 Task ("Run-Desktop-Tests-AppVeyor")
+  .IsDependentOn ("Restore-NuGet")
   .Does (() => {
     DotNetCoreMSBuild (coreTestProject);
 
