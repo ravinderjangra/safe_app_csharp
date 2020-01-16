@@ -98,7 +98,7 @@ void AnalyseResultFile(string FilePath)
 }
 
 bool IsNonMockBuild() {
-    var isNonMock = Argument<bool>("non_mock", false);
+    var isNonMock = HasArgument("non_mock");
     if (isNonMock) {
         Information ("Project will be build and tested with NON_MOCK_AUTH flag.");
     }
