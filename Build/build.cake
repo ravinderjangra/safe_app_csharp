@@ -1,8 +1,8 @@
-#load "NativeScriptDownloader.cake"
+#load "NativeLibsDownloader.cake"
 #load "DesktopTest.cake"
 #load "AndroidTest.cake"
 #load "iOSTest.cake"
-#load "Utility.cake"
+#load "SetupLocalVault.cake"
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");

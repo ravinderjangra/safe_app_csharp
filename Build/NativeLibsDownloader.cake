@@ -5,7 +5,7 @@ var LIB_DIR_NAME = "../SafeApp.AppBindings/NativeLibs/";
 var ANDROID_DIR_NAME = $"{LIB_DIR_NAME}Android";
 var IOS_DIR_NAME = $"{LIB_DIR_NAME}iOS";
 var DESKTOP_DIR_NAME = $"{LIB_DIR_NAME}Desktop";
-var Native_DIR = Directory($"{System.IO.Path.GetTempPath()}nativelibs");
+var Native_DIR = Directory($"{System.IO.Path.GetTempPath()}SafeFfiNativeLibs");
 
 var ANDROID_ARMEABI_V7A = "armv7-linux-androideabi";
 var ANDROID_x86_64 = "x86_64-linux-android";
