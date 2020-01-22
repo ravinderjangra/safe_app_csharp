@@ -39,6 +39,10 @@ jobs:
     pool:
       vmImage: $(imageName)
     steps:
+    - task: UseDotNet@2
+      displayName: 'Use .Net Core sdk $(NETCORE_TEST_VERSION)'
+      inputs:
+        version: $(NETCORE_TEST_VERSION)
     - powershell: |
         powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=UnZip-Libs
         powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=Run-Desktop-Tests
