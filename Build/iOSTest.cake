@@ -16,6 +16,13 @@ var IOS_TCP_LISTEN_PORT = 10500;
 
 Task("Build-iOS-Test-Project")
     .Does(() => {
+    // Nuget restore
+    MSBuild(IOS_TEST_PROJ, c => {
+        c.Configuration = "Release";
+        c.Targets.Clear();
+        c.Targets.Add("Restore");
+    });
+
     // Build the project (with ipa)
     MSBuild(IOS_TEST_PROJ, c =>
     {
