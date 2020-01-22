@@ -26,6 +26,41 @@ pr:
     - README.md
 
 jobs:
+  - job: desktop_tests
+    displayName: Run Desktop Tests - $(imageName)
+    strategy:
+      matrix:
+        linux:
+          imageName: 'ubuntu-latest'
+        mac:
+          imageName: 'macOS-latest'
+        windows:
+          imageName: 'windows-latest'
+    pool:
+      vmImage: $(imageName)
+    steps:
+    - powershell: |
+        powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=UnZip-Libs
+        powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=Run-Desktop-Tests
+      displayName: 'Build and Run .NET Core Tests'
+      workingDirectory: Build
+      condition: and(succeeded(), eq(variables['imageName'], 'windows-latest'))
+    - bash: |
+        cd Build
+        chmod +x build.sh
+        ./build.sh --target=UnZip-Libs
+        ./build.sh --target=Run-Desktop-Tests
+      displayName: 'Build Solution and Run Tests'
+      condition: and(succeeded(), in(variables['imageName'], 'macOS-latest', 'ubuntu-latest'))
+    - task: PublishTestResults@2
+      displayName: 'Publish .NET Core Test Linux Results'
+      inputs:
+        testResultsFormat: VSTest
+        testResultsFiles: '**/DesktopTestResult.xml'
+        failTaskOnFailedTests: true
+        testRunTitle: '.NET Core Tests'
+      condition: succeededOrFailed()
+
   - job: ios_tests
     displayName: Run Tests - iOS
     pool:
@@ -87,17 +122,8 @@ jobs:
         chmod +x build.sh
         ./build.sh --target=UnZip-Libs
         ./build.sh --target=Run-Android-Tests
-        ./build.sh --target=Run-Desktop-Tests
       displayName: 'Build Solution and Run Tests'
       workingDirectory: Build
-    - task: PublishTestResults@2
-      displayName: 'Publish .NET Core Test MacOS Results'
-      inputs:
-        testResultsFormat: VSTest
-        testResultsFiles: '**/DesktopTestResult.xml'
-        failTaskOnFailedTests: true
-        testRunTitle: '.NET Core Tests'
-      condition: succeededOrFailed()
     - task: PublishTestResults@2
       displayName: 'Publish Android Test Results'
       inputs:
@@ -107,48 +133,20 @@ jobs:
         testRunTitle: 'Android Tests'
       condition: succeededOrFailed()
 
-  - job: linux_tests
-    displayName: Run Tests - Linux
-    pool:
-      vmImage: 'ubuntu-18.04'
-    steps:
-    - bash: |
-        cd Build
-        chmod +x build.sh
-        ./build.sh --target=UnZip-Libs
-        ./build.sh --target=Run-Desktop-Tests
-      displayName: 'Build Solution and Run Tests'
-    - task: PublishTestResults@2
-      displayName: 'Publish .NET Core Test Linux Results'
-      inputs:
-        testResultsFormat: VSTest
-        testResultsFiles: '**/DesktopTestResult.xml'
-        failTaskOnFailedTests: true
-        testRunTitle: '.NET Core Tests'
-      condition: succeededOrFailed()
-
-  - job: windows_tests
-    displayName: Test and Nuget Release - Windows
+  - job: nuget_create
+    displayName: Build Solution & Create Nuget Package
     pool:
       vmImage: 'windows-latest'
       demands:
       - msbuild
       - visualstudio
-    dependsOn: [ ios_tests, android_tests, linux_tests ]
+    dependsOn: [ ios_tests, android_tests, desktop_tests ]
+    condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
     steps:
     - powershell: |
         powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=UnZip-Libs
-        powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=Run-Desktop-Tests
-      displayName: 'Build and Run .NET Core Tests'
+      displayName: 'Download native libs'
       workingDirectory: Build
-    - task: PublishTestResults@2
-      displayName: 'Publish .NET Core Test Windows Results'
-      inputs:
-        testResultsFormat: VSTest
-        testResultsFiles: '**/DesktopTestResult.xml'
-        failTaskOnFailedTests: true
-        testRunTitle: '.NET Core Tests'
-      condition: succeededOrFailed()
     - task: VSBuild@1
       displayName: 'Build solution **\*.sln'
       inputs:
@@ -189,19 +187,12 @@ jobs:
         ArtifactName: package
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
-    - task: NuGetCommand@2
-      displayName: 'NuGet push'
-      inputs:
-        command: push
-        nuGetFeedType: external
-        publishFeedCredentials: 'NuGet package release'
-      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['isVersionChange'], 'true'))
-
-  - job: github_release
-    displayName: 'Create GitHub release'
+  - job: releases
+    displayName: 'GitHub Release & NuGet Push'
     pool:
-      vmImage: 'latest-macos'
-    dependsOn: windows_tests
+      vmImage: 'macOS-latest'
+    dependsOn: [ nuget_create ]
+    condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
     steps:
     - task: DownloadPipelineArtifact@2
       displayName: 'Download Pipeline Artifact'
@@ -246,4 +237,11 @@ jobs:
         assets: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
         isDraft: true
         addChangeLog: false
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['isVersionChange'], 'true'))
+    - task: NuGetCommand@2
+      displayName: 'NuGet push'
+      inputs:
+        command: push
+        nuGetFeedType: external
+        publishFeedCredentials: 'NuGet package release'
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['isVersionChange'], 'true'))
