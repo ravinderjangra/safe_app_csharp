@@ -52,6 +52,7 @@ jobs:
     - bash: |
         chmod +x build.sh
         ./build.sh --target=UnZip-Libs
+        ./build.sh --target=Restore-NuGet
         ./build.sh --target=Run-Desktop-Tests
       workingDirectory: Build
       displayName: 'Build Solution and Run Tests'
