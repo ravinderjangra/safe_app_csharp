@@ -1,8 +1,6 @@
 variables:
-  NugetPackageVersion: '$(CurrentSemanticVersion)'
   MONO_VERSION: 6_4_0
   XCODE_VERSION: 11.1
-  NETCORE_VERSION: '3.0.x'
   NETCORE_TEST_VERSION: '2.2.x'
   IOS_SIM_NAME: 'iPhone 11'
   IOS_SIM_RUNTIME: 'com.apple.CoreSimulator.SimRuntime.iOS-13-2'
@@ -43,6 +41,12 @@ jobs:
       displayName: 'Use .Net Core sdk $(NETCORE_TEST_VERSION)'
       inputs:
         version: $(NETCORE_TEST_VERSION)
+    - task: NuGetToolInstaller@1
+      displayName: 'Use NuGet 5.x'
+      inputs:
+        versionSpec: 5.x
+    - task: NuGetCommand@2
+      displayName: 'NuGet restore'
     - powershell: |
         powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=UnZip-Libs
         powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=Run-Desktop-Tests
@@ -52,7 +56,6 @@ jobs:
     - bash: |
         chmod +x build.sh
         ./build.sh --target=UnZip-Libs
-        ./build.sh --target=Restore-NuGet
         ./build.sh --target=Run-Desktop-Tests
       workingDirectory: Build
       displayName: 'Build Solution and Run Tests'
@@ -91,11 +94,16 @@ jobs:
         displayName: 'Install an Apple provisioning profile'
         inputs:
           provProfileSecureFile: 'dev profile.mobileprovision'
+      - task: NuGetToolInstaller@1
+        displayName: 'Use NuGet 5.x'
+        inputs:
+          versionSpec: 5.x
+      - task: NuGetCommand@2
+        displayName: 'NuGet restore'
       - bash: |
           #Run cake script
           chmod +x build.sh
           ./build.sh --target=UnZip-Libs
-          ./build.sh --target=Restore-NuGet
           ./build.sh --target=Run-iOS-Tests
         displayName: 'Run Tests'
         workingDirectory: Build
@@ -148,6 +156,12 @@ jobs:
     dependsOn: [ ios_tests, android_tests, desktop_tests ]
     condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
     steps:
+    - task: NuGetToolInstaller@1
+      displayName: 'Use NuGet 5.x'
+      inputs:
+        versionSpec: 5.x
+    - task: NuGetCommand@2
+      displayName: 'NuGet restore'
     - powershell: |
         powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=UnZip-Libs
       displayName: 'Download native libs'
