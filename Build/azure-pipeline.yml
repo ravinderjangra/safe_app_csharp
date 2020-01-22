@@ -27,7 +27,7 @@ pr:
 
 jobs:
   - job: desktop_tests
-    displayName: Run Desktop Tests - $(imageName)
+    displayName: Run Desktop Tests
     strategy:
       matrix:
         linux:
