@@ -31,7 +31,7 @@ jobs:
     strategy:
       matrix:
         linux:
-          imageName: 'ubuntu-latest'
+          imageName: 'ubuntu-18.04'
         mac:
           imageName: 'macOS-latest'
         windows:
@@ -46,12 +46,12 @@ jobs:
       workingDirectory: Build
       condition: and(succeeded(), eq(variables['imageName'], 'windows-latest'))
     - bash: |
-        cd Build
         chmod +x build.sh
         ./build.sh --target=UnZip-Libs
         ./build.sh --target=Run-Desktop-Tests
+      workingDirectory: Build
       displayName: 'Build Solution and Run Tests'
-      condition: and(succeeded(), in(variables['imageName'], 'macOS-latest', 'ubuntu-latest'))
+      condition: and(succeeded(), in(variables['imageName'], 'macOS-latest', 'ubuntu-18.04'))
     - task: PublishTestResults@2
       displayName: 'Publish .NET Core Test Linux Results'
       inputs:
