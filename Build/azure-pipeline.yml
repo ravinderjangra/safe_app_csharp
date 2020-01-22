@@ -37,6 +37,11 @@ jobs:
     pool:
       vmImage: $(imageName)
     steps:
+    - bash: |
+        sudo $AGENT_HOMEDIRECTORY/scripts/select-xamarin-sdk.sh 5_18_1
+        mono --version
+      displayName: 'Set mono version'
+      condition: and(succeeded(), eq(variables['imageName'], 'macOS-latest'))
     - task: UseDotNet@2
       displayName: 'Use .Net Core sdk $(NETCORE_TEST_VERSION)'
       inputs:
