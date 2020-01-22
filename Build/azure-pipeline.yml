@@ -110,14 +110,14 @@ jobs:
   - job: linux_tests
     displayName: Run Tests - Linux
     pool:
-      vmImage: 'ubuntu-latest'
+      vmImage: 'ubuntu-18.04'
     steps:
     - bash: |
+        cd Build
         chmod +x build.sh
         ./build.sh --target=UnZip-Libs
         ./build.sh --target=Run-Desktop-Tests
       displayName: 'Build Solution and Run Tests'
-      workingDirectory: Build
     - task: PublishTestResults@2
       displayName: 'Publish .NET Core Test Linux Results'
       inputs:
