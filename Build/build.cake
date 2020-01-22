@@ -19,7 +19,11 @@ var solutionFile = File("../SafeApp.sln");
 
 Task("Restore-NuGet")
   .Does(() => {
-    NuGetRestore(solutionFile);
+    MSBuild(solutionFile, c => {
+        c.Configuration = "Debug";
+        c.Targets.Clear();
+        c.Targets.Add("Restore");
+    });
   });
 
 Task("Analyse-Test-Result-Files")
