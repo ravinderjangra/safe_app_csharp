@@ -59,7 +59,7 @@ jobs:
         powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=Run-Vault
       displayName: 'Check for the prod run'
       workingDirectory: Build
-      condition: and(succeeded(), eq(variables['Agent.JobName'], 'windows_prod'))
+      condition: and(succeeded(), eq(variables['type'], 'prod'))
     - powershell: |
         powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=UnZip-Libs
         powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=Run-Desktop-Tests $(ProdBuildArg)
@@ -75,7 +75,7 @@ jobs:
         ./build.sh --target=Run-Vault
       displayName: 'Check for the prod run'
       workingDirectory: Build
-      condition: and(succeeded(), in(variables['Agent.JobName'], 'mac_prod', 'linux_prod'))
+      condition: and(succeeded(), eq(variables['type'], 'prod'))
     - bash: |
         chmod +x build.sh
         ./build.sh --target=UnZip-Libs
