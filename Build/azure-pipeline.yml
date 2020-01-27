@@ -24,14 +24,64 @@ pr:
     - README.md
 
 jobs:
-  - job: desktop_tests
-    displayName: Run Desktop Tests
+  - job: desktop_dev_tests
+    displayName: Run Desktop Tests - DEV
     strategy:
       matrix:
         linux:
           imageName: 'ubuntu-18.04'
         mac:
-          imageName: 'macos-10.14'
+          imageName: 'macOS-latest'
+        windows:
+          imageName: 'windows-latest'
+    pool:
+      vmImage: $(imageName)
+    steps:
+    - bash: |
+        sudo $AGENT_HOMEDIRECTORY/scripts/select-xamarin-sdk.sh 5_18_1
+        mono --version
+      displayName: 'Set mono version'
+      condition: and(succeeded(), eq(variables['imageName'], 'macOS-latest'))
+    - task: UseDotNet@2
+      displayName: 'Use .Net Core sdk $(NETCORE_TEST_VERSION)'
+      inputs:
+        version: $(NETCORE_TEST_VERSION)
+    - task: NuGetToolInstaller@1
+      displayName: 'Use NuGet 5.x'
+      inputs:
+        versionSpec: 5.x
+    - task: NuGetCommand@2
+      displayName: 'NuGet restore'
+    - powershell: |
+        powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=UnZip-Libs
+        powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=Run-Desktop-Tests
+      displayName: 'Build and Run Tests'
+      workingDirectory: Build
+      condition: and(succeeded(), eq(variables['imageName'], 'windows-latest'))
+    - bash: |
+        chmod +x build.sh
+        ./build.sh --target=UnZip-Libs
+        ./build.sh --target=Run-Desktop-Tests
+      workingDirectory: Build
+      displayName: 'Build and Run Tests'
+      condition: and(succeeded(), in(variables['imageName'], 'macOS-latest', 'ubuntu-18.04'))
+    - task: PublishTestResults@2
+      displayName: 'Publish .NET Core Test Linux Results'
+      inputs:
+        testResultsFormat: VSTest
+        testResultsFiles: '**/*TestResult.xml'
+        failTaskOnFailedTests: true
+        testRunTitle: '.NET Core Tests'
+      condition: succeededOrFailed()
+
+  - job: desktop_prod_tests
+    displayName: Run Desktop Tests - PROD
+    strategy:
+      matrix:
+        linux:
+          imageName: 'ubuntu-18.04'
+        mac:
+          imageName: 'macOS-latest'
         windows:
           imageName: 'windows-latest'
     pool:
@@ -58,15 +108,9 @@ jobs:
         powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=UnZip-Vault-Exe
         powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=Run-Vault
         powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=Run-Desktop-Tests --non_mock=true
-      displayName: 'Build and Run PROD tests'
+      displayName: 'Build and Run Tests'
       workingDirectory: Build
-      condition: and(succeeded(), eq(variables['imageName'], 'windows-latest'), eq(variables['type'], 'prod'))
-    - powershell: |
-        powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=UnZip-Libs
-        powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=Run-Desktop-Tests
-      displayName: 'Build and Run DEV tests'
-      workingDirectory: Build
-      condition: and(succeeded(), eq(variables['imageName'], 'windows-latest'), eq(variables['type'], 'dev'))
+      condition: and(succeeded(), eq(variables['imageName'], 'windows-latest'))
     - bash: |
         chmod +x build.sh
         ./build.sh --target=UnZip-Libs
@@ -76,16 +120,10 @@ jobs:
         chmod +x VaultExecutables/linux/safe_vault
         ./build.sh --target=Run-Vault
         ./build.sh --target=Run-Desktop-Tests --non_mock=true
-      displayName: 'Build and Run PROD tests'
-      workingDirectory: Build
-      condition: and(succeeded(), in(variables['imageName'], 'macOS-latest', 'ubuntu-18.04'), eq(variables['type'], 'prod'))
-    - bash: |
-        chmod +x build.sh
-        ./build.sh --target=UnZip-Libs
-        ./build.sh --target=Run-Desktop-Tests
+      displayName: 'Build and Run Tests'
       workingDirectory: Build
       displayName: 'Build Solution and Run Tests'
-      condition: and(succeeded(), in(variables['imageName'], 'macos-10.14', 'ubuntu-18.04'))
+      condition: and(succeeded(), in(variables['imageName'], 'macOS-latest', 'ubuntu-18.04'))
     - task: PublishTestResults@2
       displayName: 'Publish .NET Core Test Linux Results'
       inputs:
@@ -184,7 +222,7 @@ jobs:
       demands:
       - msbuild
       - visualstudio
-    dependsOn: [ ios_tests, android_tests, desktop_tests ]
+    dependsOn: [ ios_tests, android_tests, desktop_dev_tests ]
     condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
     steps:
     - task: NuGetToolInstaller@1
