@@ -53,29 +53,32 @@ jobs:
     - task: NuGetCommand@2
       displayName: 'NuGet restore'
     - powershell: |
-        echo "##vso[task.setvariable variable=ProdBuildArg]--non_mock=true"
+        powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=UnZip-Libs
         powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=UnZip-Auth-Libs
         powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=UnZip-Vault-Exe
         powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=Run-Vault
-      displayName: 'Check for the prod run'
+        powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=Run-Desktop-Tests --non_mock=true
+      displayName: 'Build and Run PROD tests'
       workingDirectory: Build
-      condition: and(succeeded(), eq(variables['type'], 'prod'))
+      condition: and(succeeded(), eq(variables['imageName'], 'windows-latest'), eq(variables['type'], 'prod'))
     - powershell: |
         powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=UnZip-Libs
-        powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=Run-Desktop-Tests $(ProdBuildArg)
-      displayName: 'Build and Run .NET Core Tests'
+        powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=Run-Desktop-Tests
+      displayName: 'Build and Run DEV tests'
       workingDirectory: Build
-      condition: and(succeeded(), eq(variables['imageName'], 'windows-latest'))
+      condition: and(succeeded(), eq(variables['imageName'], 'windows-latest'), eq(variables['type'], 'dev'))
     - bash: |
-        echo "##vso[task.setvariable variable=ProdBuildArg]--non_mock=true"
+        chmod +x build.sh
+        ./build.sh --target=UnZip-Libs
         ./build.sh --target=UnZip-Auth-Libs
         ./build.sh --target=UnZip-Vault-Exe
         chmod +x VaultExecutables/macos/safe_vault
         chmod +x VaultExecutables/linux/safe_vault
         ./build.sh --target=Run-Vault
-      displayName: 'Check for the prod run'
+        ./build.sh --target=Run-Desktop-Tests --non_mock=true
+      displayName: 'Build and Run PROD tests'
       workingDirectory: Build
-      condition: and(succeeded(), eq(variables['type'], 'prod'))
+      condition: and(succeeded(), in(variables['imageName'], 'macOS-latest', 'ubuntu-18.04'), eq(variables['type'], 'prod'))
     - bash: |
         chmod +x build.sh
         ./build.sh --target=UnZip-Libs
