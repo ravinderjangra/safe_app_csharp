@@ -1,5 +1,6 @@
 var SAFE_API_LIB_TAG = "9a41307";
 var AUTH_LIB_TAG = "183939d";
+var TAG = "9a41307";
 
 var S3_DOWNLOAD_BASE_URL = "https://safe-api.s3.amazonaws.com/";
 var S3_AUTH_DOWNLOAD_BASE_URL = "https://safe-client-libs.s3.amazonaws.com/";
@@ -25,7 +26,7 @@ var IOS_ARCHITECTURES = new string[] {
 var DESKTOP_ARCHITECTURES = new string[] {
   "x86_64-unknown-linux-gnu",
   "x86_64-apple-darwin",
-  "x86_64-pc-windows-msvc"
+  "x86_64-pc-windows-gnu"
 };
 var All_ARCHITECTURES = new string[][] {
   ANDROID_ARCHITECTURES,
