@@ -53,15 +53,33 @@ jobs:
     - task: NuGetCommand@2
       displayName: 'NuGet restore'
     - powershell: |
+        echo "##vso[task.setvariable variable=ProdBuildArg]--non_mock=true"
+        powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=UnZip-Auth-Libs
+        powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=UnZip-Vault-Exe
+        powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=Run-Vault
+      displayName: 'Check for the prod run'
+      workingDirectory: Build
+      condition: and(succeeded(), eq(variables['Agent.JobName'], 'windows_prod'))
+    - powershell: |
         powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=UnZip-Libs
-        powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=Run-Desktop-Tests
+        powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=Run-Desktop-Tests $(ProdBuildArg)
       displayName: 'Build and Run .NET Core Tests'
       workingDirectory: Build
       condition: and(succeeded(), eq(variables['imageName'], 'windows-latest'))
     - bash: |
+        echo "##vso[task.setvariable variable=ProdBuildArg]--non_mock=true"
+        ./build.sh --target=UnZip-Auth-Libs
+        ./build.sh --target=UnZip-Vault-Exe
+        chmod +x VaultExecutables/macos/safe_vault
+        chmod +x VaultExecutables/linux/safe_vault
+        ./build.sh --target=Run-Vault
+      displayName: 'Check for the prod run'
+      workingDirectory: Build
+      condition: and(succeeded(), in(variables['Agent.JobName'], 'mac_prod', 'linux_prod'))
+    - bash: |
         chmod +x build.sh
         ./build.sh --target=UnZip-Libs
-        ./build.sh --target=Run-Desktop-Tests
+        ./build.sh --target=Run-Desktop-Tests $(ProdBuildArg)
       workingDirectory: Build
       displayName: 'Build Solution and Run Tests'
       condition: and(succeeded(), in(variables['imageName'], 'macos-10.14', 'ubuntu-18.04'))
@@ -69,7 +87,7 @@ jobs:
       displayName: 'Publish .NET Core Test Linux Results'
       inputs:
         testResultsFormat: VSTest
-        testResultsFiles: '**/DesktopTestResult.xml'
+        testResultsFiles: '**/*TestResult.xml'
         failTaskOnFailedTests: true
         testRunTitle: '.NET Core Tests'
       condition: succeededOrFailed()
