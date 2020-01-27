@@ -47,7 +47,21 @@ Task ("Run-Desktop-Tests")
 Task ("Run-Desktop-Tests-AppVeyor")
   .IsDependentOn ("Restore-NuGet")
   .Does (() => {
-    DotNetCoreMSBuild (coreTestProject);
+    // Check is nonmock auth build
+    var msBuildArgument = IsNonMockBuild() ? msBuildNonMockArgument : string.Empty;
+    var testResultFileName = IsNonMockBuild() ? "DesktopNonMockTestResult" : "DesktopTestResult";
+
+    var cleanSettings = new DotNetCoreCleanSettings
+    {
+        Configuration = configuration
+    };
+    DotNetCoreClean(coreTestProject, cleanSettings);
+
+    var buildSettings = new DotNetCoreMSBuildSettings () {
+      ArgumentCustomization = args => args.Append (msBuildArgument)
+    };
+    buildSettings.SetConfiguration (configuration);
+    DotNetCoreMSBuild (coreTestProject, buildSettings);
 
     OpenCover (tool => {
         tool.DotNetCoreTest (
