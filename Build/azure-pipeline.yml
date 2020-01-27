@@ -82,7 +82,7 @@ jobs:
     - bash: |
         chmod +x build.sh
         ./build.sh --target=UnZip-Libs
-        ./build.sh --target=Run-Desktop-Tests $(ProdBuildArg)
+        ./build.sh --target=Run-Desktop-Tests
       workingDirectory: Build
       displayName: 'Build Solution and Run Tests'
       condition: and(succeeded(), in(variables['imageName'], 'macos-10.14', 'ubuntu-18.04'))
