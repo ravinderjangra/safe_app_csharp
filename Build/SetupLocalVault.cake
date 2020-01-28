@@ -85,7 +85,7 @@ Task ("Run-Vault")
             var fullFilePath = MakeAbsolute(File(exeFilePath));
             Information (fullFilePath);
             if (FileExists(fullFilePath)) {
-                StartAndReturnProcess (fullFilePath);
+                StartProcess (fullFilePath);
             }
             else {
                 throw new Exception($"Vault file doesn't exists. Expected location : {fullFilePath}");

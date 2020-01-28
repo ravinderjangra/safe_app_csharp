@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -31,9 +30,7 @@ namespace SafeApp.Tests
 #endif
         }
 
-#if WIN64 && NETCOREAPP
-        [Ignore("Rust logger not working on .NET Core Windows, needs more testing locally")]
-#endif
+        [Ignore("Test changes the location for the config files and will cause failing for other tests")]
         [Test]
         public async Task RustLoggerTest()
         {
