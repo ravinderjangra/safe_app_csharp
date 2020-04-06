@@ -2,7 +2,7 @@
 #load "DesktopTest.cake"
 #load "AndroidTest.cake"
 #load "iOSTest.cake"
-#load "SetupLocalVault.cake"
+#load "RunSection.cake"
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
