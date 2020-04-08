@@ -25,6 +25,11 @@ var IOS_ARCHITECTURES = new string[] {
 var DESKTOP_ARCHITECTURES = new string[] {
   "x86_64-unknown-linux-gnu",
   "x86_64-apple-darwin",
+  "x86_64-pc-windows-msvc"
+};
+var AUTH_DESKTOP_ARCHITECTURES = new string[] {
+  "x86_64-unknown-linux-gnu",
+  "x86_64-apple-darwin",
   "x86_64-pc-windows-gnu"
 };
 var All_ARCHITECTURES = new string[][] {
@@ -181,7 +186,7 @@ Task("Download-Auth-Libs")
       }
     }
     
-    foreach(var item in DESKTOP_ARCHITECTURES)
+    foreach(var item in AUTH_DESKTOP_ARCHITECTURES)
     {
       var zipFileName = $"safe_authenticator_ffi-{AUTH_LIB_TAG}-{item}.zip";
       var zipFileDownloadUrl = $"{S3_AUTH_DOWNLOAD_BASE_URL}{zipFileName}";
