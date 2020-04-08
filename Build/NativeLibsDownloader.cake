@@ -1,6 +1,5 @@
-var SAFE_API_LIB_TAG = "9a41307";
-var AUTH_LIB_TAG = "183939d";
-var TAG = "9a41307";
+var SAFE_API_LIB_TAG = "64a5f70";
+var AUTH_LIB_TAG = "93958f2";
 
 var S3_DOWNLOAD_BASE_URL = "https://safe-api.s3.amazonaws.com/";
 var S3_AUTH_DOWNLOAD_BASE_URL = "https://safe-client-libs.s3.amazonaws.com/";
@@ -184,7 +183,7 @@ Task("Download-Auth-Libs")
     
     foreach(var item in DESKTOP_ARCHITECTURES)
     {
-      var zipFileName = $"safe_authenticator-{AUTH_LIB_TAG}-{item}.zip";
+      var zipFileName = $"safe_authenticator_ffi-{AUTH_LIB_TAG}-{item}.zip";
       var zipFileDownloadUrl = $"{S3_AUTH_DOWNLOAD_BASE_URL}{zipFileName}";
       var zipSavePath = $"{targetDirectory}/{zipFileName}";
 
@@ -216,6 +215,11 @@ Task("Download-Auth-Libs")
       var filename = zip.GetFilename();
       Information(" Unzipping : " + filename);
       Unzip(zip, AUTH_LIB_DIR_NAME);
+      var unZippedFiles = GetFiles($"{ AUTH_LIB_DIR_NAME.ToString()}/*.*");
+      foreach (var file in unZippedFiles)
+      {
+          MoveFile(file.FullPath, file.FullPath.Replace("safe_authenticator_ffi", "safe_authenticator"));
+      }
     }
   })
   .ReportError(exception => {

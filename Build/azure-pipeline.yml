@@ -106,6 +106,7 @@ jobs:
         powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=Unzip-Cli
         powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=Run-Section
         powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=UnZip-Libs
+        powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=UnZip-Auth-Libs
         powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=Run-Desktop-Tests --non_mock=true
         powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=Kill-Section
       displayName: 'Build and Run Tests'
@@ -118,6 +119,7 @@ jobs:
         chmod +x CliExecutables/linux/safe
         ./build.sh --target=Run-Section
         ./build.sh --target=UnZip-Libs
+        ./build.sh --target=UnZip-Auth-Libs
         ./build.sh --target=Run-Desktop-Tests --non_mock=true
         ./build.sh --target=Kill-Section
       displayName: 'Build and Run Tests'
