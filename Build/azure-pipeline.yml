@@ -66,7 +66,7 @@ jobs:
       displayName: 'Build and Run Tests'
       condition: and(succeeded(), in(variables['imageName'], 'macOS-latest', 'ubuntu-18.04'))
     - task: PublishTestResults@2
-      displayName: 'Publish .NET Core Test Linux Results'
+      displayName: 'Publish .NET Core Test Results - Dev'
       inputs:
         testResultsFormat: VSTest
         testResultsFiles: '**/*TestResult.xml'
@@ -103,35 +103,34 @@ jobs:
     - task: NuGetCommand@2
       displayName: 'NuGet restore'
     - powershell: |
+        powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=Unzip-Cli
+        powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=Run-Section
         powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=UnZip-Libs
-        powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=UnZip-Auth-Libs
-        powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=UnZip-Vault-Exe
-        powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=Run-Vault
         powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=Run-Desktop-Tests --non_mock=true
+        powershell -ExecutionPolicy Bypass -f .\build.ps1 --target=Kill-Section
       displayName: 'Build and Run Tests'
       workingDirectory: Build
       condition: and(succeeded(), eq(variables['imageName'], 'windows-latest'))
     - bash: |
         chmod +x build.sh
+        ./build.sh --target=Unzip-Cli
+        chmod +x CliExecutables/macos/safe
+        chmod +x CliExecutables/linux/safe
+        ./build.sh --target=Run-Section
         ./build.sh --target=UnZip-Libs
-        ./build.sh --target=UnZip-Auth-Libs
-        ./build.sh --target=UnZip-Vault-Exe
-        chmod +x VaultExecutables/macos/safe_vault
-        chmod +x VaultExecutables/linux/safe_vault
-        ./build.sh --target=Run-Vault
         ./build.sh --target=Run-Desktop-Tests --non_mock=true
+        ./build.sh --target=Kill-Section
       displayName: 'Build and Run Tests'
       workingDirectory: Build
       displayName: 'Build Solution and Run Tests'
       condition: and(succeeded(), in(variables['imageName'], 'macOS-latest', 'ubuntu-18.04'))
     - task: PublishTestResults@2
-      displayName: 'Publish .NET Core Test Linux Results'
+      displayName: 'Publish .NET Core Test Results'
       inputs:
         testResultsFormat: VSTest
         testResultsFiles: '**/*TestResult.xml'
         failTaskOnFailedTests: true
         testRunTitle: '.NET Core Tests'
-      condition: succeededOrFailed()
 
   - job: ios_tests
     displayName: Run Tests - iOS
