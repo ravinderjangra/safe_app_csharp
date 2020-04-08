@@ -24,9 +24,9 @@ namespace SafeApp.Tests
         public void IsMockSafeAppBuildTest()
         {
 #if NON_MOCK_AUTH
-            Assert.That(Session.IsMockBuild(), Is.False);
+            Assert.That(Session.AppIsMock(), Is.False);
 #else
-            Assert.That(Session.IsMockBuild(), Is.True);
+            Assert.That(Session.AppIsMock(), Is.True);
 #endif
         }
 
