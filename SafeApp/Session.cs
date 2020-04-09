@@ -45,9 +45,8 @@ namespace SafeApp
         /// <summary>
         /// Event triggered if session is disconnected from the network.
         /// </summary>
-#pragma warning disable SA1401 // Fields should be private
-        public static EventHandler Disconnected;
-#pragma warning restore SA1401 // Fields should be private
+        public static event EventHandler Disconnected;
+
         private SafeAppPtr _appPtr;
         private GCHandle _disconnectedHandle;
 
@@ -96,6 +95,7 @@ namespace SafeApp
                 {
                     if (result.ErrorCode != 0)
                     {
+                        disconnectedHandle.Free();
                         tcs.SetException(result.ToException());
                         return;
                     }
@@ -103,8 +103,8 @@ namespace SafeApp
                     session.Init(ptr, disconnectedHandle);
                     tcs.SetResult(session);
                 };
-
-                AppBindings.ConnectApp(appId, authResponse, acctConnectedCb);
+                Action disconnectedCb = () => { OnDisconnected(session); };
+                AppBindings.ConnectApp(appId, authResponse, disconnectedCb, acctConnectedCb);
                 return tcs.Task;
             });
         }
@@ -124,6 +124,7 @@ namespace SafeApp
                 {
                     if (result.ErrorCode != 0)
                     {
+                        disconnectedHandle.Free();
                         tcs.SetException(result.ToException());
                         return;
                     }
@@ -131,8 +132,8 @@ namespace SafeApp
                     session.Init(ptr, disconnectedHandle);
                     tcs.SetResult(session);
                 };
-
-                AppBindings.ConnectApp(appId, null, acctConnectedCb);
+                Action disconnectedCb = () => { OnDisconnected(session); };
+                AppBindings.ConnectApp(appId, null, disconnectedCb, acctConnectedCb);
                 return tcs.Task;
             });
         }

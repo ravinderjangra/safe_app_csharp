@@ -44,6 +44,7 @@ namespace SafeApp.AppBindings
         void ConnectApp(
             string appId,
             string authCredentials,
+            Action oDisconnectNotifierCb,
             Action<FfiResult, IntPtr, GCHandle> oCb);
         #endregion
 
