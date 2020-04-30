@@ -10,8 +10,8 @@
         <NativeLibType>mock</NativeLibType>
       </PropertyGroup>
       <ItemGroup>
-        <Reference Include="SafeApp.MockAuthBindings">
-          <HintPath>$(MSBuildThisFileDirectory)SafeApp.MockAuthBindings.dll</HintPath>
+        <Reference Include="SafeAuthenticator">
+          <HintPath>$(MSBuildThisFileDirectory)SafeAuthenticator.dll</HintPath>
         </Reference>
       </ItemGroup>
     </When>

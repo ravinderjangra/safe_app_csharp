@@ -86,10 +86,6 @@
       <Project>{d785b126-3720-4420-8207-3bdbfabcbe05}</Project>
       <Name>SafeApp.AppBindings</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\SafeApp.MockAuthBindings\SafeApp.MockAuthBindings.csproj">
-      <Project>{a50ad45f-a945-41af-8b22-b2dcaa266eac}</Project>
-      <Name>SafeAuthenticator</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\SafeApp.Core\SafeApp.Core.csproj">
       <Project>{a0450f47-b05e-4c53-9845-7b89d708d3e3}</Project>
       <Name>SafeApp.Core</Name>
@@ -97,6 +93,10 @@
     <ProjectReference Include="..\..\SafeApp\SafeApp.csproj">
       <Project>{82fd8e34-048c-4c74-b7a6-7cefc054f87d}</Project>
       <Name>SafeApp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SafeAuthenticator\SafeAuthenticator.csproj">
+      <Project>{A50AD45F-A945-41AF-8B22-B2DCAA266EAC}</Project>
+      <Name>SafeAuthenticator</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
