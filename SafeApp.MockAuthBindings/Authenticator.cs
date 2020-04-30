@@ -4,14 +4,14 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using SafeApp.Core;
 
-namespace SafeApp.MockAuthBindings
+namespace SafeAuthenticator
 {
     /// <summary>
     /// The Authenticator contains all authentication related functionality for the mock network.
     /// </summary>
     public class Authenticator : IDisposable
     {
-        private static readonly IAuthBindings NativeBindings = MockAuthResolver.Current;
+        private static readonly IAuthBindings NativeBindings = AuthResolver.Current;
 
         /// <summary>
         /// Event triggered if session is disconnected from network.

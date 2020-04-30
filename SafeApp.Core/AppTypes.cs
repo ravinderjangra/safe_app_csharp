@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: InternalsVisibleTo("SafeApp.AppBindings")]
-[assembly: InternalsVisibleTo("SafeApp.MockAuthBindings")]
+[assembly: InternalsVisibleTo("SafeAuthenticator")]
 
 namespace SafeApp.Core
 {

@@ -1,5 +1,4 @@
-﻿#if !NETSTANDARD || __DESKTOP__
-#if __IOS__
+﻿#if __IOS__
 using ObjCRuntime;
 #endif
 using System;
@@ -9,7 +8,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using SafeApp.Core;
 
-namespace SafeApp.MockAuthBindings
+namespace SafeAuthenticator
 {
     internal partial class AuthBindings : IAuthBindings
     {
@@ -339,4 +338,3 @@ namespace SafeApp.MockAuthBindings
             UIntPtr metadataLen);
     }
 }
-#endif

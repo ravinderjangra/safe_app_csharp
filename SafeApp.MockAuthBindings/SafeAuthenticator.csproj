@@ -19,10 +19,6 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net472' Or '$(TargetFramework)' == 'netcoreapp2.2' ">
-    <DefineConstants>__DESKTOP__</DefineConstants>
-  </PropertyGroup>
-
   <PropertyGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">
     <AndroidUseIntermediateDesignerFile>False</AndroidUseIntermediateDesignerFile>
   </PropertyGroup>

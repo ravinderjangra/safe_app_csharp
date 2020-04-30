@@ -88,7 +88,7 @@
     </ProjectReference>
     <ProjectReference Include="..\..\SafeApp.MockAuthBindings\SafeApp.MockAuthBindings.csproj">
       <Project>{a50ad45f-a945-41af-8b22-b2dcaa266eac}</Project>
-      <Name>SafeApp.MockAuthBindings</Name>
+      <Name>SafeAuthenticator</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\SafeApp.Core\SafeApp.Core.csproj">
       <Project>{a0450f47-b05e-4c53-9845-7b89d708d3e3}</Project>

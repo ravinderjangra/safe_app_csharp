@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using SafeApp.Core;
 
-namespace SafeApp.MockAuthBindings
+namespace SafeAuthenticator
 {
     /// <summary>
     /// Represents an application registered with the authenticator.
