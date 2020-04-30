@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using SafeApp.Core;
 
 #pragma warning disable SA1401 // Fields should be private
-namespace SafeApp.MockAuthBindings
+namespace SafeAuthenticator
 {
     /// <summary>
     /// Base IPC request

@@ -1,6 +1,4 @@
-﻿#if !NETSTANDARD || __DESKTOP__
-
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
@@ -10,7 +8,7 @@ using SafeApp.Core;
 using ObjCRuntime;
 #endif
 
-namespace SafeApp.MockAuthBindings
+namespace SafeAuthenticator
 {
     internal partial class AuthBindings
     {
@@ -137,4 +135,3 @@ namespace SafeApp.MockAuthBindings
         private delegate void FfiResultIpcReqErrorCb(IntPtr userData, IntPtr result, string msg);
     }
 }
-#endif

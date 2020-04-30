@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using SafeApp.Core;
 
-namespace SafeApp.MockAuthBindings
+namespace SafeAuthenticator
 {
     internal partial interface IAuthBindings
     {

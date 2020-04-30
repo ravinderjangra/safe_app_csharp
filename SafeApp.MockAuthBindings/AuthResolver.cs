@@ -1,35 +1,31 @@
 ﻿using System;
 using System.Threading;
 
-namespace SafeApp.MockAuthBindings
+namespace SafeAuthenticator
 {
-    internal static class MockAuthResolver
+    internal static class AuthResolver
     {
+#if !NETSTANDARD
         private static readonly Lazy<IAuthBindings> Implementation = new Lazy<IAuthBindings>(
           CreateBindings,
           LazyThreadSafetyMode.PublicationOnly);
 
-        internal static IAuthBindings Current
+        private static IAuthBindings CreateBindings()
+        {
+            return new AuthBindings();
+        }
+#endif
+
+        public static IAuthBindings Current
         {
             get
             {
-                var ret = Implementation.Value;
-                if (ret == null)
-                {
-                    throw NotImplementedInReferenceAssembly();
-                }
-
-                return ret;
-            }
-        }
-
-        private static IAuthBindings CreateBindings()
-        {
-#if NETSTANDARD && !__DESKTOP__
-      return null;
+#if NETSTANDARD
+                throw NotImplementedInReferenceAssembly();
 #else
-            return new AuthBindings();
+                return Implementation.Value;
 #endif
+            }
         }
 
         private static Exception NotImplementedInReferenceAssembly()
