@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SafeApp.Core;
-using SafeApp.MockAuthBindings;
+using SafeAuthenticator;
 
 #if __ANDROID__
 using Android.App;

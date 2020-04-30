@@ -43,9 +43,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\SafeApp.AppBindings\SafeApp.AppBindings.csproj" />
-    <ProjectReference Include="..\..\SafeApp.MockAuthBindings\SafeApp.MockAuthBindings.csproj" />
     <ProjectReference Include="..\..\SafeApp.Core\SafeApp.Core.csproj" />
     <ProjectReference Include="..\..\SafeApp\SafeApp.csproj" />
+    <ProjectReference Include="..\..\SafeAuthenticator\SafeAuthenticator.csproj" />
   </ItemGroup>
 
   <Import Project="..\SafeApp.Tests\SafeApp.Tests.projitems" Label="Shared" />
