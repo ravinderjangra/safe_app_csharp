@@ -16,16 +16,7 @@ namespace SafeAuthenticator
         /// <summary>
         /// Event triggered if session is disconnected from network.
         /// </summary>
-#pragma warning disable SA1401 // Fields should be private
-        public static EventHandler Disconnected;
-#pragma warning restore SA1401 // Fields should be private
         private IntPtr _authPtr;
-        private GCHandle _disconnectedHandle;
-
-        /// <summary>
-        /// Returns true if current network connection state is DISCONNECTED.
-        /// </summary>
-        public bool IsDisconnected { get; private set; }
 
         /// <summary>
         /// Returns true if the native library was compiled with mock-routing feature.
@@ -33,43 +24,27 @@ namespace SafeAuthenticator
         /// <returns>True if compiled with mock-routing feature otherwise false.</returns>
         public static bool IsMockBuild()
         {
-            return NativeBindings.IsMockBuild();
-        }
-
-        /// <summary>
-        /// Creates the output log file in default config path.
-        /// Returns the path of where the safe_core log file is created.
-        /// </summary>
-        /// <param name="outputFileName">Log file name.</param>
-        /// <returns>the path of where the safe_core log file is created.</returns>
-        public static Task AuthInitLoggingAsync(string outputFileName)
-        {
-            return NativeBindings.AuthInitLoggingAsync(outputFileName);
+            return NativeBindings.AuthIsMock();
         }
 
         /// <summary>
         /// Create new Account with a provided set of keys.
         /// </summary>
-        /// <param name="locator">Account locator/username.</param>
-        /// <param name="secret">Account secret/password.</param>
+        /// <param name="secretKey">SecretKey.</param>
+        /// <param name="passphrase">Account passphrase.</param>
+        /// <param name="password">Account password.</param>
         /// <returns>New Authenticator instance.</returns>
-        public static Task<Authenticator> CreateAccountAsync(string locator, string secret)
+        public static Task<Authenticator> CreateAccountAsync(string secretKey, string passphrase, string password)
         {
             return Task.Run(
               () =>
               {
                   var authenticator = new Authenticator();
                   var tcs = new TaskCompletionSource<Authenticator>(TaskCreationOptions.RunContinuationsAsynchronously);
-                  Action disconnect = () => { OnDisconnected(authenticator); };
                   Action<FfiResult, IntPtr, GCHandle> cb = (result, ptr, disconnectHandle) =>
                   {
                       if (result.ErrorCode != 0)
                       {
-                          if (disconnectHandle.IsAllocated)
-                          {
-                              disconnectHandle.Free();
-                          }
-
                           tcs.SetException(result.ToException());
                           return;
                       }
@@ -77,19 +52,9 @@ namespace SafeAuthenticator
                       authenticator.Init(ptr, disconnectHandle);
                       tcs.SetResult(authenticator);
                   };
-                  NativeBindings.CreateAccount(locator, secret, disconnect, cb);
+                  NativeBindings.CreateAccountAsync(secretKey, passphrase, password, cb);
                   return tcs.Task;
               });
-        }
-
-        /// <summary>
-        /// Decode the incoming unregistered client authentication message.
-        /// </summary>
-        /// <param name="msg">Message string.</param>
-        /// <returns>New IpcReq object.</returns>
-        public static Task<IpcReq> UnRegisteredDecodeIpcMsgAsync(string msg)
-        {
-            return NativeBindings.UnRegisteredDecodeIpcMsgAsync(msg);
         }
 
         /// <summary>
@@ -98,14 +63,13 @@ namespace SafeAuthenticator
         /// <param name="reqId">Request Id.</param>
         /// <param name="allow">Pass true to allow unregistered client authentication request. False to deny.</param>
         /// <returns>Encoded unregistered client authentication response string.</returns>
-        public static Task<string> EncodeUnregisteredRespAsync(uint reqId, bool allow)
+        public static Task<string> AutheriseUnregisteredAppAsync(uint reqId, bool allow)
         {
-            return NativeBindings.EncodeUnregisteredRespAsync(reqId, allow);
+            return NativeBindings.AutheriseUnregisteredAppAsync(reqId, allow);
         }
 
         private Authenticator()
         {
-            IsDisconnected = true;
             _authPtr = IntPtr.Zero;
         }
 
@@ -119,42 +83,12 @@ namespace SafeAuthenticator
         }
 
         /// <summary>
-        /// Return a list of apps having access to an arbitrary Mutable Data object.
-        /// name and typeTag together correspond to a single Mutable Data.
-        /// </summary>
-        /// <param name="name">Mutable Data XOR name.</param>
-        /// <param name="typeTag">Mutable Data tagType.</param>
-        /// <returns>List of Apps having access to Mutable Data.</returns>
-        public Task<List<AppAccess>> AuthAppsAccessingMutableDataAsync(byte[] name, ulong typeTag)
-        {
-            return NativeBindings.AuthAppsAccessingMutableDataAsync(_authPtr, name, typeTag);
-        }
-
-        /// <summary>
-        /// Flush the revocation queue and verify apps get revoked.
-        /// </summary>
-        /// <returns></returns>
-        public Task AuthFlushAppRevocationQueueAsync()
-        {
-            return NativeBindings.AuthFlushAppRevocationQueueAsync(_authPtr);
-        }
-
-        /// <summary>
-        /// Try to restore a failed connection with the network.
-        /// </summary>
-        /// <returns></returns>
-        public Task AuthReconnectAsync()
-        {
-            return NativeBindings.AuthReconnectAsync(_authPtr);
-        }
-
-        /// <summary>
         /// Get the list of apps which was granted access by the user.
         /// </summary>
         /// <returns>List of registered apps.</returns>
-        public Task<List<RegisteredApp>> AuthRegisteredAppsAsync()
+        public Task<List<AuthedApp>> AuthRegisteredAppsAsync()
         {
-            return NativeBindings.AuthRegisteredAppsAsync(_authPtr);
+            return NativeBindings.AuthdAppAsync(_authPtr);
         }
 
         /// <summary>
@@ -164,69 +98,18 @@ namespace SafeAuthenticator
         /// <returns></returns>
         public Task AuthRevokeAppAsync(string appId)
         {
-            return NativeBindings.AuthRevokeAppAsync(_authPtr, appId);
-        }
-
-        /// <summary>
-        /// Get the list of apps revoked from authenticator.
-        /// </summary>
-        /// <returns>List of revoked app's exchange info.</returns>
-        public Task<List<AppExchangeInfo>> AuthRevokedAppsAsync()
-        {
-            return NativeBindings.AuthRevokedAppsAsync(_authPtr);
-        }
-
-        /// <summary>
-        /// Removes a revoked app from the authenticator config.
-        /// </summary>
-        /// <param name="appId">App id.</param>
-        /// <returns></returns>
-        public Task AuthRmRevokedAppAsync(string appId)
-        {
-            return NativeBindings.AuthRmRevokedAppAsync(_authPtr, appId);
-        }
-
-        /// <summary>
-        /// Decodes a given encoded IPC message.
-        /// </summary>
-        /// <param name="msg">Message string.</param>
-        /// <returns>New IpcReq instance.</returns>
-        public Task<IpcReq> DecodeIpcMessageAsync(string msg)
-        {
-            return NativeBindings.DecodeIpcMessage(_authPtr, msg);
+            return NativeBindings.RevokeAppAsync(_authPtr, appId);
         }
 
         /// <summary>
         /// Allow or deny an AuthIpcReq.
         /// </summary>
-        /// <param name="authIpcReq">Authentication IPC request.</param>
+        /// <param name="encodedRequest">Encoded authentication IPC request.</param>
         /// <param name="allow">Pass true to accept the authentication request and false to deny.</param>
         /// <returns>Encoded AuthIpcResponse string.</returns>
-        public Task<string> EncodeAuthRespAsync(AuthIpcReq authIpcReq, bool allow)
+        public Task<string> AutheriseAppAsync(string encodedRequest, bool allow)
         {
-            return NativeBindings.EncodeAuthRespAsync(_authPtr, ref authIpcReq.AuthReq, authIpcReq.ReqId, allow);
-        }
-
-        /// <summary>
-        /// Allow or deny ContainersIpcReq.
-        /// </summary>
-        /// <param name="req">Containers IPC request.</param>
-        /// <param name="allow">Pass true to accept the Container request and false to deny.</param>
-        /// <returns>Encoded Containers permissions Response.</returns>
-        public Task<string> EncodeContainersRespAsync(ContainersIpcReq req, bool allow)
-        {
-            return NativeBindings.EncodeContainersRespAsync(_authPtr, ref req.ContainersReq, req.ReqId, allow);
-        }
-
-        /// <summary>
-        /// Allow or deny ShareMDataIpcReq.
-        /// </summary>
-        /// <param name="req">Share Mutable Data IPC request.</param>
-        /// <param name="allow">Pass true to accept the ShareMData request and false to deny.</param>
-        /// <returns>Encoded ShareMData response.</returns>
-        public Task<string> EncodeShareMdataRespAsync(ShareMDataIpcReq req, bool allow)
-        {
-            return NativeBindings.EncodeShareMDataRespAsync(_authPtr, ref req.ShareMDataReq, req.ReqId, allow);
+            return NativeBindings.AutheriseAppAsync(_authPtr, encodedRequest, allow);
         }
 
         /// <summary>
@@ -239,50 +122,36 @@ namespace SafeAuthenticator
 
         private void FreeAuth()
         {
-            if (_disconnectedHandle.IsAllocated)
-            {
-                _disconnectedHandle.Free();
-            }
-
             if (_authPtr == IntPtr.Zero)
             {
                 return;
             }
 
-            NativeBindings.AuthFree(_authPtr);
             _authPtr = IntPtr.Zero;
         }
 
         private void Init(IntPtr authPtr, GCHandle disconnectedHandle)
         {
             _authPtr = authPtr;
-            _disconnectedHandle = disconnectedHandle;
-            IsDisconnected = false;
         }
 
         /// <summary>
         /// Log-in to a registered account.
         /// </summary>
-        /// <param name="locator">Account location/username.</param>
-        /// <param name="secret">Account secret/password.</param>
+        /// <param name="passphrase">Account passphrase.</param>
+        /// <param name="password">Account password.</param>
         /// <returns>New authenticator instance.</returns>
-        public static Task<Authenticator> LoginAsync(string locator, string secret)
+        public static Task<Authenticator> LoginAsync(string passphrase, string password)
         {
             return Task.Run(
               () =>
               {
                   var authenticator = new Authenticator();
                   var tcs = new TaskCompletionSource<Authenticator>(TaskCreationOptions.RunContinuationsAsynchronously);
-                  Action disconnect = () => { OnDisconnected(authenticator); };
                   Action<FfiResult, IntPtr, GCHandle> cb = (result, ptr, disconnectHandle) =>
                   {
                       if (result.ErrorCode != 0)
                       {
-                          if (disconnectHandle.IsAllocated)
-                          {
-                              disconnectHandle.Free();
-                          }
-
                           tcs.SetException(result.ToException());
                           return;
                       }
@@ -290,15 +159,9 @@ namespace SafeAuthenticator
                       authenticator.Init(ptr, disconnectHandle);
                       tcs.SetResult(authenticator);
                   };
-                  NativeBindings.Login(locator, secret, disconnect, cb);
+                  NativeBindings.LoginAsync(passphrase, password, cb);
                   return tcs.Task;
               });
-        }
-
-        private static void OnDisconnected(Authenticator authenticator)
-        {
-            authenticator.IsDisconnected = true;
-            Disconnected?.Invoke(authenticator, EventArgs.Empty);
         }
     }
 }
