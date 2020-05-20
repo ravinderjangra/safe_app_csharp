@@ -1,38 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SafeApp.Core;
 
 namespace SafeAuthenticator
 {
     internal partial interface IAuthBindings
     {
-        Task<List<AppAccess>> AuthAppsAccessingMutableDataAsync(IntPtr auth, byte[] mdName, ulong mdTypeTag);
+        Task<IntPtr> LogInAsync(string passphrase, string password);
 
-        Task AuthFlushAppRevocationQueueAsync(IntPtr auth);
+        Task LogOutAsync(IntPtr app);
 
-        void AuthFree(IntPtr auth);
+        Task<bool> IsLoggedInAsync(IntPtr app);
 
-        Task AuthInitLoggingAsync(string outputFileNameOverride);
+        Task<IntPtr> CreateAccAsync(string secretKey, string passphrase, string password);
 
-        Task AuthReconnectAsync(IntPtr auth);
+        Task<string> AutheriseAppAsync(IntPtr app, string request, bool isGranted);
 
-        Task<List<RegisteredApp>> AuthRegisteredAppsAsync(IntPtr auth);
+        Task RevokeAppAsync(IntPtr app, string appId);
 
-        Task<string> AuthRevokeAppAsync(IntPtr auth, string appId);
+        Task<List<AuthedApp>> AuthdAppAsync(IntPtr app);
 
-        Task<List<AppExchangeInfo>> AuthRevokedAppsAsync(IntPtr auth);
-
-        Task AuthRmRevokedAppAsync(IntPtr auth, string appId);
-
-        Task<string> EncodeAuthRespAsync(IntPtr auth, ref AuthReq req, uint reqId, bool isGranted);
-
-        Task<string> EncodeContainersRespAsync(IntPtr auth, ref ContainersReq req, uint reqId, bool isGranted);
-
-        Task<string> EncodeShareMDataRespAsync(IntPtr auth, ref ShareMDataReq req, uint reqId, bool isGranted);
-
-        Task<string> EncodeUnregisteredRespAsync(uint reqId, bool isGranted);
-
-        bool IsMockBuild();
+        Task<string> AutheriseUnregisteredAppAsync(uint reqId, bool isGranted);
     }
 }

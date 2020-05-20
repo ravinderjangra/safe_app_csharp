@@ -148,7 +148,7 @@
       <Name>SafeApp</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\SafeAuthenticator\SafeAuthenticator.csproj">
-      <Project>{A50AD45F-A945-41AF-8B22-B2DCAA266EAC}</Project>
+      <Project>{D195C2C8-2778-4F8A-9E3A-F06337F45943}</Project>
       <Name>SafeAuthenticator</Name>
     </ProjectReference>
   </ItemGroup>

@@ -1,72 +1,68 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using SafeApp.Core;
 
 namespace SafeAuthenticator
 {
-    /// <summary>
-    /// Represents an application registered with the authenticator.
-    /// </summary>
-    public struct RegisteredApp
+    public struct AppPermissions
     {
-        /// <summary>
-        /// Application exchange info.
-        /// </summary>
-        public AppExchangeInfo AppInfo;
+        [MarshalAs(UnmanagedType.U1)]
+        public bool TransferCoins;
+        [MarshalAs(UnmanagedType.U1)]
+        public bool PerformMutations;
+        [MarshalAs(UnmanagedType.U1)]
+        public bool GetBalance;
+    }
 
-        /// <summary>
-        /// List of containers the application has access to.
-        /// </summary>
+    public struct AuthedApp
+    {
+        public string Id;
+        public string Name;
+        public string Vendor;
+        public AppPermissions AppPermissions;
         public List<ContainerPermissions> Containers;
+        public bool OwnContainer;
 
-        /// <summary>
-        /// Initialize new registered app object using native registered app.
-        /// </summary>
-        /// <param name="native"></param>
-        internal RegisteredApp(RegisteredAppNative native)
+        internal AuthedApp(AuthedAppNative native)
         {
-            AppInfo = native.AppInfo;
+            Id = native.Id;
+            Name = native.Name;
+            Vendor = native.Vendor;
+            AppPermissions = native.AppPermissions;
             Containers = BindingUtils.CopyToObjectList<ContainerPermissions>(native.ContainersPtr, (int)native.ContainersLen);
+            OwnContainer = native.OwnContainer;
         }
 
-        /// <summary>
-        /// Returns native registered app
-        /// </summary>
-        /// <returns></returns>
-        internal RegisteredAppNative ToNative()
+        internal AuthedAppNative ToNative()
         {
-            return new RegisteredAppNative
+            return new AuthedAppNative
             {
-                AppInfo = AppInfo,
+                Id = Id,
+                Name = Name,
+                Vendor = Vendor,
+                AppPermissions = AppPermissions,
                 ContainersPtr = BindingUtils.CopyFromObjectList(Containers),
-                ContainersLen = (UIntPtr)(Containers?.Count ?? 0)
+                ContainersLen = (UIntPtr)(Containers?.Count ?? 0),
+                OwnContainer = OwnContainer
             };
         }
     }
 
-    /// <summary>
-    /// Represents a native application registered with the authenticator.
-    /// </summary>
-    internal struct RegisteredAppNative
+    internal struct AuthedAppNative
     {
-        /// <summary>
-        /// Application exchange info.
-        /// </summary>
-        public AppExchangeInfo AppInfo;
-
-        /// <summary>
-        /// Pointer to the array of ContainerInfo.
-        /// </summary>
+        [MarshalAs(UnmanagedType.LPStr)]
+        public string Id;
+        [MarshalAs(UnmanagedType.LPStr)]
+        public string Name;
+        [MarshalAs(UnmanagedType.LPStr)]
+        public string Vendor;
+        public AppPermissions AppPermissions;
         public IntPtr ContainersPtr;
-
-        /// <summary>
-        /// Length of containers array.
-        /// </summary>
         public UIntPtr ContainersLen;
+        [MarshalAs(UnmanagedType.U1)]
+        public bool OwnContainer;
 
-        /// <summary>
-        /// Used to free the pointers to array.
-        /// </summary>
         internal void Free()
         {
             BindingUtils.FreeList(ref ContainersPtr, ref ContainersLen);

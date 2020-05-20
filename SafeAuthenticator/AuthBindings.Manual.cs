@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-
 using SafeApp.Core;
 
 #if __IOS__
@@ -12,20 +11,10 @@ namespace SafeAuthenticator
 {
     internal partial class AuthBindings
     {
-        public void CreateAccount(
-          string locator,
-          string secret,
-          Action disconnectedCb,
-          Action<FfiResult, IntPtr, GCHandle> cb)
-        {
-            var userData = BindingUtils.ToHandlePtr((disconnectedCb, cb));
-            CreateAccNative(locator, secret, userData, DelegateOnAuthenticatorDisconnectCb, DelegateOnAuthenticatorCreateCb);
-        }
-
         public Task<IpcReq> DecodeIpcMessage(IntPtr authPtr, string msg)
         {
             var (task, userData) = BindingUtils.PrepareTask<IpcReq>();
-            AuthDecodeIpcMsgNative(
+            DecodeReqNative(
               authPtr,
               msg,
               userData,
@@ -46,7 +35,7 @@ namespace SafeAuthenticator
         public Task<IpcReq> UnRegisteredDecodeIpcMsgAsync(string msg)
         {
             var (task, userData) = BindingUtils.PrepareTask<IpcReq>();
-            AuthUnregisteredDecodeIpcMsgNative(msg, userData, DelegateOnDecodeIpcReqUnregisteredCb, DelegateOnFfiResultIpcReqErrorCb);
+            DecodeAuthUnregisteredReqNative(msg, userData, DelegateOnDecodeIpcReqUnregisteredCb, DelegateOnFfiResultIpcReqErrorCb);
             return task;
         }
 
