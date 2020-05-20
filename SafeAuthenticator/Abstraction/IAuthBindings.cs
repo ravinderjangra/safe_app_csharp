@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using SafeApp.Core;
 
 namespace SafeAuthenticator
 {
     internal partial interface IAuthBindings
     {
-        Task<IntPtr> LogInAsync(string passphrase, string password);
+        bool AuthIsMock();
+
+        void LoginAsync(string passphrase, string password, Action<FfiResult, IntPtr, GCHandle> oCb);
 
         Task LogOutAsync(IntPtr app);
 
         Task<bool> IsLoggedInAsync(IntPtr app);
 
-        Task<IntPtr> CreateAccAsync(string secretKey, string passphrase, string password);
+        void CreateAccountAsync(string secretKey, string passphrase, string password, Action<FfiResult, IntPtr, GCHandle> oCb);
 
         Task<string> AutheriseAppAsync(IntPtr app, string request, bool isGranted);
 

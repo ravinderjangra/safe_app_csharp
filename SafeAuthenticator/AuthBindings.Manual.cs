@@ -9,7 +9,7 @@ using ObjCRuntime;
 
 namespace SafeAuthenticator
 {
-    internal partial class AuthBindings
+    internal partial class AuthBindings : IAuthBindings
     {
         public Task<IpcReq> DecodeIpcMessage(IntPtr authPtr, string msg)
         {
@@ -21,35 +21,41 @@ namespace SafeAuthenticator
               DelegateOnDecodeIpcReqAuthCb,
               DelegateOnDecodeIpcReqContainersCb,
               DelegateOnDecodeIpcReqUnregisteredCb,
-              DelegateOnDecodeIpcReqShareMDataCb,
-              DelegateOnFfiResultIpcReqErrorCb);
+              DelegateOnFfiResultCb);
             return task;
         }
 
-        public void Login(string locator, string secret, Action disconnectedCb, Action<FfiResult, IntPtr, GCHandle> cb)
+        public void LoginAsync(string passphrase, string password, Action<FfiResult, IntPtr, GCHandle> cb)
         {
-            var userData = BindingUtils.ToHandlePtr((disconnectedCb, cb));
-            LoginNative(locator, secret, userData, DelegateOnAuthenticatorDisconnectCb, DelegateOnAuthenticatorCreateCb);
+            var userData = BindingUtils.ToHandlePtr(cb);
+            LogInNative(passphrase, password, userData, DelegateOnFfiResultSafeAuthenticatorCb);
+        }
+
+        public void CreateAccountAsync(string secretKey, string passphrase, string password, Action<FfiResult, IntPtr, GCHandle> cb)
+        {
+            var userData = BindingUtils.ToHandlePtr(cb);
+            CreateAccNative(secretKey, passphrase, password, userData, DelegateOnFfiResultSafeAuthenticatorCb);
         }
 
         public Task<IpcReq> UnRegisteredDecodeIpcMsgAsync(string msg)
         {
             var (task, userData) = BindingUtils.PrepareTask<IpcReq>();
-            DecodeAuthUnregisteredReqNative(msg, userData, DelegateOnDecodeIpcReqUnregisteredCb, DelegateOnFfiResultIpcReqErrorCb);
+            DecodeAuthUnregisteredReqNative(msg, userData, DelegateOnDecodeIpcReqUnregisteredCb, DelegateOnFfiResultCb);
             return task;
         }
 
-#if __IOS__
-        [MonoPInvokeCallback(typeof(FfiResultAuthenticatorCb))]
-#endif
-        private static void OnAuthenticatorCreateCb(IntPtr userData, IntPtr result, IntPtr app)
-        {
-            var (_, action) = BindingUtils.FromHandlePtr<(Action, Action<FfiResult, IntPtr, GCHandle>)>(userData, false);
+        private delegate void FfiResultSafeAuthenticatorCb(IntPtr userData, IntPtr result, IntPtr auth);
 
-            action(Marshal.PtrToStructure<FfiResult>(result), app, GCHandle.FromIntPtr(userData));
+#if __IOS__
+        [MonoPInvokeCallback(typeof(FfiResultSafeAuthenticatorCb))]
+#endif
+        private static void OnFfiResultSafeAuthenticatorCb(IntPtr userData, IntPtr result, IntPtr auth)
+        {
+            var action = BindingUtils.FromHandlePtr<Action<FfiResult, IntPtr, GCHandle>>(userData, false);
+            action(Marshal.PtrToStructure<FfiResult>(result), auth, GCHandle.FromIntPtr(userData));
         }
 
-        private static readonly FfiResultAuthenticatorCb DelegateOnAuthenticatorCreateCb = OnAuthenticatorCreateCb;
+        private static readonly FfiResultSafeAuthenticatorCb DelegateOnFfiResultSafeAuthenticatorCb = OnFfiResultSafeAuthenticatorCb;
 
 #if __IOS__
         [MonoPInvokeCallback(typeof(NoneCb))]
@@ -84,19 +90,6 @@ namespace SafeAuthenticator
         }
 
         private static readonly UIntContainersReqCb DelegateOnDecodeIpcReqContainersCb = OnDecodeIpcReqContainersCb;
-
-#if __IOS__
-        [MonoPInvokeCallback(typeof(UIntShareMDataReqMetadataResponseListCb))]
-#endif
-        private static void OnDecodeIpcReqShareMDataCb(IntPtr userData, uint reqId, IntPtr authReq, IntPtr metadataPtr, UIntPtr metadataLen)
-        {
-            var tcs = BindingUtils.FromHandlePtr<TaskCompletionSource<IpcReq>>(userData);
-            var shareMdReq = new ShareMDataReq(Marshal.PtrToStructure<ShareMDataReqNative>(authReq));
-            var metadataResponseList = BindingUtils.CopyToObjectList<MetadataResponse>(metadataPtr, (int)metadataLen);
-            tcs.SetResult(new ShareMDataIpcReq(reqId, shareMdReq, metadataResponseList));
-        }
-
-        private static readonly UIntShareMDataReqMetadataResponseListCb DelegateOnDecodeIpcReqShareMDataCb = OnDecodeIpcReqShareMDataCb;
 
 #if __IOS__
         [MonoPInvokeCallback(typeof(UIntByteListCb))]

@@ -18,12 +18,14 @@ namespace SafeAuthenticator
         private const string DllName = "safe_api";
 #endif
 
-        public Task<IntPtr> LogInAsync(string passphrase, string password)
+        public bool AuthIsMock()
         {
-            var (ret, userData) = BindingUtils.PrepareTask<IntPtr>();
-            LogInNative(passphrase, password, userData, DelegateOnFfiResultSafeAuthenticatorCb);
+            var ret = AuthIsMockNative();
             return ret;
         }
+
+        [DllImport(DllName, EntryPoint = "auth_is_mock")]
+        private static extern bool AuthIsMockNative();
 
         [DllImport(DllName, EntryPoint = "log_in")]
         private static extern void LogInNative([MarshalAs(UnmanagedType.LPStr)] string passphrase, [MarshalAs(UnmanagedType.LPStr)] string password, IntPtr userData, FfiResultSafeAuthenticatorCb oCb);
@@ -47,13 +49,6 @@ namespace SafeAuthenticator
 
         [DllImport(DllName, EntryPoint = "is_logged_in")]
         private static extern void IsLoggedInNative(IntPtr app, IntPtr userData, FfiResultBoolCb oCb);
-
-        public Task<IntPtr> CreateAccAsync(string secretKey, string passphrase, string password)
-        {
-            var (ret, userData) = BindingUtils.PrepareTask<IntPtr>();
-            CreateAccNative(secretKey, passphrase, password, userData, DelegateOnFfiResultSafeAuthenticatorCb);
-            return ret;
-        }
 
         [DllImport(DllName, EntryPoint = "create_acc")]
         private static extern void CreateAccNative([MarshalAs(UnmanagedType.LPStr)] string secretKey, [MarshalAs(UnmanagedType.LPStr)] string passphrase, [MarshalAs(UnmanagedType.LPStr)] string password, IntPtr userData, FfiResultSafeAuthenticatorCb oCb);
@@ -115,18 +110,6 @@ namespace SafeAuthenticator
         }
 
         private static readonly FfiResultCb DelegateOnFfiResultCb = OnFfiResultCb;
-
-        private delegate void FfiResultSafeAuthenticatorCb(IntPtr userData, IntPtr result, IntPtr auth);
-
-#if __IOS__
-        [MonoPInvokeCallback(typeof(FfiResultSafeAuthenticatorCb))]
-#endif
-        private static void OnFfiResultSafeAuthenticatorCb(IntPtr userData, IntPtr result, IntPtr auth)
-        {
-            BindingUtils.CompleteTask(userData, Marshal.PtrToStructure<FfiResult>(result), () => auth);
-        }
-
-        private static readonly FfiResultSafeAuthenticatorCb DelegateOnFfiResultSafeAuthenticatorCb = OnFfiResultSafeAuthenticatorCb;
 
         private delegate void FfiResultAuthedAppListCb(IntPtr userData, IntPtr result, IntPtr appsPtr, UIntPtr appsLen);
 
