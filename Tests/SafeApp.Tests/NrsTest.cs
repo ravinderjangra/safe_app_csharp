@@ -21,9 +21,7 @@ namespace SafeApp.Tests
         [Test]
         public async Task ParseUrlTest()
         {
-            var session = await TestUtils.CreateTestApp();
-            var (xorUrl, _) = await session.Keys.KeysCreatePreloadTestCoinsAsync("1");
-
+            var (xorUrl, _) = await Session.KeysCreatePreloadTestCoinsAsync("1");
             var safeUrl = await Nrs.ParseUrlAsync(xorUrl);
 
             // todo: verify that these are actually the expected values

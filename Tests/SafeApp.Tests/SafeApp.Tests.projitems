@@ -11,7 +11,7 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)FetchTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)KeyTest.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)AuthTest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AppAuthTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MiscTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TestUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Validations.cs" />
@@ -20,5 +20,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)FilesTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NrsTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SequenceDataTest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AuthenticatorTests.cs" />
   </ItemGroup>
 </Project>

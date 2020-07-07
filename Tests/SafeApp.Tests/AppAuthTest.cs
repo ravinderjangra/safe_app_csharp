@@ -6,7 +6,7 @@ using SafeApp.Core;
 namespace SafeApp.Tests
 {
     [TestFixture]
-    internal class AuthTest
+    internal class AppAuthTest
     {
         [Test]
         public async Task ConnectAsRegisteredAppTest()

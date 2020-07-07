@@ -18,7 +18,7 @@ namespace SafeApp.Tests
         {
             var session = await TestUtils.CreateTestApp();
 
-            var (keyUrl, keys) = await session.Keys.KeysCreatePreloadTestCoinsAsync("10");
+            var (keyUrl, keys) = await Session.KeysCreatePreloadTestCoinsAsync("10");
             ValidateFetchOrInspectDataTypes(await session.Fetch.FetchAsync(keyUrl), isFetch: true);
 
             var walletUrl = await session.Wallet.WalletCreateAsync();
@@ -54,7 +54,7 @@ namespace SafeApp.Tests
         public async Task InspectDataTypesTest()
         {
             var session = await TestUtils.CreateTestApp();
-            var (keyUrl, keys) = await session.Keys.KeysCreatePreloadTestCoinsAsync("10");
+            var (keyUrl, keys) = await Session.KeysCreatePreloadTestCoinsAsync("10");
             var keyInspectResult = await session.Fetch.InspectAsync(keyUrl);
 
             // Todo: Re-enable proper validation once the insepect API is updated.

@@ -39,8 +39,8 @@ namespace SafeAuthenticator
             return Task.Run(
               () =>
               {
-                  var authenticator = new Authenticator();
                   var tcs = new TaskCompletionSource<Authenticator>(TaskCreationOptions.RunContinuationsAsynchronously);
+                  var authenticator = new Authenticator();
                   Action<FfiResult, IntPtr, GCHandle> cb = (result, ptr, disconnectHandle) =>
                   {
                       if (result.ErrorCode != 0)
