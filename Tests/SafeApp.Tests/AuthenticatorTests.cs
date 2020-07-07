@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using NUnit.Framework;
-using SafeApp.Core;
 using SafeAuthenticator;
 
 namespace SafeApp.Tests
@@ -12,7 +10,6 @@ namespace SafeApp.Tests
         [Test]
         public async Task CreateAccountTest()
         {
-            await TestUtils.InitRustLogging();
             var passphase = TestUtils.GetRandomString(10);
             var password = TestUtils.GetRandomString(10);
             var (_, testCoinKeys) = await Session.KeysCreatePreloadTestCoinsAsync("100");
@@ -25,13 +22,27 @@ namespace SafeApp.Tests
         [Test]
         public async Task AutheriseAppTest()
         {
-            await TestUtils.InitRustLogging();
             var authenticator = await TestUtils.CreateTestAccountAsync();
             var session = await TestUtils.CreateTestApp(authenticator);
             Assert.NotNull(session);
             var authdApps = await authenticator.AuthRegisteredAppsAsync();
             Assert.NotNull(authdApps);
             Assert.NotZero(authdApps.Count);
+        }
+
+        [Test]
+        public async Task AutheriseAndRevokeAppTest()
+        {
+            var authenticator = await TestUtils.CreateTestAccountAsync();
+            var session = await TestUtils.CreateTestApp(authenticator);
+            Assert.NotNull(session);
+            var authdApps = await authenticator.AuthRegisteredAppsAsync();
+            Assert.NotNull(authdApps);
+            Assert.NotZero(authdApps.Count);
+            await authenticator.AuthRevokeAppAsync(authdApps[0].Id);
+            authdApps = await authenticator.AuthRegisteredAppsAsync();
+            Assert.NotNull(authdApps);
+            Assert.Zero(authdApps.Count);
         }
     }
 }
