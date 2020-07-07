@@ -51,7 +51,12 @@ namespace SafeAuthenticator
         private static extern void IsLoggedInNative(IntPtr app, IntPtr userData, FfiResultBoolCb oCb);
 
         [DllImport(DllName, EntryPoint = "create_acc")]
-        private static extern void CreateAccNative([MarshalAs(UnmanagedType.LPStr)] string secretKey, [MarshalAs(UnmanagedType.LPStr)] string passphrase, [MarshalAs(UnmanagedType.LPStr)] string password, IntPtr userData, FfiResultSafeAuthenticatorCb oCb);
+        private static extern void CreateAccNative(
+            [MarshalAs(UnmanagedType.LPStr)] string secretKey,
+            [MarshalAs(UnmanagedType.LPStr)] string passphrase,
+            [MarshalAs(UnmanagedType.LPStr)] string password,
+            IntPtr userData,
+            FfiResultSafeAuthenticatorCb oCb);
 
         public Task<string> AutheriseAppAsync(IntPtr app, string request, bool isGranted)
         {

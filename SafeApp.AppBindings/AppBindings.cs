@@ -142,7 +142,7 @@ namespace SafeApp.AppBindings
             return ret;
         }
 
-        [DllImport(DllName, EntryPoint = "app_init_logging")]
+        [DllImport(DllName, EntryPoint = "init_logging")]
         private static extern void AppInitLoggingNative(
             [MarshalAs(UnmanagedType.LPStr)] string outputFileNameOverride,
             IntPtr userData,
@@ -503,16 +503,15 @@ namespace SafeApp.AppBindings
             IntPtr userData,
             FfiResultStringBlsKeyPairCb oCb);
 
-        public Task<(string, BlsKeyPair)> KeysCreatePreloadTestCoinsAsync(IntPtr app, string preloadAmount)
+        public Task<(string, BlsKeyPair)> KeysCreatePreloadTestCoinsAsync(string preloadAmount)
         {
             var (ret, userData) = BindingUtils.PrepareTask<(string, BlsKeyPair)>();
-            KeysCreatePreloadTestCoinsNative(app, preloadAmount, userData, DelegateOnFfiResultStringBlsKeyPairCb);
+            KeysCreatePreloadTestCoinsNative(preloadAmount, userData, DelegateOnFfiResultStringBlsKeyPairCb);
             return ret;
         }
 
         [DllImport(DllName, EntryPoint = "keys_create_preload_test_coins")]
         private static extern void KeysCreatePreloadTestCoinsNative(
-            IntPtr app,
             [MarshalAs(UnmanagedType.LPStr)] string preload,
             IntPtr userData,
             FfiResultStringBlsKeyPairCb oCb);

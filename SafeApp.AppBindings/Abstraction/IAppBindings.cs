@@ -160,7 +160,7 @@ namespace SafeApp.AppBindings
 
         Task<(string, BlsKeyPair)> CreateKeysAsync(IntPtr app, string from, string preloadAmount, string pk);
 
-        Task<(string, BlsKeyPair)> KeysCreatePreloadTestCoinsAsync(IntPtr app, string preloadAmount);
+        Task<(string, BlsKeyPair)> KeysCreatePreloadTestCoinsAsync(string preloadAmount);
 
         Task<string> KeysBalanceFromSkAsync(IntPtr app, string sk);
 
