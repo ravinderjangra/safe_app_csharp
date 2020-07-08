@@ -8,6 +8,8 @@ namespace SafeAuthenticator
 {
     internal partial interface IAuthBindings
     {
+        Task<(string, BlsKeyPair)> AllocateTestCoinsAsync(string preload);
+
         bool AuthIsMock();
 
         void LoginAsync(string passphrase, string password, Action<FfiResult, IntPtr, GCHandle> oCb);

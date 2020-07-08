@@ -27,6 +27,16 @@ namespace SafeAuthenticator
         [DllImport(DllName, EntryPoint = "auth_is_mock")]
         private static extern bool AuthIsMockNative();
 
+        public Task<(string, BlsKeyPair)> AllocateTestCoinsAsync(string preload)
+        {
+            var (ret, userData) = BindingUtils.PrepareTask<(string, BlsKeyPair)>();
+            AllocateTestCoinsNative(preload, userData, DelegateOnFfiResultStringBlsKeyPairCb);
+            return ret;
+        }
+
+        [DllImport(DllName, EntryPoint = "allocate_test_coins")]
+        private static extern void AllocateTestCoinsNative([MarshalAs(UnmanagedType.LPStr)] string preload, IntPtr userData, FfiResultStringBlsKeyPairCb oCb);
+
         [DllImport(DllName, EntryPoint = "log_in")]
         private static extern void LogInNative([MarshalAs(UnmanagedType.LPStr)] string passphrase, [MarshalAs(UnmanagedType.LPStr)] string password, IntPtr userData, FfiResultSafeAuthenticatorCb oCb);
 
@@ -149,6 +159,18 @@ namespace SafeAuthenticator
         {
             BindingUtils.CompleteTask(userData, Marshal.PtrToStructure<FfiResult>(result), () => loggedIn);
         }
+
+        private delegate void FfiResultStringBlsKeyPairCb(IntPtr userData, IntPtr result, string xorurl, IntPtr safeKey);
+
+#if __IOS__
+        [MonoPInvokeCallback(typeof(FfiResultStringBlsKeyPairCb))]
+#endif
+        private static void OnFfiResultStringBlsKeyPairCb(IntPtr userData, IntPtr result, string xorurl, IntPtr safeKey)
+        {
+            BindingUtils.CompleteTask(userData, Marshal.PtrToStructure<FfiResult>(result), () => (xorurl, Marshal.PtrToStructure<BlsKeyPair>(safeKey)));
+        }
+
+        private static readonly FfiResultStringBlsKeyPairCb DelegateOnFfiResultStringBlsKeyPairCb = OnFfiResultStringBlsKeyPairCb;
 
         private delegate void NoneCb(IntPtr userData);
 

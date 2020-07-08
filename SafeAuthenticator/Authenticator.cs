@@ -92,6 +92,16 @@ namespace SafeAuthenticator
         }
 
         /// <summary>
+        /// Allocate some test coins for acccount creation.
+        /// </summary>
+        /// <param name="testCoins">No of coins required.</param>
+        /// <returns>SafeUrl and BlsKeyPair of the newly created testcoins.</returns>
+        public static Task<(string, BlsKeyPair)> AllocateTestCoinsAsync(string testCoins)
+        {
+            return NativeBindings.AllocateTestCoinsAsync(testCoins);
+        }
+
+        /// <summary>
         /// Decode the incoming unregistered client authentication message.
         /// </summary>
         /// <param name="msg">Message string.</param>

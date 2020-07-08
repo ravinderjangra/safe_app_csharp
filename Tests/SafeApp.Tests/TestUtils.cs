@@ -16,10 +16,12 @@ namespace SafeApp.Tests
     public static class TestUtils
     {
         public static readonly Random Random = new Random();
+        private static readonly string TestAppId = "TEST_APP";
+        private static readonly string TestAuthCredentials = "TEST_AUTH_CREDENTIALS";
 
         public static async Task<Authenticator> CreateTestAccountAsync()
         {
-            var (_, testCoinKeys) = await Session.KeysCreatePreloadTestCoinsAsync("100");
+            var (_, testCoinKeys) = await Authenticator.AllocateTestCoinsAsync("100");
             var passphase = GetRandomString(10);
             var password = GetRandomString(10);
             var authenticator = await Authenticator.CreateAccountAsync(testCoinKeys.SK, passphase, password);
@@ -65,9 +67,10 @@ namespace SafeApp.Tests
 
         public static async Task<Session> CreateTestApp(AuthReq authReq)
         {
-            var authenticator = await CreateTestAccountAsync();
-            var resMsg = await AuthenticateAuthRequestAsync(authenticator, authReq, true);
-            return await Session.AppConnectAsync(authReq.App.Id, resMsg);
+            // var authenticator = await CreateTestAccountAsync();
+            // var resMsg = await AuthenticateAuthRequestAsync(authenticator, authReq, true);
+            // return await Session.AppConnectAsync(authReq.App.Id, resMsg);
+            return await Session.AppConnectAsync(TestAppId, TestAuthCredentials);
         }
 
         public static async Task<Session> CreateTestApp(Authenticator authenticator)

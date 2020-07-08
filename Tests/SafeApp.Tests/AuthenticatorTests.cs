@@ -13,7 +13,7 @@ namespace SafeApp.Tests
         {
             var passphase = TestUtils.GetRandomString(10);
             var password = TestUtils.GetRandomString(10);
-            var (_, testCoinKeys) = await Session.KeysCreatePreloadTestCoinsAsync("100");
+            var (_, testCoinKeys) = await Authenticator.AllocateTestCoinsAsync("100");
             var testAuthenticator = await Authenticator.CreateAccountAsync(testCoinKeys.SK, passphase, password);
             Assert.NotNull(testAuthenticator);
             var newAuthenticatorInstance = await Authenticator.LoginAsync(passphase, password);
@@ -27,13 +27,13 @@ namespace SafeApp.Tests
             var password = TestUtils.GetRandomString(10);
 
             // Empty or no SafeCoin test
-            var (_, testCoinKeys) = await Session.KeysCreatePreloadTestCoinsAsync("0");
+            var (_, testCoinKeys) = await Authenticator.AllocateTestCoinsAsync("0");
             AssertThrows(-207, () => Authenticator.CreateAccountAsync(string.Empty, passphase, password));
             AssertThrows(-100, () => Authenticator.CreateAccountAsync(testCoinKeys.SK, passphase, password));
 
             var newPassphase = TestUtils.GetRandomString(10);
             var newPassword = TestUtils.GetRandomString(10);
-            (_, testCoinKeys) = await Session.KeysCreatePreloadTestCoinsAsync("10");
+            (_, testCoinKeys) = await Authenticator.AllocateTestCoinsAsync("10");
             var testAuthenticator = await Authenticator.CreateAccountAsync(testCoinKeys.SK, passphase, password);
 
             // Test create and login API with wrong credentials
