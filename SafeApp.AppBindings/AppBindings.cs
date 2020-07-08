@@ -37,7 +37,7 @@ namespace SafeApp.AppBindings
             return ret;
         }
 
-        [DllImport(DllName, EntryPoint = "app_set_config_dir_path")]
+        [DllImport(DllName, EntryPoint = "set_config_dir_path")]
         private static extern void AppSetConfigDirPathNative(
             [MarshalAs(UnmanagedType.LPStr)] string newPath,
             IntPtr userData,
