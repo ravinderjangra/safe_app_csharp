@@ -25,5 +25,9 @@ namespace SafeAuthenticator
         Task<List<AuthedApp>> AuthdAppAsync(IntPtr app);
 
         Task<string> AutheriseUnregisteredAppAsync(uint reqId, bool isGranted);
+
+        Task<IpcReq> DecodeIpcMessage(IntPtr authPtr, string msg);
+
+        Task<IpcReq> UnRegisteredDecodeIpcMsgAsync(string msg);
     }
 }

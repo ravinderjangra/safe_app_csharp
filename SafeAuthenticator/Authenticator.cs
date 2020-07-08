@@ -18,6 +18,11 @@ namespace SafeAuthenticator
         /// </summary>
         private IntPtr _authPtr;
 
+        private Authenticator()
+        {
+            _authPtr = IntPtr.Zero;
+        }
+
         /// <summary>
         /// Returns true if the native library was compiled with mock-routing feature.
         /// </summary>
@@ -58,6 +63,45 @@ namespace SafeAuthenticator
         }
 
         /// <summary>
+        /// Log-in to a registered account.
+        /// </summary>
+        /// <param name="passphrase">Account passphrase.</param>
+        /// <param name="password">Account password.</param>
+        /// <returns>New authenticator instance.</returns>
+        public static Task<Authenticator> LoginAsync(string passphrase, string password)
+        {
+            return Task.Run(
+              () =>
+              {
+                  var authenticator = new Authenticator();
+                  var tcs = new TaskCompletionSource<Authenticator>(TaskCreationOptions.RunContinuationsAsynchronously);
+                  Action<FfiResult, IntPtr, GCHandle> cb = (result, ptr, disconnectHandle) =>
+                  {
+                      if (result.ErrorCode != 0)
+                      {
+                          tcs.SetException(result.ToException());
+                          return;
+                      }
+
+                      authenticator.Init(ptr, disconnectHandle);
+                      tcs.SetResult(authenticator);
+                  };
+                  NativeBindings.LoginAsync(passphrase, password, cb);
+                  return tcs.Task;
+              });
+        }
+
+        /// <summary>
+        /// Decode the incoming unregistered client authentication message.
+        /// </summary>
+        /// <param name="msg">Message string.</param>
+        /// <returns>New IpcReq object.</returns>
+        public static Task<IpcReq> UnRegisteredDecodeIpcMsgAsync(string msg)
+        {
+            return NativeBindings.UnRegisteredDecodeIpcMsgAsync(msg);
+        }
+
+        /// <summary>
         /// Encode unregistered client authentication response.
         /// </summary>
         /// <param name="reqId">Request Id.</param>
@@ -66,20 +110,6 @@ namespace SafeAuthenticator
         public static Task<string> AutheriseUnregisteredAppAsync(uint reqId, bool allow)
         {
             return NativeBindings.AutheriseUnregisteredAppAsync(reqId, allow);
-        }
-
-        private Authenticator()
-        {
-            _authPtr = IntPtr.Zero;
-        }
-
-        /// <summary>
-        /// Public implementation of Dispose pattern callable by developers.
-        /// </summary>
-        public void Dispose()
-        {
-            FreeAuth();
-            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -113,6 +143,16 @@ namespace SafeAuthenticator
         }
 
         /// <summary>
+        /// Decodes a given encoded IPC message.
+        /// </summary>
+        /// <param name="msg">Message string.</param>
+        /// <returns>New IpcReq instance.</returns>
+        public Task<IpcReq> DecodeIpcMessageAsync(string msg)
+        {
+            return NativeBindings.DecodeIpcMessage(_authPtr, msg);
+        }
+
+        /// <summary>
         /// Class destructor.
         /// </summary>
         ~Authenticator()
@@ -130,38 +170,18 @@ namespace SafeAuthenticator
             _authPtr = IntPtr.Zero;
         }
 
+        /// <summary>
+        /// Public implementation of Dispose pattern callable by developers.
+        /// </summary>
+        public void Dispose()
+        {
+            FreeAuth();
+            GC.SuppressFinalize(this);
+        }
+
         private void Init(IntPtr authPtr, GCHandle disconnectedHandle)
         {
             _authPtr = authPtr;
-        }
-
-        /// <summary>
-        /// Log-in to a registered account.
-        /// </summary>
-        /// <param name="passphrase">Account passphrase.</param>
-        /// <param name="password">Account password.</param>
-        /// <returns>New authenticator instance.</returns>
-        public static Task<Authenticator> LoginAsync(string passphrase, string password)
-        {
-            return Task.Run(
-              () =>
-              {
-                  var authenticator = new Authenticator();
-                  var tcs = new TaskCompletionSource<Authenticator>(TaskCreationOptions.RunContinuationsAsynchronously);
-                  Action<FfiResult, IntPtr, GCHandle> cb = (result, ptr, disconnectHandle) =>
-                  {
-                      if (result.ErrorCode != 0)
-                      {
-                          tcs.SetException(result.ToException());
-                          return;
-                      }
-
-                      authenticator.Init(ptr, disconnectHandle);
-                      tcs.SetResult(authenticator);
-                  };
-                  NativeBindings.LoginAsync(passphrase, password, cb);
-                  return tcs.Task;
-              });
         }
     }
 }

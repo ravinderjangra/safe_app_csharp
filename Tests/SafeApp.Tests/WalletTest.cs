@@ -7,8 +7,8 @@ namespace SafeApp.Tests
     [TestFixture]
     internal class WalletTest
     {
-        private string _testWalletOne = TestUtils.GetRandomString(10);
-        private string _testWalletTwo = TestUtils.GetRandomString(10);
+        private readonly string _testWalletOne = TestUtils.GetRandomString(10);
+        private readonly string _testWalletTwo = TestUtils.GetRandomString(10);
 
         [Test]
         public async Task CreateWalletTest()
@@ -23,7 +23,7 @@ namespace SafeApp.Tests
         [Test]
         public async Task InsertAndBalanceTest()
         {
-            var (api, keysApi) = await GetKeysAndWalletAPIs();
+            var (api, _) = await GetKeysAndWalletAPIs();
 
             var walletXorUrl = await api.WalletCreateAsync();
             var keyPair_1_Balance = "123";
@@ -150,7 +150,7 @@ namespace SafeApp.Tests
         [Test]
         public async Task TransferToSafeKeyTest()
         {
-            var (api, keysApi) = await GetKeysAndWalletAPIs();
+            var (api, _) = await GetKeysAndWalletAPIs();
 
             var fromWalletXorUrl = await api.WalletCreateAsync();
             var (_, keyPair1) = await Session.KeysCreatePreloadTestCoinsAsync("123.321");
