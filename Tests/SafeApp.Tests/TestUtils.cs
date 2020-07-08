@@ -38,7 +38,7 @@ namespace SafeApp.Tests
             return authenticator.AutheriseAppAsync(ipcMsg, allow);
         }
 
-        private static AuthReq GenerateAuthRequest()
+        public static AuthReq GenerateAuthRequest()
         {
             return new AuthReq
             {

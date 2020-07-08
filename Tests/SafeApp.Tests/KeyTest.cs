@@ -82,7 +82,7 @@ namespace SafeApp.Tests
         [Test]
         public async Task KeysBalanceFromSkTest()
         {
-            var (xorurl, keyPair) = await Session.KeysCreatePreloadTestCoinsAsync(_preloadAmount);
+            var (_, keyPair) = await Session.KeysCreatePreloadTestCoinsAsync(_preloadAmount);
             var balance = await _api.KeysBalanceFromSkAsync(keyPair.SK);
             Validate.IsEqualAmount(_preloadAmount, balance);
         }
