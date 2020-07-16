@@ -3,5 +3,8 @@
     <Reference Include="SafeAuthenticator" Condition="$(DefineConstants.Contains(SAFE_APP_MOCK))">
       <HintPath>$(MSBuildThisFileDirectory)SafeAuthenticator.dll</HintPath>
     </Reference>
+    <Reference Include="SafeAuthenticator" Condition="$(DefineConstants.Contains(SAFE_AUTH))">
+      <HintPath>$(MSBuildThisFileDirectory)SafeAuthenticator.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

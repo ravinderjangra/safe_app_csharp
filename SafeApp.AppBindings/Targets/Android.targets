@@ -20,4 +20,9 @@
     <AndroidNativeLibrary Include="$(MSBuildThisFileDirectory)lib\$(NativeLibType)\armeabi-v7a\libsafe_api.so" />
     <AndroidNativeLibrary Include="$(MSBuildThisFileDirectory)lib\$(NativeLibType)\x86_64\libsafe_api.so" />
   </ItemGroup>
+  <ItemGroup Condition="$(DefineConstants.Contains(SAFE_AUTH))">
+    <Reference Include="SafeAuthenticator">
+      <HintPath>$(MSBuildThisFileDirectory)SafeAuthenticator.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>
