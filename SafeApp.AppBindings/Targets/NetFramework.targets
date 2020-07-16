@@ -21,6 +21,11 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup Condition="$(DefineConstants.Contains(SAFE_AUTH))">
+    <Reference Include="SafeAuthenticator">
+      <HintPath>$(MSBuildThisFileDirectory)SafeAuthenticator.dll</HintPath>
+    </Reference>
+  </ItemGroup>
   <Target Name="CheckProjectPlatform" BeforeTargets="PrepareForBuild">
     <Error Condition="'$(Platform)' != 'x64'" Text="SafeApp package currently only supports x64. Please set the Project Platform to x64." />
   </Target>

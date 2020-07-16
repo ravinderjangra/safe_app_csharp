@@ -24,4 +24,9 @@
       <Frameworks>Security</Frameworks>
     </NativeReference>
   </ItemGroup>
+  <ItemGroup Condition="$(DefineConstants.Contains(SAFE_AUTH))">
+    <Reference Include="SafeAuthenticator">
+      <HintPath>$(MSBuildThisFileDirectory)SafeAuthenticator.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>

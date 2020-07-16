@@ -48,6 +48,11 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup Condition="$(DefineConstants.Contains(SAFE_AUTH))">
+    <Reference Include="SafeAuthenticator">
+      <HintPath>$(MSBuildThisFileDirectory)SafeAuthenticator.dll</HintPath>
+    </Reference>
+  </ItemGroup>
   <Target Name="CheckProjectRuntime" BeforeTargets="PrepareForBuild">
     <Error Condition=" '$(Platform)' != 'x64' " Text="SafeApp package currently only supports x64. Please use a suitable x64 runtime." />
   </Target>
