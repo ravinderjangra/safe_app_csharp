@@ -12,22 +12,25 @@ namespace SafeApp.Tests
     internal class MiscTest
     {
         [Test]
-        public void IsMockAuthenticationBuildTest()
-            => Assert.That(Authenticator.IsMockBuild(), Is.True);
-
-        [Test]
-        public void IsMockSafeAppBuildTest()
-            => Assert.That(Session.AppIsMock(), Is.True);
+        public void IsMockTest()
+        {
+#if MOCK
+            Assert.That(Session.AppIsMock(), Is.True);
+            Assert.That(Authenticator.IsMockBuild(), Is.False);
+#else
+            Assert.That(Session.AppIsMock(), Is.False);
+            Assert.That(Authenticator.IsMockBuild(), Is.False);
+#endif
+        }
 
         [Test]
         public async Task SetConfigFileDirPathTest()
             => await Session.SetAppConfigurationDirectoryPathAsync(
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
 
-#if WIN64 && NETCOREAPP
-        [Ignore("Rust logger not working on .NET Core Windows, needs more testing locally")]
+#if !MOCK
+        [Ignore("Test changes the location for the config files and will cause failing for other tests.")]
 #endif
-        [Test]
         public async Task RustLoggerTest()
         {
             var configPath = string.Empty;

@@ -15,9 +15,11 @@ namespace SafeApp.Tests
 {
     public static class TestUtils
     {
-        public static readonly Random Random = new Random();
+#if MOCK
         private static readonly string TestAppId = "TEST_APP";
         private static readonly string TestAuthCredentials = "TEST_AUTH_CREDENTIALS";
+#endif
+        public static readonly Random Random = new Random();
 
         public static async Task<Authenticator> CreateTestAccountAsync()
         {
@@ -67,10 +69,13 @@ namespace SafeApp.Tests
 
         public static async Task<Session> CreateTestApp(AuthReq authReq)
         {
-            // var authenticator = await CreateTestAccountAsync();
-            // var resMsg = await AuthenticateAuthRequestAsync(authenticator, authReq, true);
-            // return await Session.AppConnectAsync(authReq.App.Id, resMsg);
+#if MOCK
             return await Session.AppConnectAsync(TestAppId, TestAuthCredentials);
+#else
+            var authenticator = await CreateTestAccountAsync();
+            var resMsg = await AuthenticateAuthRequestAsync(authenticator, authReq, true);
+            return await Session.AppConnectAsync(authReq.App.Id, resMsg);
+#endif
         }
 
         public static async Task<Session> CreateTestApp(Authenticator authenticator)
