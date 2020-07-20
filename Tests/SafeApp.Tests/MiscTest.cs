@@ -19,7 +19,7 @@ namespace SafeApp.Tests
             Assert.That(Authenticator.IsMockBuild(), Is.False);
 #else
             Assert.That(Session.AppIsMock(), Is.True);
-            Assert.That(Authenticator.IsMockBuild(), Is.False);
+            Assert.That(Authenticator.IsMockBuild(), Is.True);
 #endif
         }
 

@@ -29,9 +29,6 @@ jobs:
         mac:
           imageName: 'macos-latest'
           target: 'apple-darwin'
-        windows:
-          imageName: 'windows-latest'
-          target: 'windows-msvc'
     pool:
       vmImage: $(imageName)
     steps:
@@ -79,3 +76,13 @@ jobs:
         failTaskOnFailedTests: true
         testRunTitle: '.NET Core Tests'
       condition: succeededOrFailed()
+    - task: CopyFiles@2
+      displayName: 'Copy vault_logs to: $(Build.ArtifactStagingDirectory)'
+      inputs:
+        SourceFolder: '$(Build.SourcesDirectory)'
+        Contents: '**/vault.stdout'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact: vault_logs'
+      inputs:
+        ArtifactName: vault_logs
