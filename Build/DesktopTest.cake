@@ -42,39 +42,39 @@ Task("Run-Desktop-Tests")
       });
   });
 
-Task("Run-Desktop-Tests-With-Coverage")
-  .IsDependentOn("Build-Desktop-Project")
-  .Does(() => {
-    OpenCover(tool => {
-      tool.DotNetCoreTest(
-        coreTestProject,
-        new DotNetCoreTestSettings()
-        {
-          NoBuild = true,
-          NoRestore = true,
-          Configuration = configuration,
-          ArgumentCustomization = args => args.Append("--logger \"trx;LogFileName=DesktopTestResult.xml\"")
-        });
-    },
-    new FilePath(codeCoverageFilePath),
-    new OpenCoverSettings() {
-      SkipAutoProps = true,
-      Register = "user",
-      OldStyle = true
-    }
-    .WithFilter("+[*]*")
-    .WithFilter("-[SafeApp.Tests*]*")
-    .WithFilter("-[NUnit3.*]*"));
-  });
+// Task("Run-Desktop-Tests-With-Coverage")
+//   .IsDependentOn("Build-Desktop-Project")
+//   .Does(() => {
+//     OpenCover(tool => {
+//       tool.DotNetCoreTest(
+//         coreTestProject,
+//         new DotNetCoreTestSettings()
+//         {
+//           NoBuild = true,
+//           NoRestore = true,
+//           Configuration = configuration,
+//           ArgumentCustomization = args => args.Append("--logger \"trx;LogFileName=DesktopTestResult.xml\"")
+//         });
+//     },
+//     new FilePath(codeCoverageFilePath),
+//     new OpenCoverSettings() {
+//       SkipAutoProps = true,
+//       Register = "user",
+//       OldStyle = true
+//     }
+//     .WithFilter("+[*]*")
+//     .WithFilter("-[SafeApp.Tests*]*")
+//     .WithFilter("-[NUnit3.*]*"));
+//   });
 
-Task("Upload-Test-Coverage")
-  .IsDependentOn("Run-Desktop-Tests-With-Coverage")
-  .Does(() => {
-    var resultFile = string.Empty;
-    if (FileExists(codeCoverageFilePath))
-      CoverallsIo(codeCoverageFilePath, new CoverallsIoSettings() {
-        RepoToken = coveralls_token
-      });
-    else
-      throw new Exception("Test coverage file not found.");
-  });
+// Task("Upload-Test-Coverage")
+//   .IsDependentOn("Run-Desktop-Tests-With-Coverage")
+//   .Does(() => {
+//     var resultFile = string.Empty;
+//     if (FileExists(codeCoverageFilePath))
+//       CoverallsIo(codeCoverageFilePath, new CoverallsIoSettings() {
+//         RepoToken = coveralls_token
+//       });
+//     else
+//       throw new Exception("Test coverage file not found.");
+//   });
