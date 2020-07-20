@@ -70,9 +70,9 @@ namespace SafeApp.Tests
             var resMsg = await AuthenticateAuthRequestAsync(authenticator, authReq, true);
             return await Session.AppConnectAsync(authReq.App.Id, resMsg);
 #else
-            var TestAppId = "TEST_APP";
-            var TestAuthCredentials = "TEST_AUTH_CREDENTIALS";
-            return await Session.AppConnectAsync(TestAppId, TestAuthCredentials);
+            var testAppId = "TEST_APP";
+            var testAuthCredentials = "TEST_AUTH_CREDENTIALS";
+            return await Session.AppConnectAsync(testAppId, testAuthCredentials);
 #endif
         }
 
