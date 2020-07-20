@@ -15,36 +15,30 @@ var Desktop_TESTS_RESULT_PATH = $"{NET_CORE_TEST_PROJ_DIR}TestResults/DesktopTes
 var Desktop_test_result_directory = $"{NET_CORE_TEST_PROJ_DIR}TestResults";
 var coveralls_token = EnvironmentVariable("coveralls_access_token");
 
-Task("Build-Desktop-Project")
+Task("Run-Desktop-Tests")
   .IsDependentOn("Restore-NuGet")
   .Does(() => {
-    var dotnetBuildArgument = string.Empty;
-    var osFamily = (int)Context.Environment.Platform.Family;
-    if(osFamily == 1)
-      dotnetBuildArgument = @"-p:RuntimeIdentifiers=win10-x64";
-    else if(osFamily == 2)
-      dotnetBuildArgument = @"-p:RuntimeIdentifiers=linux-x64";
-    else if (osFamily == 3)
-      dotnetBuildArgument = @"-p:RuntimeIdentifiers=osx-x64";
-    
-	var buildSettings = new DotNetCoreMSBuildSettings()
-	{
-	  ArgumentCustomization = args => args.Append(dotnetBuildArgument)
-	};
-	buildSettings.SetConfiguration(configuration);
-    DotNetCoreMSBuild(coreTestProject, buildSettings);
-  });
+    // Check is nonmock auth build
+    var msBuildArgument = IsNonMockBuild() ? msBuildNonMockArgument : string.Empty;
+    var testResultFileName = IsNonMockBuild() ? "DesktopNonMockTestResult" : "DesktopTestResult";
 
-Task("Run-Desktop-Tests")
-  .IsDependentOn("Build-Desktop-Project")
-  .Does(() => {
+    var cleanSettings = new DotNetCoreCleanSettings {
+      Configuration = Configuration
+    };
+
+    DotNetCoreClean(coreTestProject, cleanSettings);
+    var buildSettings = new DotNetCoreMSBuildSettings() {
+      ArgumentCustomization = args => args.Append(msBuildArgument)
+    };
+    buildSettings.SetConfiguration(configuration);
+    DotNetCoreMSBuild(coreTestProject, buildSettings);
     DotNetCoreTest(
       coreTestProject.Path.FullPath,
       new DotNetCoreTestSettings() {
 		    NoBuild = true,
 		    NoRestore = true,
         Configuration = configuration,
-        ArgumentCustomization = args => args.Append("--logger \"trx;LogFileName=DesktopTestResult.xml\"")
+        ArgumentCustomization = args => args.Append($"--logger \"trx;LogFileName={testResultFileName}.xml\"")
       });
   });
 
@@ -63,11 +57,10 @@ Task("Run-Desktop-Tests-With-Coverage")
         });
     },
     new FilePath(codeCoverageFilePath),
-    new OpenCoverSettings()
-    {
-        SkipAutoProps = true,
-        Register = "user",
-        OldStyle = true
+    new OpenCoverSettings() {
+      SkipAutoProps = true,
+      Register = "user",
+      OldStyle = true
     }
     .WithFilter("+[*]*")
     .WithFilter("-[SafeApp.Tests*]*")
@@ -79,8 +72,7 @@ Task("Upload-Test-Coverage")
   .Does(() => {
     var resultFile = string.Empty;
     if (FileExists(codeCoverageFilePath))
-      CoverallsIo(codeCoverageFilePath, new CoverallsIoSettings()
-      {
+      CoverallsIo(codeCoverageFilePath, new CoverallsIoSettings() {
         RepoToken = coveralls_token
       });
     else
