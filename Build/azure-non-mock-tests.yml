@@ -82,7 +82,10 @@ jobs:
         SourceFolder: '$(Build.SourcesDirectory)'
         Contents: '**/vault.stdout'
         TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        condition: succeededOrFailed()
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Artifact: vault_logs'
       inputs:
         ArtifactName: vault_logs
+        condition: succeededOrFailed()
+    
