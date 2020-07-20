@@ -6,6 +6,8 @@
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
+var nonMock = Argument("non_mock", false);
+var msBuildNonMockArgument = @"/p:DefineConstants=""NON_MOCK""";
 
 // --------------------------------------------------------------------------------
 // FILES & DIRECTORIES

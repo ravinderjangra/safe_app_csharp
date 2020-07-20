@@ -14,11 +14,11 @@ namespace SafeApp.Tests
         [Test]
         public void IsMockTest()
         {
-#if MOCK
-            Assert.That(Session.AppIsMock(), Is.True);
+#if NON_MOCK
+            Assert.That(Session.AppIsMock(), Is.False);
             Assert.That(Authenticator.IsMockBuild(), Is.False);
 #else
-            Assert.That(Session.AppIsMock(), Is.False);
+            Assert.That(Session.AppIsMock(), Is.True);
             Assert.That(Authenticator.IsMockBuild(), Is.False);
 #endif
         }
@@ -28,7 +28,7 @@ namespace SafeApp.Tests
             => await Session.SetAppConfigurationDirectoryPathAsync(
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
 
-#if !MOCK
+#if NON_MOCK
         [Ignore("Test changes the location for the config files and will cause failing for other tests.")]
 #endif
         public async Task RustLoggerTest()
