@@ -65,7 +65,7 @@ jobs:
     - bash: |
         chmod +x build.sh
         ./build.sh --target=UnZip-Libs
-        ./build.sh --target=Run-Desktop-Tests
+        ./build.sh --target=Run-Desktop-Tests --non_mock=true
       workingDirectory: Build
       displayName: 'Run tests against vaults'
     - task: PublishTestResults@2
