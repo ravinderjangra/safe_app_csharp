@@ -23,7 +23,7 @@ Task("Run-Desktop-Tests")
     var testResultFileName = IsNonMockBuild() ? "DesktopNonMockTestResult" : "DesktopTestResult";
 
     var cleanSettings = new DotNetCoreCleanSettings {
-      Configuration = Configuration
+      Configuration = configuration
     };
 
     DotNetCoreClean(coreTestProject, cleanSettings);
