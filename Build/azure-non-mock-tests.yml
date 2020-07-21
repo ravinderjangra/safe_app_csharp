@@ -80,12 +80,12 @@ jobs:
         SourceFolder: '$(Build.SourcesDirectory)'
         Contents: '**/vault.stdout'
         TargetFolder: '$(Build.ArtifactStagingDirectory)'
-        condition: always()
+      condition: always()
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Artifact: vault_logs'
       inputs:
         ArtifactName: vault_logs
-        condition: always()
+      condition: always()
     - task: PublishTestResults@2
       displayName: 'Publish .NET Core Test Results'
       inputs:
