@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  CAKE_SETTINGS_SKIPVERIFICATION: true
+  CAKE_SETTINGS_SKIPPACKAGEVERSIONCHECK: true
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -25,6 +29,12 @@ jobs:
         dotnet-version: 3.1.301
     - name: Install dependencies
       run: dotnet restore 
+    - run: |
+        chmod +x host_fix.sh
+        ./host_fix.sh
+      name: 'Fix host issue'
+      working-directory: Build
+      if: matrix.target == 'macOS-latest'
     - run: |
         git clone https://github.com/lionel1704/vault-deployer.git
         cd vault-deployer
