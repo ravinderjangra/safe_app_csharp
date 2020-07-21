@@ -9,8 +9,13 @@ namespace SafeApp.Tests
     [TestFixture]
     internal class FilesTest
     {
+        private static readonly string _testData = TestUtils.GenerateTestDataDirName();
+
         [OneTimeSetUp]
-        public void Setup() => TestUtils.PrepareTestData();
+        public void Setup() => TestUtils.PrepareTestData(_testData);
+
+        [OneTimeTearDown]
+        public void TearDown() => TestUtils.PrepareTestData(_testData);
 
         [Test]
         public async Task FilesContainerCreateAndGetTest()
@@ -93,11 +98,11 @@ namespace SafeApp.Tests
         {
             var session = await TestUtils.CreateTestApp();
             var (xorUrl, processedFiles, filesMap) = await CreateTestFilesContainerAsync(session);
-            Directory.CreateDirectory($"{TestUtils.TestDataDir}/newDir");
-            var testFilePath = Path.Combine($"{TestUtils.TestDataDir}/newDir", "hello.html");
+            Directory.CreateDirectory($"{_testData}/newDir");
+            var testFilePath = Path.Combine($"{_testData}/newDir", "hello.html");
             File.WriteAllText(testFilePath, TestUtils.GetRandomString(20));
             var (version, newProcessedFiles, newFilesMap) = await session.Files.FilesContainerSyncAsync(
-                $"{TestUtils.TestDataDir}/newDir",
+                $"{_testData}/newDir",
                 xorUrl,
                 recursive: true,
                 delete: false,
@@ -112,11 +117,11 @@ namespace SafeApp.Tests
         {
             var session = await TestUtils.CreateTestApp();
             var (xorUrl, processedFiles, filesMap) = await CreateTestFilesContainerAsync(session);
-            var testFilePath = Path.Combine(TestUtils.TestDataDir, "hello.html");
+            var testFilePath = Path.Combine(_testData, "hello.html");
             File.WriteAllText(testFilePath, TestUtils.GetRandomString(20));
             var newFileName = $"{xorUrl}/hello.html";
             var (version, newProcessedFiles, newFilesMap) = await session.Files.FilesContainerAddAsync(
-                $"{TestUtils.TestDataDir}/hello.html",
+                $"{_testData}/hello.html",
                 newFileName,
                 false,
                 false,
@@ -130,11 +135,11 @@ namespace SafeApp.Tests
         {
             var session = await TestUtils.CreateTestApp();
             var (xorUrl, processedFiles, filesMap) = await CreateTestFilesContainerAsync(session);
-            var testFilePath = Path.Combine(TestUtils.TestDataDir, "hello.html");
+            var testFilePath = Path.Combine(_testData, "hello.html");
             File.WriteAllText(testFilePath, TestUtils.GetRandomString(20));
             var newFileName = $"{xorUrl}/hello.html";
             var (version, newProcessedFiles, newFilesMap) = await session.Files.FilesContainerAddAsync(
-                $"{TestUtils.TestDataDir}/hello.html",
+                $"{_testData}/hello.html",
                 newFileName,
                 false,
                 false,
@@ -176,7 +181,7 @@ namespace SafeApp.Tests
         public static Task<(string, ProcessedFiles, FilesMap)> CreateTestFilesContainerAsync(Session session)
         {
             return session.Files.FilesContainerCreateAsync(
-                TestUtils.TestDataDir,
+                _testData,
                 null,
                 true,
                 false,

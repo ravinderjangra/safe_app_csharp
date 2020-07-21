@@ -7,8 +7,13 @@ namespace SafeApp.Tests
     [TestFixture]
     public class FetchTest
     {
+        private readonly string _testData = TestUtils.GenerateTestDataDirName();
+
         [OneTimeSetUp]
-        public void Setup() => TestUtils.PrepareTestData();
+        public void Setup() => TestUtils.PrepareTestData(_testData);
+
+        [OneTimeTearDown]
+        public void TearDown() => TestUtils.PrepareTestData(_testData);
 
         [Test]
         public async Task FetchDataTypesTest()
@@ -23,7 +28,7 @@ namespace SafeApp.Tests
             ValidateFetchOrInspectDataTypes(await session.Fetch.FetchAsync(walletUrl), isFetch: true);
 
             var (filesXorUrl, processedFiles, _) = await session.Files.FilesContainerCreateAsync(
-                TestUtils.TestDataDir,
+                _testData,
                 null,
                 true,
                 false,
@@ -66,7 +71,7 @@ namespace SafeApp.Tests
             Assert.IsNotNull(walletInspectResult);
 
             var (filesXorUrl, processedFiles, _) = await session.Files.FilesContainerCreateAsync(
-                TestUtils.TestDataDir,
+                _testData,
                 null,
                 true,
                 false,
