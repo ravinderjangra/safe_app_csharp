@@ -7,6 +7,7 @@ variables:
   ANDROID_EMU_TARGET: 'system-images;android-28;google_apis;x86_64'
   ANDROID_EMU_DEVICE: 'Nexus 6P'
   CAKE_SETTINGS_SKIPVERIFICATION: true
+  CAKE_SETTINGS_SKIPPACKAGEVERSIONCHECK: true
 
 trigger:
   branches:

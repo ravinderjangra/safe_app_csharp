@@ -14,13 +14,13 @@ var codeCoverageFilePath = $"{NET_CORE_TEST_PROJ_DIR}CodeCoverResult.xml";
 var Desktop_TESTS_RESULT_PATH = $"{NET_CORE_TEST_PROJ_DIR}TestResults/DesktopTestResult.xml";
 var Desktop_test_result_directory = $"{NET_CORE_TEST_PROJ_DIR}TestResults";
 var coveralls_token = EnvironmentVariable("coveralls_access_token");
-var testResultFileName = IsNonMockBuild() ? "DesktopNonMockTestResult" : "DesktopTestResult";
+var testResultFileName = isNonMock ? "DesktopNonMockTestResult" : "DesktopTestResult";
 
 Task("Build-Desktop-Project")
   .IsDependentOn("Restore-NuGet")
   .Does(() => {
     // Check is nonmock auth build
-    var msBuildArgument = IsNonMockBuild() ? msBuildNonMockArgument : string.Empty;
+    var msBuildArgument = isNonMock ? msBuildNonMockArgument : string.Empty;
     
     var cleanSettings = new DotNetCoreCleanSettings {
       Configuration = configuration
