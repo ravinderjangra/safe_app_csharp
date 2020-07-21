@@ -70,10 +70,6 @@ jobs:
         ./build.sh --target=Run-Desktop-Tests --non-mock=true
       workingDirectory: Build
       displayName: 'Run tests against vaults'
-    - bash: |
-        cat vault-deployer/vaults/safe-vault-genesis/vault.stdout
-      workingDirectory: Build
-      displayName: 'View genesis vault logs'
     - task: CopyFiles@2
       displayName: 'Copy vault_logs to: $(Build.ArtifactStagingDirectory)'
       inputs:
