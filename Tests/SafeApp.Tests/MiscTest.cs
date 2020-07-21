@@ -9,6 +9,7 @@ using SafeAuthenticator;
 namespace SafeApp.Tests
 {
     [TestFixture]
+    [Parallelizable(ParallelScope.Fixtures)]
     internal class MiscTest
     {
         [Test]

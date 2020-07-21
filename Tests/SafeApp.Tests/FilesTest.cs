@@ -7,6 +7,7 @@ using SafeApp.Core;
 namespace SafeApp.Tests
 {
     [TestFixture]
+    [Parallelizable(ParallelScope.Fixtures)]
     internal class FilesTest
     {
         [OneTimeSetUp]

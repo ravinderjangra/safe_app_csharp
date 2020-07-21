@@ -4,6 +4,7 @@ using NUnit.Framework;
 namespace SafeApp.Tests
 {
     [TestFixture]
+    [Parallelizable(ParallelScope.Fixtures)]
     internal class KeyTest
     {
         private const string _preloadInitialAmount = "2";

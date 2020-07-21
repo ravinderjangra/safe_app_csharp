@@ -6,6 +6,7 @@ using SafeAuthenticator;
 namespace SafeApp.Tests
 {
     [TestFixture]
+    [Parallelizable(ParallelScope.Fixtures)]
     public class AuthenticatorTests
     {
         [Test]
