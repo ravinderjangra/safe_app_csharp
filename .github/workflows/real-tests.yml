@@ -28,7 +28,7 @@ jobs:
     - run: |
         git clone https://github.com/lionel1704/vault-deployer.git
         cd vault-deployer
-        wget https://safe-vault.s3.eu-west-2.amazonaws.com/safe_vault-latest-x86_64-${{ mtatrix.target}}.zip
+        wget https://safe-vault.s3.eu-west-2.amazonaws.com/safe_vault-latest-x86_64-${{ matrix.target}}.zip
         unzip safe_vault-latest-x86_64-${{ matrix.target}}.zip
         chmod +x safe_vault
         chmod +x run-vaults.bash
