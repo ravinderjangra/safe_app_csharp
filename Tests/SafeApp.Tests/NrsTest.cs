@@ -16,9 +16,6 @@ namespace SafeApp.Tests
         [OneTimeSetUp]
         public void Setup() => TestUtils.PrepareTestData();
 
-        [OneTimeTearDown]
-        public void TearDown() => TestUtils.RemoveTestData();
-
         [Test]
         public async Task ParseUrlTest()
         {
