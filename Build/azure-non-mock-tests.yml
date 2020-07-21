@@ -70,14 +70,6 @@ jobs:
         ./build.sh --target=Run-Desktop-Tests --non-mock=true
       workingDirectory: Build
       displayName: 'Run tests against vaults'
-    - task: PublishTestResults@2
-      displayName: 'Publish .NET Core Test Results'
-      inputs:
-        testResultsFormat: VSTest
-        testResultsFiles: '**/DesktopTestResult.xml'
-        failTaskOnFailedTests: true
-        testRunTitle: '.NET Core Tests'
-      condition: succeededOrFailed()
     - bash: |
         cat vault-deployer/vaults/safe-vault-genesis/vault.stdout
       workingDirectory: Build
@@ -94,3 +86,11 @@ jobs:
       inputs:
         ArtifactName: vault_logs
         condition: always()
+    - task: PublishTestResults@2
+      displayName: 'Publish .NET Core Test Results'
+      inputs:
+        testResultsFormat: VSTest
+        testResultsFiles: '**/DesktopTestResult.xml'
+        failTaskOnFailedTests: true
+        testRunTitle: '.NET Core Tests'
+      condition: succeededOrFailed()
