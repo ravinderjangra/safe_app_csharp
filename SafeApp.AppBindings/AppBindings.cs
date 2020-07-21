@@ -155,7 +155,7 @@ namespace SafeApp.AppBindings
             return ret;
         }
 
-        [DllImport(DllName, EntryPoint = "app_config_dir_path")]
+        [DllImport(DllName, EntryPoint = "config_dir_path")]
         private static extern void AppConfigDirPathNative(IntPtr userData, FfiResultStringCb oCb);
 
         private delegate void FfiResultCb(IntPtr userData, IntPtr result);
