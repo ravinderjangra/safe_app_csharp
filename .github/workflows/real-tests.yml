@@ -1,0 +1,45 @@
+name: .NET Core
+
+on:
+  push:
+    branches: [ master, github-action ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+    - name: Install dependencies
+      run: dotnet restore 
+    - run: |
+        git clone https://github.com/lionel1704/vault-deployer.git
+        cd vault-deployer
+        wget https://safe-vault.s3.eu-west-2.amazonaws.com/safe_vault-latest-x86_64-$(target).zip
+        unzip safe_vault-latest-x86_64-$(target).zip
+        chmod +x safe_vault
+        chmod +x run-vaults.bash
+        ./run-vaults.bash
+        cat vaults/safe-vault-genesis/vault.stdout
+      shell: bash
+      working-directory: Build
+      name: 'Download and run section'
+    - run: |
+        chmod +x build.sh
+        ./build.sh --target=UnZip-Libs
+        ./build.sh --target=Run-Desktop-Tests --non-mock=true
+      working-directory: Build
+      name: 'Run tests'
+    - uses: actions/upload-artifact@v2
+      with:
+        name: vault-logs
+        path: |
+          **/vault.stdout
