@@ -23,17 +23,13 @@ namespace SafeApp.Tests
 #endif
         }
 
-#if NON_MOCK
         [Ignore("Test changes the location for the config files and will cause failing for other tests.")]
-#endif
         [Test]
         public async Task SetConfigFileDirPathTest()
             => await Session.SetAppConfigurationDirectoryPathAsync(
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
 
-#if NON_MOCK
         [Ignore("Test changes the location for the config files and will cause failing for other tests.")]
-#endif
         [Test]
         public async Task RustLoggerTest()
         {
