@@ -141,7 +141,7 @@ namespace SafeApp.Tests
         {
             var dirName = TestUtils.GetRandomString(5);
 #if __ANDROID__
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), _testDataDir);
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), dirName);
 #else
             return dirName;
 #endif
