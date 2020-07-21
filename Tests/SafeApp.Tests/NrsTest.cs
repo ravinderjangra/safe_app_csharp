@@ -13,8 +13,13 @@ namespace SafeApp.Tests
         private const bool DirectLink = true;
         private const bool DryRun = false;
 
+        private readonly string _testData = TestUtils.GenerateTestDataDirName();
+
         [OneTimeSetUp]
-        public void Setup() => TestUtils.PrepareTestData();
+        public void Setup() => TestUtils.PrepareTestData(_testData);
+
+        [OneTimeTearDown]
+        public void TearDown() => TestUtils.PrepareTestData(_testData);
 
         [Test]
         public async Task ParseUrlTest()
@@ -59,7 +64,7 @@ namespace SafeApp.Tests
         {
             var session = await TestUtils.CreateTestApp();
             var name = TestUtils.GetRandomString(5);
-            var xorUrlResult = await CreateNrsMapContainerXorUrlAsync(session, name);
+            _ = await CreateNrsMapContainerXorUrlAsync(session, name);
 
             var link = await CreateFilesContainerAsync(session);
 
@@ -80,7 +85,7 @@ namespace SafeApp.Tests
         {
             var session = await TestUtils.CreateTestApp();
             var name = TestUtils.GetRandomString(5);
-            var xorUrlResult = await CreateNrsMapContainerXorUrlAsync(session, name);
+            _ = await CreateNrsMapContainerXorUrlAsync(session, name);
 
             var (nrsMapRaw, xorUrl, version) = await session.Nrs.RemoveFromNrsMapContainerAsync(name, DryRun);
 
@@ -107,7 +112,7 @@ namespace SafeApp.Tests
         async Task<string> CreateFilesContainerAsync(Session session)
         {
             var (xorUrl, _, _) = await session.Files.FilesContainerCreateAsync(
-                TestUtils.TestDataDir,
+                _testData,
                 null,
                 true,
                 false,

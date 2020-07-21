@@ -127,23 +127,24 @@ namespace SafeApp.Tests
             return configPath;
         }
 
-        public static void PrepareTestData()
+        public static void PrepareTestData(string dataDir)
         {
-            Directory.CreateDirectory(TestDataDir);
-            var testFilePath = Path.Combine(TestDataDir, "index.html");
+            Directory.CreateDirectory(dataDir);
+            var testFilePath = Path.Combine(dataDir, "index.html");
             File.WriteAllText(testFilePath, GetRandomString(20));
         }
 
-        public static void RemoveTestData()
-            => Directory.Delete(TestDataDir, true);
+        public static void RemoveTestData(string datadir)
+            => Directory.Delete(datadir, true);
 
-        public static string TestDataDir =>
+        public static string GenerateTestDataDirName()
+        {
+            var dirName = TestUtils.GetRandomString(5);
 #if __ANDROID__
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), _testDataDir);
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), _testDataDir);
 #else
-                _testDataDir;
+            return dirName;
 #endif
-
-        static readonly string _testDataDir = TestUtils.GetRandomString(5);
+        }
     }
 }
