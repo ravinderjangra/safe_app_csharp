@@ -78,6 +78,10 @@ jobs:
         failTaskOnFailedTests: true
         testRunTitle: '.NET Core Tests'
       condition: succeededOrFailed()
+    - bash: |
+        cat vault-deployer/vaults/safe-vault-genesis/vault.stdout
+      workingDirectory: Build
+      displayName: 'View genesis vault logs'
     - task: CopyFiles@2
       displayName: 'Copy vault_logs to: $(Build.ArtifactStagingDirectory)'
       inputs:
@@ -90,4 +94,3 @@ jobs:
       inputs:
         ArtifactName: vault_logs
         condition: always()
-    
