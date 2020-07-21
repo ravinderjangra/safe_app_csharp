@@ -34,7 +34,7 @@ jobs:
         ./host_fix.sh
       name: 'Fix host issue'
       working-directory: Build
-      if: matrix.target == 'macOS-latest'
+      if: matrix.os == 'macOS-latest'
     - run: |
         git clone https://github.com/lionel1704/vault-deployer.git
         cd vault-deployer
