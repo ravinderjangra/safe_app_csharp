@@ -12,6 +12,11 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macOS-latest]
+        include:
+          - os: macOS-latest
+            target: apple-darwin
+          - os: ubuntu-latest
+            target: unknown-linux-musl
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET Core
@@ -23,8 +28,8 @@ jobs:
     - run: |
         git clone https://github.com/lionel1704/vault-deployer.git
         cd vault-deployer
-        wget https://safe-vault.s3.eu-west-2.amazonaws.com/safe_vault-latest-x86_64-$(target).zip
-        unzip safe_vault-latest-x86_64-$(target).zip
+        wget https://safe-vault.s3.eu-west-2.amazonaws.com/safe_vault-latest-x86_64-${{ mtatrix.target}}.zip
+        unzip safe_vault-latest-x86_64-${{ matrix.target}}.zip
         chmod +x safe_vault
         chmod +x run-vaults.bash
         ./run-vaults.bash
