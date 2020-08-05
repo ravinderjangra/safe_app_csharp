@@ -13,44 +13,45 @@
     <tags>android, ios, csharp, netstandard, xamarin, netcoreapp, .NET framework</tags>
     <license type="expression">BSD-3-Clause OR MIT</license>
     <projectUrl>https://github.com/maidsafe/safe_app_csharp/</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/maidsafe/safe_app_csharp/master/package_icon.png</iconUrl>
+    <icon>package_icon.png</icon>
     <dependencies>
-      <group targetFramework="netstandard2.0" />
+      <group targetFramework="netstandard2.1" />
       <group targetFramework="MonoAndroid50" />
       <group targetFramework="Xamarin.iOS10" />
-      <group targetFramework="netcoreapp2.2" />
-      <group targetFramework="net472" />
+      <group targetFramework="netcoreapp3.1" />
     </dependencies>
   </metadata>
   <files>
+    <file src="package_icon.png" />
+
     <!--NetStandard-->
-    <file src="SafeApp.AppBindings\Targets\NetStandard.targets" target="build\netstandard2.0\MaidSafe.SafeApp.targets" />
-    <file src="SafeApp\bin\Release\netstandard2.0\SafeApp.dll" target="lib\netstandard2.0\SafeApp.dll" />
-    <file src="SafeApp\bin\Release\netstandard2.0\SafeApp.pdb" target="lib\netstandard2.0\SafeApp.pdb" />
-    <file src="SafeApp\bin\Release\netstandard2.0\SafeApp.xml" target="lib\netstandard2.0\SafeApp.xml" />
-    <file src="SafeApp.AppBindings\bin\Release\netstandard2.0\SafeApp.AppBindings.dll"
-          target="lib\netstandard2.0\SafeApp.AppBindings.dll" />
-    <file src="SafeApp.AppBindings\bin\Release\netstandard2.0\SafeApp.AppBindings.pdb"
-          target="lib\netstandard2.0\SafeApp.AppBindings.pdb" />
-    <file src="SafeAuthenticator\bin\Release\netstandard2.0\SafeAuthenticator.dll"
-          target="build\netstandard2.0\SafeAuthenticator.dll" />
-    <file src="SafeAuthenticator\bin\Release\netstandard2.0\SafeAuthenticator.pdb"
-          target="build\netstandard2.0\SafeAuthenticator.pdb" />
-    <file src="SafeAuthenticator\bin\Release\netstandard2.0\SafeAuthenticator.xml"
-          target="build\netstandard2.0\SafeAuthenticator.xml" />
-    <file src="SafeApp.Core\bin\Release\netstandard2.0\SafeApp.Core.dll"
-          target="lib\netstandard2.0\SafeApp.Core.dll" />
-    <file src="SafeApp.Core\bin\Release\netstandard2.0\SafeApp.Core.pdb"
-          target="lib\netstandard2.0\SafeApp.Core.pdb" />
-    <file src="SafeApp.Core\bin\Release\netstandard2.0\SafeApp.Core.xml"
-          target="lib\netstandard2.0\SafeApp.Core.xml" />
+    <file src="SafeApp.AppBindings\Targets\NetStandard.targets" target="build\netstandard2.1\MaidSafe.SafeApp.targets" />
+    <file src="SafeApp\bin\Release\netstandard2.1\SafeApp.dll" target="lib\netstandard2.1\SafeApp.dll" />
+    <file src="SafeApp\bin\Release\netstandard2.1\SafeApp.pdb" target="lib\netstandard2.1\SafeApp.pdb" />
+    <file src="SafeApp\bin\Release\netstandard2.1\SafeApp.xml" target="lib\netstandard2.1\SafeApp.xml" />
+    <file src="SafeApp.AppBindings\bin\Release\netstandard2.1\SafeApp.AppBindings.dll"
+          target="lib\netstandard2.1\SafeApp.AppBindings.dll" />
+    <file src="SafeApp.AppBindings\bin\Release\netstandard2.1\SafeApp.AppBindings.pdb"
+          target="lib\netstandard2.1\SafeApp.AppBindings.pdb" />
+    <file src="SafeAuthenticator\bin\Release\netstandard2.1\SafeAuthenticator.dll"
+          target="build\netstandard2.1\SafeAuthenticator.dll" />
+    <file src="SafeAuthenticator\bin\Release\netstandard2.1\SafeAuthenticator.pdb"
+          target="build\netstandard2.1\SafeAuthenticator.pdb" />
+    <file src="SafeAuthenticator\bin\Release\netstandard2.1\SafeAuthenticator.xml"
+          target="build\netstandard2.1\SafeAuthenticator.xml" />
+    <file src="SafeApp.Core\bin\Release\netstandard2.1\SafeApp.Core.dll"
+          target="lib\netstandard2.1\SafeApp.Core.dll" />
+    <file src="SafeApp.Core\bin\Release\netstandard2.1\SafeApp.Core.pdb"
+          target="lib\netstandard2.1\SafeApp.Core.pdb" />
+    <file src="SafeApp.Core\bin\Release\netstandard2.1\SafeApp.Core.xml"
+          target="lib\netstandard2.1\SafeApp.Core.xml" />
 
     <!--Xamarin.Android-->
     <file src="SafeApp.AppBindings\Targets\Android.targets" target="build\MonoAndroid50\MaidSafe.SafeApp.targets" />
     <file src="SafeApp.AppBindings\NativeLibs\Android\**" target="build\MonoAndroid50\lib" />
-    <file src="SafeApp\bin\Release\netstandard2.0\SafeApp.dll" target="lib\MonoAndroid50\SafeApp.dll" />
-    <file src="SafeApp\bin\Release\netstandard2.0\SafeApp.pdb" target="lib\MonoAndroid50\SafeApp.pdb" />
-    <file src="SafeApp\bin\Release\netstandard2.0\SafeApp.xml" target="lib\MonoAndroid50\SafeApp.xml" />
+    <file src="SafeApp\bin\Release\netstandard2.1\SafeApp.dll" target="lib\MonoAndroid50\SafeApp.dll" />
+    <file src="SafeApp\bin\Release\netstandard2.1\SafeApp.pdb" target="lib\MonoAndroid50\SafeApp.pdb" />
+    <file src="SafeApp\bin\Release\netstandard2.1\SafeApp.xml" target="lib\MonoAndroid50\SafeApp.xml" />
     <file src="SafeApp.AppBindings\bin\Release\MonoAndroid50\SafeApp.AppBindings.dll"
           target="lib\MonoAndroid50\SafeApp.AppBindings.dll" />
     <file src="SafeApp.AppBindings\bin\Release\MonoAndroid50\SafeApp.AppBindings.pdb"
@@ -61,19 +62,19 @@
           target="build\MonoAndroid50\SafeAuthenticator.pdb" />
     <file src="SafeAuthenticator\bin\Release\MonoAndroid50\SafeAuthenticator.xml"
           target="build\MonoAndroid50\SafeAuthenticator.xml" />
-    <file src="SafeApp.Core\bin\Release\netstandard2.0\SafeApp.Core.dll"
+    <file src="SafeApp.Core\bin\Release\netstandard2.1\SafeApp.Core.dll"
           target="lib\MonoAndroid50\SafeApp.Core.dll" />
-    <file src="SafeApp.Core\bin\Release\netstandard2.0\SafeApp.Core.pdb"
+    <file src="SafeApp.Core\bin\Release\netstandard2.1\SafeApp.Core.pdb"
           target="lib\MonoAndroid50\SafeApp.Core.pdb" />
-    <file src="SafeApp.Core\bin\Release\netstandard2.0\SafeApp.Core.xml"
+    <file src="SafeApp.Core\bin\Release\netstandard2.1\SafeApp.Core.xml"
           target="lib\MonoAndroid50\SafeApp.Core.xml" />
 
     <!--Xamarin.iOS-->
     <file src="SafeApp.AppBindings\Targets\iOS.targets" target="build\Xamarin.iOS10\MaidSafe.SafeApp.targets" />
     <file src="SafeApp.AppBindings\NativeLibs\iOS\**" target="build\Xamarin.iOS10\lib" />
-    <file src="SafeApp\bin\Release\netstandard2.0\SafeApp.dll" target="lib\Xamarin.iOS10\SafeApp.dll" />
-    <file src="SafeApp\bin\Release\netstandard2.0\SafeApp.pdb" target="lib\Xamarin.iOS10\SafeApp.pdb" />
-    <file src="SafeApp\bin\Release\netstandard2.0\SafeApp.xml" target="lib\Xamarin.iOS10\SafeApp.xml" />
+    <file src="SafeApp\bin\Release\netstandard2.1\SafeApp.dll" target="lib\Xamarin.iOS10\SafeApp.dll" />
+    <file src="SafeApp\bin\Release\netstandard2.1\SafeApp.pdb" target="lib\Xamarin.iOS10\SafeApp.pdb" />
+    <file src="SafeApp\bin\Release\netstandard2.1\SafeApp.xml" target="lib\Xamarin.iOS10\SafeApp.xml" />
     <file src="SafeApp.AppBindings\bin\Release\xamarin.ios10\SafeApp.AppBindings.dll"
           target="lib\Xamarin.iOS10\SafeApp.AppBindings.dll" />
     <file src="SafeApp.AppBindings\bin\Release\xamarin.ios10\SafeApp.AppBindings.pdb"
@@ -84,58 +85,34 @@
           target="build\Xamarin.iOS10\SafeAuthenticator.pdb" />
     <file src="SafeAuthenticator\bin\Release\xamarin.ios10\SafeAuthenticator.xml"
           target="build\Xamarin.iOS10\SafeAuthenticator.xml" />
-    <file src="SafeApp.Core\bin\Release\netstandard2.0\SafeApp.Core.dll"
+    <file src="SafeApp.Core\bin\Release\netstandard2.1\SafeApp.Core.dll"
           target="lib\Xamarin.iOS10\SafeApp.Core.dll" />
-    <file src="SafeApp.Core\bin\Release\netstandard2.0\SafeApp.Core.pdb"
+    <file src="SafeApp.Core\bin\Release\netstandard2.1\SafeApp.Core.pdb"
           target="lib\Xamarin.iOS10\SafeApp.Core.pdb" />
-    <file src="SafeApp.Core\bin\Release\netstandard2.0\SafeApp.Core.xml"
+    <file src="SafeApp.Core\bin\Release\netstandard2.1\SafeApp.Core.xml"
           target="lib\Xamarin.iOS10\SafeApp.Core.xml" />
 
-    <!--Desktop - NetCore-->
-    <file src="SafeApp.AppBindings\Targets\NetCore.targets" target="build\netcoreapp2.2\MaidSafe.SafeApp.targets" />
-    <file src="SafeApp.AppBindings\NativeLibs\Desktop\**" target="build\netcoreapp2.2\lib" />
-    <file src="SafeApp\bin\Release\netstandard2.0\SafeApp.dll" target="lib\netcoreapp2.2\SafeApp.dll" />
-    <file src="SafeApp\bin\Release\netstandard2.0\SafeApp.pdb" target="lib\netcoreapp2.2\SafeApp.pdb" />
-    <file src="SafeApp\bin\Release\netstandard2.0\SafeApp.xml" target="lib\netcoreapp2.2\SafeApp.xml" />
-    <file src="SafeApp.AppBindings\bin\Release\netcoreapp2.2\SafeApp.AppBindings.dll"
-          target="lib\netcoreapp2.2\SafeApp.AppBindings.dll" />
-    <file src="SafeApp.AppBindings\bin\Release\netcoreapp2.2\SafeApp.AppBindings.pdb"
-          target="lib\netcoreapp2.2\SafeApp.AppBindings.pdb" />
-    <file src="SafeAuthenticator\bin\Release\netcoreapp2.2\SafeAuthenticator.dll"
-          target="build\netcoreapp2.2\SafeAuthenticator.dll" />
-    <file src="SafeAuthenticator\bin\Release\netcoreapp2.2\SafeAuthenticator.pdb"
-          target="build\netcoreapp2.2\SafeAuthenticator.pdb" />
-    <file src="SafeAuthenticator\bin\Release\netcoreapp2.2\SafeAuthenticator.xml"
-          target="build\netcoreapp2.2\SafeAuthenticator.xml" />
-    <file src="SafeApp.Core\bin\Release\netstandard2.0\SafeApp.Core.dll"
-          target="lib\netcoreapp2.2\SafeApp.Core.dll" />
-    <file src="SafeApp.Core\bin\Release\netstandard2.0\SafeApp.Core.pdb"
-          target="lib\netcoreapp2.2\SafeApp.Core.pdb" />
-    <file src="SafeApp.Core\bin\Release\netstandard2.0\SafeApp.Core.xml"
-          target="lib\netcoreapp2.2\SafeApp.Core.xml" />
-
-    <!--Desktop - NetFramework-->
-    <file src="SafeApp.AppBindings\Targets\NetFramework.targets" target="build\net472\MaidSafe.SafeApp.targets" />
-    <file src="SafeApp.AppBindings\NativeLibs\Desktop\mock\safe_api.dll" target="build\net472\lib\mock\safe_api.dll" />
-    <file src="SafeApp.AppBindings\NativeLibs\Desktop\non-mock\safe_api.dll" target="build\net472\lib\non-mock\safe_api.dll" />
-    <file src="SafeApp\bin\Release\netstandard2.0\SafeApp.dll" target="lib\net472\SafeApp.dll" />
-    <file src="SafeApp\bin\Release\netstandard2.0\SafeApp.pdb" target="lib\net472\SafeApp.pdb" />
-    <file src="SafeApp\bin\Release\netstandard2.0\SafeApp.xml" target="lib\net472\SafeApp.xml" />
-    <file src="SafeApp.AppBindings\bin\Release\net472\SafeApp.AppBindings.dll"
-          target="lib\net472\SafeApp.AppBindings.dll" />
-    <file src="SafeApp.AppBindings\bin\Release\net472\SafeApp.AppBindings.pdb"
-          target="lib\net472\SafeApp.AppBindings.pdb" />
-    <file src="SafeAuthenticator\bin\Release\net472\SafeAuthenticator.dll"
-          target="build\net472\SafeAuthenticator.dll" />
-    <file src="SafeAuthenticator\bin\Release\net472\SafeAuthenticator.pdb"
-          target="build\net472\SafeAuthenticator.pdb" />
-    <file src="SafeAuthenticator\bin\Release\net472\SafeAuthenticator.xml"
-          target="build\net472\SafeAuthenticator.xml" />
-    <file src="SafeApp.Core\bin\Release\netstandard2.0\SafeApp.Core.dll"
-          target="lib\net472\SafeApp.Core.dll" />
-    <file src="SafeApp.Core\bin\Release\netstandard2.0\SafeApp.Core.pdb"
-          target="lib\net472\SafeApp.Core.pdb" />
-    <file src="SafeApp.Core\bin\Release\netstandard2.0\SafeApp.Core.xml"
-          target="lib\net472\SafeApp.Core.xml" />
+    <!--.NET Core-->
+    <file src="SafeApp.AppBindings\Targets\NetCore.targets" target="build\netcoreapp3.1\MaidSafe.SafeApp.targets" />
+    <file src="SafeApp.AppBindings\NativeLibs\Desktop\**" target="build\netcoreapp3.1\lib" />
+    <file src="SafeApp\bin\Release\netstandard2.1\SafeApp.dll" target="lib\netcoreapp3.1\SafeApp.dll" />
+    <file src="SafeApp\bin\Release\netstandard2.1\SafeApp.pdb" target="lib\netcoreapp3.1\SafeApp.pdb" />
+    <file src="SafeApp\bin\Release\netstandard2.1\SafeApp.xml" target="lib\netcoreapp3.1\SafeApp.xml" />
+    <file src="SafeApp.AppBindings\bin\Release\netcoreapp3.1\SafeApp.AppBindings.dll"
+          target="lib\netcoreapp3.1\SafeApp.AppBindings.dll" />
+    <file src="SafeApp.AppBindings\bin\Release\netcoreapp3.1\SafeApp.AppBindings.pdb"
+          target="lib\netcoreapp3.1\SafeApp.AppBindings.pdb" />
+    <file src="SafeAuthenticator\bin\Release\netcoreapp3.1\SafeAuthenticator.dll"
+          target="build\netcoreapp3.1\SafeAuthenticator.dll" />
+    <file src="SafeAuthenticator\bin\Release\netcoreapp3.1\SafeAuthenticator.pdb"
+          target="build\netcoreapp3.1\SafeAuthenticator.pdb" />
+    <file src="SafeAuthenticator\bin\Release\netcoreapp3.1\SafeAuthenticator.xml"
+          target="build\netcoreapp3.1\SafeAuthenticator.xml" />
+    <file src="SafeApp.Core\bin\Release\netstandard2.1\SafeApp.Core.dll"
+          target="lib\netcoreapp3.1\SafeApp.Core.dll" />
+    <file src="SafeApp.Core\bin\Release\netstandard2.1\SafeApp.Core.pdb"
+          target="lib\netcoreapp3.1\SafeApp.Core.pdb" />
+    <file src="SafeApp.Core\bin\Release\netstandard2.1\SafeApp.Core.xml"
+          target="lib\netcoreapp3.1\SafeApp.Core.xml" />
   </files>
 </package>
