@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin\Release\netstandard2.0\SafeApp.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\netstandard2.1\SafeApp.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,7 +1,7 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras/2.0.54">
+﻿<Project Sdk="MSBuild.Sdk.Extras/2.1.2">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net472;netcoreapp2.2;MonoAndroid50;Xamarin.iOS10</TargetFrameworks>
+    <TargetFrameworks>netstandard2.1;netcoreapp3.1;MonoAndroid50;Xamarin.iOS10</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
